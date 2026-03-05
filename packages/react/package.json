@@ -1,0 +1,38 @@
+{
+  "name": "@taw-ui/react",
+  "version": "0.0.1",
+  "private": false,
+  "description": "React components for AI tool calls",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@taw-ui/core": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.0"
+  },
+  "peerDependencies": {
+    "framer-motion": "^12.0.0",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.7.0",
+    "tsup": "^8.3.0"
+  }
+}

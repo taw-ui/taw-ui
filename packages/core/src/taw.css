@@ -1,0 +1,57 @@
+/**
+ * taw-ui design tokens
+ * Import this in your app's global CSS alongside Tailwind.
+ *
+ * oklch values chosen for perceptual uniformity across themes.
+ */
+
+:root {
+  /* Surfaces */
+  --taw-surface: oklch(0.98 0 0);
+  --taw-surface-raised: oklch(1 0 0);
+  --taw-surface-sunken: oklch(0.96 0 0);
+
+  /* Borders */
+  --taw-border: oklch(0.88 0 0);
+  --taw-border-strong: oklch(0.78 0 0);
+
+  /* Text */
+  --taw-text-primary: oklch(0.15 0 0);
+  --taw-text-secondary: oklch(0.35 0 0);
+  --taw-text-muted: oklch(0.55 0 0);
+  --taw-text-disabled: oklch(0.72 0 0);
+
+  /* Accent — precise blue-slate */
+  --taw-accent: oklch(0.55 0.18 250);
+  --taw-accent-subtle: oklch(0.94 0.04 250);
+
+  /* Radius */
+  --taw-radius: 6px;
+  --taw-radius-sm: 4px;
+  --taw-radius-lg: 10px;
+
+  /* Shadows */
+  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.06);
+  --taw-shadow: 0 2px 8px oklch(0 0 0 / 0.08), 0 1px 2px oklch(0 0 0 / 0.04);
+}
+
+.dark {
+  /* Elevation-based surfaces (not simple invert) */
+  --taw-surface: oklch(0.14 0 0);           /* base */
+  --taw-surface-raised: oklch(0.17 0 0);    /* cards */
+  --taw-surface-sunken: oklch(0.11 0 0);    /* inset */
+
+  --taw-border: oklch(0.24 0 0);
+  --taw-border-strong: oklch(0.32 0 0);
+
+  --taw-text-primary: oklch(0.94 0 0);
+  --taw-text-secondary: oklch(0.75 0 0);
+  --taw-text-muted: oklch(0.55 0 0);
+  --taw-text-disabled: oklch(0.38 0 0);
+
+  --taw-accent: oklch(0.68 0.15 250);
+  --taw-accent-subtle: oklch(0.22 0.05 250);
+
+  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3);
+  --taw-shadow: 0 2px 8px oklch(0 0 0 / 0.4), 0 1px 2px oklch(0 0 0 / 0.2);
+}
