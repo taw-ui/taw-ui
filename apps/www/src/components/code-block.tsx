@@ -82,7 +82,7 @@ function CopyButton({ copied, onCopy }: { copied: boolean; onCopy: () => void })
   )
 }
 
-export function InlineCode({ children }: { children: string }) {
+export function InlineCode({ children }: { children: React.ReactNode }) {
   return (
     <code className="rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 py-0.5 font-mono text-[12px] text-[--taw-accent]">
       {children}
