@@ -1,12 +1,6 @@
 import type { TawToolPart } from "@taw-ui/core"
 
 export const kpiCardFixtures: Record<string, TawToolPart> = {
-  loading: {
-    id: "kpi-1",
-    toolName: "getMetrics",
-    input: { metric: "revenue" },
-    state: "input-available",
-  },
   ready: {
     id: "kpi-2",
     toolName: "getMetrics",
@@ -28,6 +22,12 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
       },
       description: "Monthly recurring revenue for Q4 2025",
     },
+  },
+  loading: {
+    id: "kpi-1",
+    toolName: "getMetrics",
+    input: { metric: "revenue" },
+    state: "input-available",
   },
   "low-confidence": {
     id: "kpi-3",

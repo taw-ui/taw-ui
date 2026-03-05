@@ -29,6 +29,13 @@ export const components: ComponentMeta[] = [
     status: "ready",
   },
   {
+    id: "link-card",
+    label: "LinkCard",
+    description: "Rich link preview with OG metadata, favicon, AI reasoning, and confidence.",
+    category: "display",
+    status: "ready",
+  },
+  {
     id: "chart",
     label: "Chart",
     description: "Line, bar, area, scatter, pie, and donut charts via Recharts.",

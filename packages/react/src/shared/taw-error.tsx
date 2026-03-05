@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import type { TawParseError } from "@taw-ui/core"
 import { cn } from "../utils/cn"
-import { getEnterProps } from "../motion"
+import { getEnterProps, enterVariants, staggerParent } from "../motion"
 
 interface TawErrorProps {
   /** Tool execution error (string or Error) */
@@ -26,6 +26,7 @@ export function TawError({
   animate,
   className,
 }: TawErrorProps) {
+  const isParseError = !!parseError
   const msg = parseError
     ? parseError.message
     : error instanceof Error
@@ -35,31 +36,75 @@ export function TawError({
   return (
     <motion.div
       {...(animate ? getEnterProps(true) : {})}
+      variants={{ ...staggerParent }}
       className={cn(
-        "relative flex flex-col gap-1.5 rounded-[--taw-radius] border p-4",
-        "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30",
+        "relative overflow-hidden rounded-[--taw-radius] border border-[--taw-border] bg-[--taw-surface] font-sans",
         className,
       )}
     >
-      <span className="text-[11px] font-medium uppercase tracking-widest text-red-500">
-        Error
-      </span>
-      <span className="font-mono text-xs text-red-700 dark:text-red-400">
-        {msg}
-      </span>
+      {/* Header */}
+      <div className="flex items-center gap-2.5 border-b border-[--taw-border] bg-[--taw-surface-sunken] px-4 py-2.5">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[--taw-error] text-[10px] font-bold leading-none text-white">
+          !
+        </span>
+        <span className="text-[11px] font-medium uppercase tracking-wider text-[--taw-error]">
+          {isParseError ? "Schema Validation Failed" : "Tool Error"}
+        </span>
+      </div>
 
-      {parseError?.issues.map((issue, i) => (
-        <div key={i} className="flex flex-col gap-0.5 pl-2">
-          <span className="font-mono text-[10px] text-red-600/70 dark:text-red-400/70">
-            {issue.path}: expected {issue.expected}, got {issue.received}
-          </span>
-          {issue.suggestion && (
-            <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400">
-              {issue.suggestion}
-            </span>
-          )}
-        </div>
-      ))}
+      {/* Body */}
+      <div className="flex flex-col gap-3 p-4">
+        {/* Message */}
+        <motion.p
+          variants={enterVariants}
+          className="font-mono text-[12px] leading-relaxed text-[--taw-text-secondary]"
+        >
+          {msg}
+        </motion.p>
+
+        {/* Parse error issues */}
+        {parseError && parseError.issues.length > 0 && (
+          <motion.div
+            variants={enterVariants}
+            className="flex flex-col gap-2 rounded-[6px] bg-[--taw-surface-sunken] p-3"
+          >
+            {parseError.issues.map((issue, i) => (
+              <div key={i} className="flex flex-col gap-0.5">
+                <div className="flex items-baseline gap-2 font-mono text-[11px]">
+                  <span className="text-[--taw-error]">missing</span>
+                  <span className="font-medium text-[--taw-text-primary]">
+                    {issue.path}
+                  </span>
+                  <span className="text-[--taw-text-muted]">
+                    expected {issue.expected}
+                  </span>
+                </div>
+                {issue.received && (
+                  <span className="pl-[52px] font-mono text-[10px] text-[--taw-text-muted]">
+                    received: {issue.received}
+                  </span>
+                )}
+                {issue.suggestion && (
+                  <span className="pl-[52px] font-mono text-[10px] text-[--taw-warning]">
+                    {issue.suggestion}
+                  </span>
+                )}
+              </div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Runtime error — show recoverable hint */}
+        {!isParseError && (
+          <motion.p
+            variants={enterVariants}
+            className="text-[11px] text-[--taw-text-muted]"
+          >
+            The tool returned an error instead of data. This usually means the
+            upstream API failed — retry or check the tool{"'"}s logs.
+          </motion.p>
+        )}
+      </div>
     </motion.div>
   )
 }

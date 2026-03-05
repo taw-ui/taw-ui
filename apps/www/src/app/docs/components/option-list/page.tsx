@@ -6,6 +6,7 @@ import type { TawReceipt } from "@taw-ui/core"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { optionListFixtures } from "@/fixtures/option-list"
+import { CopyPage } from "@/components/copy-page"
 
 function InteractiveDemo() {
   const [receipt, setReceipt] = useState<TawReceipt | undefined>()
@@ -41,9 +42,12 @@ export default function OptionListDocs() {
   return (
     <div className="space-y-10">
       <div>
-        <span className="mb-2 block font-pixel text-[10px] uppercase tracking-[0.15em] text-[--taw-accent]">
-          Interactive
-        </span>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="rounded-md bg-[--taw-accent-subtle] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-[--taw-accent]">
+            Interactive
+          </span>
+          <CopyPage />
+        </div>
         <h1 className="text-2xl font-bold tracking-tight text-[--taw-text-primary]">
           OptionList
         </h1>
@@ -56,7 +60,7 @@ export default function OptionListDocs() {
 
       {/* States preview */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           States
         </h2>
         <ComponentPreview fixtures={optionListFixtures}>
@@ -66,7 +70,7 @@ export default function OptionListDocs() {
 
       {/* Interactive demo */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Interactive Demo
         </h2>
         <p className="mb-4 text-[13px] text-[--taw-text-muted]">
@@ -79,7 +83,7 @@ export default function OptionListDocs() {
 
       {/* Usage */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Usage
         </h2>
         <CodeBlock label="usage.tsx">{`import { OptionList } from "@taw-ui/react"
@@ -103,7 +107,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
 
       {/* Receipt pattern */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Receipt Pattern
         </h2>
         <p className="text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -123,7 +127,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
 
       {/* Features */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Features
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">

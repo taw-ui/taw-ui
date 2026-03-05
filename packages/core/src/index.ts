@@ -8,6 +8,7 @@ export * from "./schemas/kpi-card"
 export * from "./schemas/option-list"
 export * from "./schemas/data-table"
 export * from "./schemas/chart"
+export * from "./schemas/link-card"
 
 // Actions & Receipts
 export {

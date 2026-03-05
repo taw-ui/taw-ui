@@ -1,12 +1,6 @@
 import type { TawToolPart } from "@taw-ui/core"
 
 export const optionListFixtures: Record<string, TawToolPart> = {
-  loading: {
-    id: "ol-1",
-    toolName: "chooseAction",
-    input: { context: "deployment" },
-    state: "input-available",
-  },
   ready: {
     id: "ol-2",
     toolName: "chooseAction",
@@ -42,6 +36,12 @@ export const optionListFixtures: Record<string, TawToolPart> = {
       reasoning: "Rolling deploy is recommended because the schema changes are backward-compatible and the backfill can run incrementally.",
       confirmLabel: "Deploy",
     },
+  },
+  loading: {
+    id: "ol-1",
+    toolName: "chooseAction",
+    input: { context: "deployment" },
+    state: "input-available",
   },
   error: {
     id: "ol-3",

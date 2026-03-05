@@ -4,6 +4,8 @@ import { KpiCard } from "@taw-ui/react"
 import type { TawToolPart } from "@taw-ui/core"
 import { kpiCardFixtures } from "@/fixtures/kpi-card"
 import { CodeBlock } from "@/components/code-block"
+import { CopyPage } from "@/components/copy-page"
+import { PixelIcon } from "@/components/pixel-icon"
 
 const rawJson = `{
   "label": "Revenue",
@@ -17,6 +19,60 @@ const rawJson = `{
     "freshness": "2 hours ago"
   }
 }`
+
+// ─── Chat simulation ─────────────────────────────────────────────────────────
+
+function ChatWindow({
+  label,
+  variant,
+  children,
+}: {
+  label: string
+  variant: "bad" | "good"
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-[--taw-radius-lg] border border-[--taw-border] shadow-[--taw-shadow-md]">
+      {/* Title bar */}
+      <div className="flex items-center gap-2 border-b border-[--taw-border] bg-[--taw-surface] px-3.5 py-2">
+        <div className="flex items-center gap-1.5">
+          <span className="h-[9px] w-[9px] rounded-full bg-[--taw-error] opacity-70" />
+          <span className="h-[9px] w-[9px] rounded-full bg-[--taw-warning] opacity-70" />
+          <span className="h-[9px] w-[9px] rounded-full bg-[--taw-success] opacity-70" />
+        </div>
+        <span className="ml-1 font-mono text-[11px] text-[--taw-text-muted]">{label}</span>
+      </div>
+      {/* Messages */}
+      <div className="flex flex-col gap-3 bg-[--taw-surface-sunken] p-4">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function UserMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex justify-end">
+      <div className="max-w-[85%] rounded-2xl rounded-br-md bg-[--taw-accent] px-3.5 py-2 text-[12.5px] leading-relaxed text-white">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+function AiMessage({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5">{children}</div>
+  )
+}
+
+function AiTextBubble({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl rounded-tl-md bg-[--taw-surface] px-3.5 py-2 text-[12.5px] leading-relaxed text-[--taw-text-primary] shadow-[--taw-shadow-sm]">
+      {children}
+    </div>
+  )
+}
 
 function ArchLayer({
   label,
@@ -50,10 +106,11 @@ export default function OverviewPage() {
     <div className="space-y-16">
       {/* Hero */}
       <div>
-        <div className="mb-3 flex items-center gap-2">
+        <div className="mb-3 flex items-center justify-between">
           <span className="rounded-md bg-[--taw-accent-subtle] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-[--taw-accent]">
             Docs
           </span>
+          <CopyPage />
         </div>
         <h1 className="text-3xl font-bold tracking-tight text-[--taw-text-primary]">
           Overview
@@ -66,35 +123,48 @@ export default function OverviewPage() {
         </p>
       </div>
 
-      {/* Before / After */}
+      {/* Before / After — Chat simulation */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           The Problem
         </h2>
         <div className="grid gap-5 md:grid-cols-2">
+          {/* Without taw-ui */}
           <div className="space-y-2.5">
             <span className="flex items-center gap-1.5 font-mono text-[11px] font-medium text-[--taw-error]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[--taw-error]" />
+              <PixelIcon name="robot-sad" size={14} />
               Without taw-ui
             </span>
-            <div className="overflow-hidden rounded-[--taw-radius-lg] border border-[--taw-border] shadow-[--taw-shadow-sm]">
-              <pre className="h-full overflow-auto bg-[--taw-surface] p-4 font-mono text-[12px] leading-relaxed text-[--taw-text-muted]">
-                {rawJson}
-              </pre>
-            </div>
+            <ChatWindow label="your-app.com" variant="bad">
+              <UserMessage>What{"'"}s our current revenue?</UserMessage>
+              <AiMessage>
+                <AiTextBubble>Here{"'"}s the current revenue data:</AiTextBubble>
+                <div className="mt-2 overflow-hidden rounded-xl border border-[--taw-border] bg-[--taw-surface]">
+                  <pre className="overflow-x-auto p-3 font-mono text-[10.5px] leading-relaxed text-[--taw-text-muted]">{rawJson}</pre>
+                </div>
+              </AiMessage>
+            </ChatWindow>
           </div>
+
+          {/* With taw-ui */}
           <div className="space-y-2.5">
             <span className="flex items-center gap-1.5 font-mono text-[11px] font-medium text-[--taw-success]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[--taw-success]" />
+              <PixelIcon name="robot-happy" size={14} />
               With taw-ui
             </span>
-            <div className="pointer-events-none">
-              <KpiCard part={kpiCardFixtures["ready"]!} animate={false} />
-            </div>
+            <ChatWindow label="your-app.com" variant="good">
+              <UserMessage>What{"'"}s our current revenue?</UserMessage>
+              <AiMessage>
+                <AiTextBubble>Here{"'"}s the current revenue data:</AiTextBubble>
+                <div className="pointer-events-none mt-2">
+                  <KpiCard part={kpiCardFixtures["ready"]!} animate={false} />
+                </div>
+              </AiMessage>
+            </ChatWindow>
           </div>
         </div>
         <p className="mt-4 text-[13px] text-[--taw-text-muted]">
-          Same data. One line of code:{" "}
+          Same data, same tool call. One line of code:{" "}
           <code className="rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 py-0.5 font-mono text-[12px] text-[--taw-accent]">
             {"<KpiCard part={part} />"}
           </code>
@@ -103,7 +173,7 @@ export default function OverviewPage() {
 
       {/* How It Works */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           How It Works
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
@@ -144,7 +214,7 @@ export default function OverviewPage() {
 
       {/* Code example */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Minimal Example
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
@@ -198,7 +268,7 @@ function ToolOutput({ part }) {
 
       {/* Architecture */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Where taw-ui Fits
         </h2>
         <div className="flex flex-col gap-1.5">
@@ -241,7 +311,7 @@ function ToolOutput({ part }) {
 
       {/* Differentiators */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           What Makes taw-ui Different
         </h2>
         <div className="grid gap-3 md:grid-cols-2">
@@ -279,7 +349,7 @@ function ToolOutput({ part }) {
           ].map(({ icon, title, desc }) => (
             <div key={title} className="rounded-[--taw-radius-lg] border border-[--taw-border] bg-[--taw-surface] p-4 shadow-[--taw-shadow-sm] transition-all hover:border-[--taw-accent]/20 hover:shadow-[--taw-shadow-md]">
               <div className="mb-2 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[--taw-accent-subtle] font-pixel text-[11px] text-[--taw-accent]">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[--taw-accent-subtle] text-[16px] text-[--taw-accent]">
                   {icon}
                 </span>
                 <span className="text-[13px] font-semibold text-[--taw-text-primary]">
@@ -296,7 +366,7 @@ function ToolOutput({ part }) {
 
       {/* Live error demo */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Error Handling in Action
         </h2>
         <p className="mb-4 text-[13px] text-[--taw-text-muted]">

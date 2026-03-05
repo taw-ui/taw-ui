@@ -1,12 +1,6 @@
 import type { TawToolPart } from "@taw-ui/core"
 
 export const dataTableFixtures: Record<string, TawToolPart> = {
-  loading: {
-    id: "dt-1",
-    toolName: "showTable",
-    input: { query: "top customers" },
-    state: "input-available",
-  },
   ready: {
     id: "dt-2",
     toolName: "showTable",
@@ -34,6 +28,12 @@ export const dataTableFixtures: Record<string, TawToolPart> = {
       confidence: 0.95,
       source: { label: "Billing API", freshness: "5 min ago" },
     },
+  },
+  loading: {
+    id: "dt-1",
+    toolName: "showTable",
+    input: { query: "top customers" },
+    state: "input-available",
   },
   error: {
     id: "dt-3",

@@ -2,67 +2,127 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+   Theme: Alucard (Light) — inspired by Dracula Pro Alucard
+   Warm cream surfaces, deep purple-blue text, violet accents
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  /* Surfaces */
-  --taw-surface: oklch(0.985 0 0);
-  --taw-surface-raised: oklch(1 0 0);
-  --taw-surface-sunken: oklch(0.965 0.002 250);
-  --taw-border: oklch(0.91 0.004 250);
-  --taw-border-subtle: oklch(0.94 0.002 250);
+  /* Surfaces — warm parchment tones */
+  --taw-surface: oklch(0.965 0.008 85);
+  --taw-surface-raised: oklch(0.985 0.006 85);
+  --taw-surface-sunken: oklch(0.945 0.010 85);
+  --taw-border: oklch(0.88 0.015 85);
+  --taw-border-subtle: oklch(0.92 0.010 85);
 
-  /* Text */
-  --taw-text-primary: oklch(0.13 0.02 260);
-  --taw-text-secondary: oklch(0.40 0.01 260);
-  --taw-text-muted: oklch(0.55 0.01 260);
+  /* Text — Dracula foreground tones on light */
+  --taw-text-primary: oklch(0.22 0.04 290);
+  --taw-text-secondary: oklch(0.40 0.03 290);
+  --taw-text-muted: oklch(0.52 0.04 290);
 
-  /* Accent */
-  --taw-accent: oklch(0.52 0.19 260);
-  --taw-accent-hover: oklch(0.46 0.20 260);
-  --taw-accent-subtle: oklch(0.95 0.04 260);
+  /* Accent — Dracula Purple */
+  --taw-accent: oklch(0.55 0.20 295);
+  --taw-accent-hover: oklch(0.50 0.22 295);
+  --taw-accent-subtle: oklch(0.93 0.06 295);
 
-  /* Semantic */
-  --taw-success: oklch(0.60 0.16 155);
-  --taw-warning: oklch(0.75 0.15 75);
-  --taw-error: oklch(0.60 0.20 25);
+  /* Semantic — Dracula palette */
+  --taw-success: oklch(0.58 0.18 155);       /* Green #50FA7B mapped */
+  --taw-warning: oklch(0.72 0.14 65);        /* Orange #FFB86C mapped */
+  --taw-error: oklch(0.58 0.22 25);          /* Red #FF5555 mapped */
+
+  /* Dracula extended palette — for code, badges, special UI */
+  --taw-cyan: oklch(0.60 0.12 210);
+  --taw-pink: oklch(0.60 0.22 350);
+  --taw-yellow: oklch(0.78 0.14 100);
+
+  /* Syntax highlighting — Alucard (light) */
+  --taw-syn-keyword: oklch(0.55 0.22 350);      /* Pink — import, const, function */
+  --taw-syn-string: oklch(0.55 0.16 100);       /* Yellow — "strings" */
+  --taw-syn-comment: oklch(0.58 0.04 290);      /* Muted purple — // comments */
+  --taw-syn-type: oklch(0.50 0.14 210);         /* Cyan — types, interfaces */
+  --taw-syn-function: oklch(0.50 0.18 155);     /* Green — function names */
+  --taw-syn-number: oklch(0.50 0.20 295);       /* Purple — numbers */
+  --taw-syn-operator: oklch(0.55 0.22 350);     /* Pink — operators, => */
+  --taw-syn-property: oklch(0.35 0.04 290);     /* Foreground — object keys */
+  --taw-syn-tag: oklch(0.55 0.22 350);          /* Pink — JSX tags */
+  --taw-syn-attr: oklch(0.50 0.18 155);         /* Green — JSX attributes */
+  --taw-syn-punctuation: oklch(0.45 0.03 290);  /* Subtle — braces, parens */
 
   /* Radius */
   --taw-radius: 8px;
   --taw-radius-lg: 12px;
 
-  /* Shadows */
-  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04), 0 1px 3px oklch(0 0 0 / 0.03);
-  --taw-shadow-md: 0 2px 8px oklch(0 0 0 / 0.06), 0 1px 3px oklch(0 0 0 / 0.04);
-  --taw-shadow-ring: 0 0 0 1px oklch(0 0 0 / 0.04);
+  /* Shadows — warm-tinted */
+  --taw-shadow-sm: 0 1px 2px oklch(0.25 0.02 290 / 0.06), 0 1px 3px oklch(0.25 0.02 290 / 0.04);
+  --taw-shadow-md: 0 2px 8px oklch(0.25 0.02 290 / 0.08), 0 1px 3px oklch(0.25 0.02 290 / 0.05);
+  --taw-shadow-ring: 0 0 0 1px oklch(0.25 0.02 290 / 0.06);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Theme: Dracula (Dark) — inspired by Dracula Pro
+   Deep blue-purple surfaces, warm white text, vivid accents
+   ═══════════════════════════════════════════════════════════════ */
 
 .dark {
-  --taw-surface: oklch(0.145 0.005 260);
-  --taw-surface-raised: oklch(0.175 0.007 260);
-  --taw-surface-sunken: oklch(0.105 0.005 260);
-  --taw-border: oklch(0.24 0.01 260);
-  --taw-border-subtle: oklch(0.20 0.007 260);
+  /* Surfaces — the signature Dracula deep blue-purple */
+  --taw-surface: oklch(0.22 0.025 280);
+  --taw-surface-raised: oklch(0.27 0.025 280);
+  --taw-surface-sunken: oklch(0.18 0.025 280);
+  --taw-border: oklch(0.32 0.03 280);
+  --taw-border-subtle: oklch(0.28 0.025 280);
 
-  --taw-text-primary: oklch(0.94 0.005 260);
-  --taw-text-secondary: oklch(0.65 0.01 260);
-  --taw-text-muted: oklch(0.50 0.01 260);
+  /* Text — Dracula foreground tones */
+  --taw-text-primary: oklch(0.95 0.01 90);       /* #F8F8F2 — warm white */
+  --taw-text-secondary: oklch(0.78 0.01 280);    /* Clear readable gray-blue */
+  --taw-text-muted: oklch(0.60 0.06 270);        /* #6272A4 — Dracula comment blue */
 
-  --taw-accent: oklch(0.68 0.16 260);
-  --taw-accent-hover: oklch(0.74 0.17 260);
-  --taw-accent-subtle: oklch(0.20 0.04 260);
+  /* Accent — vivid Dracula Purple */
+  --taw-accent: oklch(0.72 0.16 295);
+  --taw-accent-hover: oklch(0.78 0.17 295);
+  --taw-accent-subtle: oklch(0.28 0.06 295);
 
-  --taw-success: oklch(0.70 0.16 155);
-  --taw-warning: oklch(0.80 0.14 75);
-  --taw-error: oklch(0.70 0.18 25);
+  /* Semantic — vivid Dracula palette (brighter for dark bg) */
+  --taw-success: oklch(0.78 0.20 155);       /* Green */
+  --taw-warning: oklch(0.82 0.14 65);        /* Orange */
+  --taw-error: oklch(0.70 0.22 25);          /* Red */
 
-  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
-  --taw-shadow-md: 0 2px 8px oklch(0 0 0 / 0.3);
-  --taw-shadow-ring: 0 0 0 1px oklch(1 0 0 / 0.06);
+  /* Dracula extended */
+  --taw-cyan: oklch(0.85 0.11 210);
+  --taw-pink: oklch(0.72 0.20 350);
+  --taw-yellow: oklch(0.88 0.14 100);
+
+  /* Syntax highlighting — Dracula (dark) */
+  --taw-syn-keyword: oklch(0.72 0.20 350);      /* Pink #FF79C6 */
+  --taw-syn-string: oklch(0.88 0.14 100);       /* Yellow #F1FA8C */
+  --taw-syn-comment: oklch(0.55 0.04 270);      /* Comment #6272A4 */
+  --taw-syn-type: oklch(0.85 0.11 210);         /* Cyan #8BE9FD */
+  --taw-syn-function: oklch(0.78 0.20 155);     /* Green #50FA7B */
+  --taw-syn-number: oklch(0.72 0.16 295);       /* Purple #BD93F9 */
+  --taw-syn-operator: oklch(0.72 0.20 350);     /* Pink */
+  --taw-syn-property: oklch(0.95 0.01 90);      /* Foreground #F8F8F2 */
+  --taw-syn-tag: oklch(0.72 0.20 350);          /* Pink */
+  --taw-syn-attr: oklch(0.78 0.20 155);         /* Green */
+  --taw-syn-punctuation: oklch(0.70 0.02 90);   /* Subtle foreground */
+
+  /* Shadows — deep purple glow */
+  --taw-shadow-sm: 0 1px 3px oklch(0.10 0.03 280 / 0.4);
+  --taw-shadow-md: 0 2px 10px oklch(0.10 0.03 280 / 0.5), 0 0 1px oklch(0.10 0.03 280 / 0.3);
+  --taw-shadow-ring: 0 0 0 1px oklch(1 0 0 / 0.05);
 }
+
+/* ═══════════════════════════════════════════════════════════════ */
 
 body {
   background: var(--taw-surface-sunken);
   color: var(--taw-text-primary);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Heading anchors ─────────────────────────────────── */
+
+#docs-content h2,
+#docs-content h3 {
+  scroll-margin-top: 5rem;
 }
 
 /* ─── Code blocks ──────────────────────────────────────── */
@@ -71,7 +131,6 @@ pre, code {
   font-family: var(--font-geist-mono), ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
 }
 
-/* Code block chrome */
 .code-block {
   position: relative;
   overflow: hidden;
@@ -79,6 +138,10 @@ pre, code {
   border: 1px solid var(--taw-border);
   background: var(--taw-surface);
   box-shadow: var(--taw-shadow-sm);
+}
+
+.dark .code-block {
+  background: var(--taw-surface-sunken);
 }
 
 .code-block pre {
@@ -98,6 +161,10 @@ pre, code {
   background: var(--taw-surface-sunken);
 }
 
+.dark .code-block-header {
+  background: oklch(0.16 0.02 280);
+}
+
 .code-block-label {
   font-family: var(--font-geist-mono), monospace;
   font-size: 11px;
@@ -105,34 +172,38 @@ pre, code {
   font-weight: 500;
 }
 
-/* ─── Scrollbar ──────────────────────────────────────────── */
+/* ─── Scrollbar (scoped — avoid overriding native overlay scrollbar) ── */
 
-::-webkit-scrollbar {
+.code-block pre::-webkit-scrollbar,
+aside::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-::-webkit-scrollbar-track {
+.code-block pre::-webkit-scrollbar-track,
+aside::-webkit-scrollbar-track {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+.code-block pre::-webkit-scrollbar-thumb,
+aside::-webkit-scrollbar-thumb {
   background: var(--taw-border);
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.code-block pre::-webkit-scrollbar-thumb:hover,
+aside::-webkit-scrollbar-thumb:hover {
   background: var(--taw-text-muted);
 }
 
-/* ─── Selection ──────────────────────────────────────────── */
+/* ─── Selection — purple tint ────────────────────────────── */
 
 ::selection {
-  background: oklch(0.55 0.18 260 / 0.2);
+  background: oklch(0.55 0.20 295 / 0.2);
 }
 
 .dark ::selection {
-  background: oklch(0.65 0.18 260 / 0.3);
+  background: oklch(0.72 0.16 295 / 0.3);
 }
 
 /* ─── Focus ring ─────────────────────────────────────────── */

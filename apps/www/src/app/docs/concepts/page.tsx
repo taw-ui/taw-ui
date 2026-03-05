@@ -3,6 +3,7 @@
 import { KpiCard, OptionList } from "@taw-ui/react"
 import type { TawToolPart } from "@taw-ui/core"
 import { CodeBlock, InlineCode } from "@/components/code-block"
+import { CopyPage } from "@/components/copy-page"
 
 // ─── Fixtures for lifecycle demos ─────────────────────────────────────────────
 
@@ -88,6 +89,12 @@ export default function ConceptsPage() {
   return (
     <div className="space-y-12">
       <div>
+        <div className="mb-3 flex items-center justify-between">
+          <span className="rounded-md bg-[--taw-accent-subtle] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-[--taw-accent]">
+            Fundamentals
+          </span>
+          <CopyPage />
+        </div>
         <h1 className="text-3xl font-bold tracking-tight text-[--taw-text-primary]">
           Concepts
         </h1>
@@ -99,7 +106,7 @@ export default function ConceptsPage() {
 
       {/* Tool Call Lifecycle */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Tool Call Lifecycle
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -155,7 +162,7 @@ function ToolResult({ part }: { part: TawToolPart }) {
 
       {/* The Part Object */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           The Part Object
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -179,7 +186,7 @@ function ToolResult({ part }: { part: TawToolPart }) {
 
       {/* Confidence */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Confidence
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -217,7 +224,7 @@ return {
 
       {/* Source Provenance */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Source Provenance
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -240,7 +247,7 @@ source: {
 
       {/* Schema Validation */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Schema Validation
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -286,7 +293,7 @@ const partial = KpiCard.safeParse(output)
 
       {/* Receipt Pattern */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           The Receipt Pattern
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -346,7 +353,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
 
       {/* Actions */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Actions
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -375,7 +382,7 @@ actions: [
 
       {/* Registry */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           The Registry
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
@@ -404,36 +411,46 @@ function ToolOutput({ part }: { part: TawToolPart }) {
 
       {/* Design Tokens */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Design Tokens
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-[--taw-text-muted]">
           taw-ui uses CSS custom properties for theming — no Tailwind theme extension,
-          no build-time config. Override any token to match your app{"'"}s design system.
+          no build-time config. The default theme ships with Dracula-inspired dark mode
+          and Alucard-inspired light mode. Override any token to match your design system.
           All colors use oklch for perceptual uniformity.
         </p>
         <div className="overflow-x-auto rounded-[--taw-radius-lg] border border-[--taw-border] shadow-[--taw-shadow-sm]">
-          <table className="w-full text-xs">
+          <table className="w-full text-[13px]">
             <thead>
               <tr className="border-b border-[--taw-border] bg-[--taw-surface]">
-                <th className="px-3 py-2 text-left font-medium text-[--taw-text-muted]">Token</th>
-                <th className="px-3 py-2 text-left font-medium text-[--taw-text-muted]">Purpose</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-[--taw-text-muted]">Token</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-[--taw-text-muted]">Purpose</th>
+                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-[--taw-text-muted]">Preview</th>
               </tr>
             </thead>
             <tbody className="bg-[--taw-surface-raised]">
               {[
                 ["--taw-surface", "Default component background"],
                 ["--taw-surface-raised", "Elevated elements (cards, modals)"],
-                ["--taw-surface-sunken", "Recessed areas (page background, code blocks)"],
+                ["--taw-surface-sunken", "Recessed areas (page bg, code blocks)"],
                 ["--taw-border", "All borders and dividers"],
                 ["--taw-text-primary", "Headings and important text"],
                 ["--taw-text-muted", "Secondary text and labels"],
                 ["--taw-accent", "Interactive elements, links, badges"],
-                ["--taw-radius", "Border radius for all components"],
+                ["--taw-success", "Positive states, confirmations"],
+                ["--taw-warning", "Caution states, amber alerts"],
+                ["--taw-error", "Error states, destructive actions"],
+                ["--taw-cyan", "Info highlights, special badges"],
+                ["--taw-pink", "Emphasis, decorative accents"],
+                ["--taw-yellow", "Highlights, attention markers"],
               ].map(([token, purpose]) => (
                 <tr key={token} className="border-b border-[--taw-border] last:border-0">
-                  <td className="px-3 py-2 font-mono text-[--taw-accent]">{token}</td>
-                  <td className="px-3 py-2 text-[--taw-text-muted]">{purpose}</td>
+                  <td className="px-4 py-2.5 font-mono text-[12px] text-[--taw-accent]">{token}</td>
+                  <td className="px-4 py-2.5 text-[12px] text-[--taw-text-muted]">{purpose}</td>
+                  <td className="px-4 py-2.5">
+                    <span className="inline-block h-4 w-4 rounded" style={{ background: `var(${token})` }} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -443,7 +460,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
 
       {/* What's next */}
       <section>
-        <h2 className="mb-5 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-5 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           What{"'"}s Next
         </h2>
         <ul className="space-y-2 text-xs text-[--taw-text-muted]">

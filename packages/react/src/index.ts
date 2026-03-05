@@ -8,6 +8,9 @@ export type { DataTableProps } from "./data-table"
 export { OptionList } from "./option-list"
 export type { OptionListProps } from "./option-list"
 
+export { LinkCard } from "./link-card"
+export type { LinkCardProps } from "./link-card"
+
 // Renderer
 export { TawRenderer, createTawRegistry } from "./renderer"
 export type { TawRegistry, TawRendererProps } from "./renderer"

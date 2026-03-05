@@ -130,9 +130,14 @@ export function KpiCard({
 
   // Loading states
   if (state === "input-available" || state === "streaming") {
+    const skeletonLines: Record<string, Array<[string, string]>> = {
+      default: [["12px", "64px"], ["28px", "96px"], ["10px", "48px"]],
+      compact: [["10px", "48px"], ["22px", "72px"]],
+      wide: [["12px", "80px"], ["32px", "120px"], ["10px", "56px"]],
+    }
     return (
       <TawSkeleton
-        lines={[["12px", "64px"], ["28px", "96px"]]}
+        lines={skeletonLines[variant] ?? skeletonLines.default!}
         animate={animate}
         className={cardVariants({ variant })}
       />

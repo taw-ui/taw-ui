@@ -1,7 +1,10 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useMemo } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@taw-ui/react"
+import { highlightCode } from "@/lib/syntax"
+import { PixelIcon } from "./pixel-icon"
 
 interface CodeBlockProps {
   children: string
@@ -18,6 +21,8 @@ export function CodeBlock({ children, label, className }: CodeBlockProps) {
     setTimeout(() => setCopied(false), 2000)
   }, [children])
 
+  const highlighted = useMemo(() => highlightCode(children), [children])
+
   return (
     <div className={cn("code-block group", className)}>
       {label && (
@@ -33,7 +38,7 @@ export function CodeBlock({ children, label, className }: CodeBlockProps) {
           </div>
         )}
         <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.7] text-[--taw-text-primary]">
-          {children}
+          <code>{highlighted}</code>
         </pre>
       </div>
     </div>
@@ -42,24 +47,38 @@ export function CodeBlock({ children, label, className }: CodeBlockProps) {
 
 function CopyButton({ copied, onCopy }: { copied: boolean; onCopy: () => void }) {
   return (
-    <button
+    <motion.button
       onClick={onCopy}
-      className="flex h-6 items-center gap-1 rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 text-[10px] text-[--taw-text-muted] transition-all hover:border-[--taw-accent]/30 hover:text-[--taw-text-primary]"
+      whileTap={{ scale: 0.9 }}
+      className="flex h-6 items-center gap-1 rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 text-[10px] text-[--taw-text-muted] transition-colors hover:text-[--taw-text-primary]"
     >
-      {copied ? (
-        <>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="oklch(0.65 0.17 150)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-          <span className="text-[oklch(0.65_0.17_150)]">Copied</span>
-        </>
-      ) : (
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-        </svg>
-      )}
-    </button>
+      <AnimatePresence mode="wait" initial={false}>
+        {copied ? (
+          <motion.span
+            key="check"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.12 }}
+            className="flex items-center gap-1 text-[--taw-success]"
+          >
+            <PixelIcon name="check" size={12} />
+            Copied
+          </motion.span>
+        ) : (
+          <motion.span
+            key="copy"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.12 }}
+            className="flex items-center"
+          >
+            <PixelIcon name="copy" size={12} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.button>
   )
 }
 

@@ -4,14 +4,18 @@ import { DataTable } from "@taw-ui/react"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import { dataTableFixtures } from "@/fixtures/data-table"
+import { CopyPage } from "@/components/copy-page"
 
 export default function DataTableDocs() {
   return (
     <div className="space-y-10">
       <div>
-        <span className="mb-2 block font-pixel text-[10px] uppercase tracking-[0.15em] text-[--taw-accent]">
-          Data
-        </span>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="rounded-md bg-[--taw-accent-subtle] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-[--taw-accent]">
+            Data
+          </span>
+          <CopyPage />
+        </div>
         <h1 className="text-2xl font-bold tracking-tight text-[--taw-text-primary]">
           DataTable
         </h1>
@@ -23,7 +27,7 @@ export default function DataTableDocs() {
       </div>
 
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Preview
         </h2>
         <ComponentPreview fixtures={dataTableFixtures}>
@@ -32,7 +36,7 @@ export default function DataTableDocs() {
       </section>
 
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Usage
         </h2>
         <CodeBlock label="usage.tsx">{`import { DataTable } from "@taw-ui/react"
@@ -41,7 +45,7 @@ export default function DataTableDocs() {
       </section>
 
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Column Types
         </h2>
         <div className="overflow-x-auto rounded-[--taw-radius-lg] border border-[--taw-border] shadow-[--taw-shadow-sm]">
@@ -75,7 +79,7 @@ export default function DataTableDocs() {
       </section>
 
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Features
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">

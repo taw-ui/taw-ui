@@ -4,15 +4,19 @@ import { KpiCard } from "@taw-ui/react"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import { kpiCardFixtures } from "@/fixtures/kpi-card"
+import { CopyPage } from "@/components/copy-page"
 
 export default function KpiCardDocs() {
   return (
     <div className="space-y-10">
       {/* Header */}
       <div>
-        <span className="mb-2 block font-pixel text-[10px] uppercase tracking-[0.15em] text-[--taw-accent]">
-          Display
-        </span>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="rounded-md bg-[--taw-accent-subtle] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-[--taw-accent]">
+            Display
+          </span>
+          <CopyPage />
+        </div>
         <h1 className="text-2xl font-bold tracking-tight text-[--taw-text-primary]">
           KpiCard
         </h1>
@@ -24,7 +28,7 @@ export default function KpiCardDocs() {
 
       {/* Live preview */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Preview
         </h2>
         <ComponentPreview fixtures={kpiCardFixtures}>
@@ -34,7 +38,7 @@ export default function KpiCardDocs() {
 
       {/* Usage */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Usage
         </h2>
         <CodeBlock label="usage.tsx">{`import { KpiCard } from "@taw-ui/react"
@@ -49,7 +53,7 @@ export default function KpiCardDocs() {
 
       {/* Variants */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Variants
         </h2>
         <div className="flex flex-wrap gap-5">
@@ -67,7 +71,7 @@ export default function KpiCardDocs() {
 
       {/* Schema */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Schema
         </h2>
         <div className="overflow-x-auto rounded-[--taw-radius-lg] border border-[--taw-border] shadow-[--taw-shadow-sm]">
@@ -113,7 +117,7 @@ export default function KpiCardDocs() {
 
       {/* Features */}
       <section>
-        <h2 className="mb-4 font-pixel text-[11px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-[--taw-text-primary]">
           Features
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">
