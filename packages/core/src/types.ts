@@ -3,10 +3,10 @@
  * Mirrors Vercel AI SDK v5 part states.
  */
 export type TawPartState =
-  | "input-available"   // Tool called, waiting for execution
-  | "streaming"         // Tool is executing, data arriving
-  | "output-available"  // Execution complete, data ready
-  | "output-error"      // Execution failed
+  | "input-available"
+  | "streaming"
+  | "output-available"
+  | "output-error"
 
 /**
  * Generic tool call part — SDK-agnostic representation.
@@ -14,29 +14,41 @@ export type TawPartState =
  * part format into this shape.
  */
 export interface TawToolPart<TInput = unknown, TOutput = unknown> {
-  /** Unique ID for this tool call */
   id: string
-  /** The name of the tool that was called */
   toolName: string
-  /** The input arguments passed to the tool */
   input: TInput
-  /** The output returned by the tool (undefined if not yet available) */
-  output?: TOutput
-  /** Error if execution failed */
-  error?: Error | string
-  /** Current lifecycle state */
+  output?: TOutput | undefined
+  error?: Error | string | undefined
   state: TawPartState
-  /** Execution metadata */
-  meta?: {
-    startedAt?: number
-    completedAt?: number
-    durationMs?: number
-  }
+  meta?: TawPartMeta | undefined
+}
+
+export interface TawPartMeta {
+  startedAt?: number | undefined
+  completedAt?: number | undefined
+  durationMs?: number | undefined
 }
 
 /**
- * A taw-ui component that accepts a tool part.
+ * Base props shared by all taw-ui components.
  */
-export interface TawComponent<TOutput = unknown> {
-  (props: { part: TawToolPart<unknown, TOutput> }): React.ReactElement | null
+export interface TawBaseProps {
+  /** Additional CSS classes */
+  className?: string | undefined
+  /** Whether to animate entrance. Default: true */
+  animate?: boolean | undefined
 }
+
+/**
+ * Props for a taw-ui component that renders a tool call part.
+ */
+export interface TawComponentProps<TOutput = unknown> extends TawBaseProps {
+  part: TawToolPart<unknown, TOutput>
+}
+
+/**
+ * A taw-ui component function signature.
+ */
+export type TawComponent<TOutput = unknown> = (
+  props: TawComponentProps<TOutput>,
+) => React.ReactElement

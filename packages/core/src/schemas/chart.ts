@@ -1,4 +1,6 @@
 import { z } from "zod"
+import { ConfidenceSchema, SourceSchema } from "./shared"
+import { defineTawContract } from "../contract"
 
 const DataPointSchema = z.object({
   x: z.union([z.string(), z.number()]),
@@ -13,44 +15,60 @@ const SeriesSchema = z.object({
   color: z.string().optional(),
 })
 
-export const ChartSchema = z.object({
-  id: z.string(),
-  title: z.string().optional(),
-  description: z.string().optional(),
+export const ChartSchema = z
+  .object({
+    id: z.string(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    type: z.enum(["line", "bar", "area", "scatter", "pie", "donut"]),
+    series: z.array(SeriesSchema).min(1),
+    xAxis: z
+      .object({
+        label: z.string().optional(),
+        type: z
+          .enum(["category", "number", "time"])
+          .optional()
+          .default("category"),
+      })
+      .optional(),
+    yAxis: z
+      .object({
+        label: z.string().optional(),
+        unit: z.string().optional(),
+        min: z.number().optional(),
+        max: z.number().optional(),
+      })
+      .optional(),
+    referenceLine: z
+      .object({
+        value: z.number(),
+        label: z.string().optional(),
+      })
+      .optional(),
+    confidence: ConfidenceSchema,
+    source: SourceSchema,
+  })
+  .superRefine((data, ctx) => {
+    // Validate no duplicate series IDs
+    const ids = data.series.map((s) => s.id)
+    const seen = new Set<string>()
+    for (const id of ids) {
+      if (seen.has(id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["series"],
+          message: `Duplicate series id: "${id}"`,
+        })
+      }
+      seen.add(id)
+    }
+  })
 
-  type: z.enum(["line", "bar", "area", "scatter", "pie", "donut"]),
+export const Chart = defineTawContract("Chart", ChartSchema)
 
-  series: z.array(SeriesSchema).min(1),
+export type ChartData = typeof Chart.type
 
-  xAxis: z.object({
-    label: z.string().optional(),
-    type: z.enum(["category", "number", "time"]).optional().default("category"),
-  }).optional(),
-
-  yAxis: z.object({
-    label: z.string().optional(),
-    unit: z.string().optional(),
-    min: z.number().optional(),
-    max: z.number().optional(),
-  }).optional(),
-
-  /** Show reference line */
-  referenceLine: z.object({
-    value: z.number(),
-    label: z.string().optional(),
-  }).optional(),
-
-  confidence: z.number().min(0).max(1).optional(),
-
-  source: z.object({
-    label: z.string(),
-    freshness: z.string().optional(),
-  }).optional(),
-})
-
-export type ChartData = z.infer<typeof ChartSchema>
-
+/** @deprecated Use Chart.safeParse() instead */
 export function safeParseChart(data: unknown): ChartData | null {
-  const result = ChartSchema.safeParse(data)
-  return result.success ? result.data : null
+  return Chart.safeParse(data)
 }

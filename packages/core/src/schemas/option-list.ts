@@ -1,47 +1,49 @@
 import { z } from "zod"
+import { defineTawContract } from "../contract"
 
 const OptionSchema = z.object({
   id: z.string(),
   label: z.string(),
   description: z.string().optional(),
-  /** Relative weight/score (0–1) — used to display recommendation strength */
   score: z.number().min(0).max(1).optional(),
-  /** Visual badge on the option */
   badge: z.string().optional(),
-  /** Whether this option is recommended by the AI */
   recommended: z.boolean().optional(),
-  /** Metadata for receipt display after selection */
   meta: z.record(z.string(), z.unknown()).optional(),
 })
 
-export const OptionListSchema = z.object({
-  id: z.string(),
+export const OptionListSchema = z
+  .object({
+    id: z.string(),
+    question: z.string(),
+    description: z.string().optional(),
+    options: z.array(OptionSchema).min(1).max(10),
+    multiple: z.boolean().optional().default(false),
+    required: z.boolean().optional().default(true),
+    reasoning: z.string().optional(),
+    confirmLabel: z.string().optional().default("Confirm"),
+  })
+  .superRefine((data, ctx) => {
+    // Validate no duplicate option IDs
+    const ids = data.options.map((o) => o.id)
+    const seen = new Set<string>()
+    for (const id of ids) {
+      if (seen.has(id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["options"],
+          message: `Duplicate option id: "${id}"`,
+        })
+      }
+      seen.add(id)
+    }
+  })
 
-  /** Question or prompt being answered by this option list */
-  question: z.string(),
+export const OptionList = defineTawContract("OptionList", OptionListSchema)
 
-  /** Subtitle or additional context */
-  description: z.string().optional(),
-
-  options: z.array(OptionSchema).min(1).max(10),
-
-  /** Whether multiple options can be selected */
-  multiple: z.boolean().optional().default(false),
-
-  /** Whether a selection is required to continue */
-  required: z.boolean().optional().default(true),
-
-  /** AI reasoning for the presented options */
-  reasoning: z.string().optional(),
-
-  /** Confirmation button label */
-  confirmLabel: z.string().optional().default("Confirm"),
-})
-
-export type OptionListData = z.infer<typeof OptionListSchema>
+export type OptionListData = typeof OptionList.type
 export type OptionData = z.infer<typeof OptionSchema>
 
+/** @deprecated Use OptionList.safeParse() instead */
 export function safeParseOptionList(data: unknown): OptionListData | null {
-  const result = OptionListSchema.safeParse(data)
-  return result.success ? result.data : null
+  return OptionList.safeParse(data)
 }

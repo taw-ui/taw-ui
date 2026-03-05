@@ -13,7 +13,7 @@ export interface TawParseError {
     path: string
     expected: string
     received: string
-    suggestion?: string
+    suggestion?: string | undefined
   }>
 }
 

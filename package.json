@@ -9,9 +9,10 @@
     "clean": "turbo clean && rm -rf node_modules"
   },
   "devDependencies": {
+    "prettier": "^3.4.0",
     "turbo": "^2.3.0",
     "typescript": "^5.7.0",
-    "prettier": "^3.4.0"
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=20",

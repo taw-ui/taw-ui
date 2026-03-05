@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Surfaces */
+  --taw-surface: oklch(0.985 0 0);
+  --taw-surface-raised: oklch(1 0 0);
+  --taw-surface-sunken: oklch(0.965 0.002 250);
+  --taw-border: oklch(0.91 0.004 250);
+  --taw-border-subtle: oklch(0.94 0.002 250);
+
+  /* Text */
+  --taw-text-primary: oklch(0.13 0.02 260);
+  --taw-text-secondary: oklch(0.40 0.01 260);
+  --taw-text-muted: oklch(0.55 0.01 260);
+
+  /* Accent */
+  --taw-accent: oklch(0.52 0.19 260);
+  --taw-accent-hover: oklch(0.46 0.20 260);
+  --taw-accent-subtle: oklch(0.95 0.04 260);
+
+  /* Semantic */
+  --taw-success: oklch(0.60 0.16 155);
+  --taw-warning: oklch(0.75 0.15 75);
+  --taw-error: oklch(0.60 0.20 25);
+
+  /* Radius */
+  --taw-radius: 8px;
+  --taw-radius-lg: 12px;
+
+  /* Shadows */
+  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04), 0 1px 3px oklch(0 0 0 / 0.03);
+  --taw-shadow-md: 0 2px 8px oklch(0 0 0 / 0.06), 0 1px 3px oklch(0 0 0 / 0.04);
+  --taw-shadow-ring: 0 0 0 1px oklch(0 0 0 / 0.04);
+}
+
+.dark {
+  --taw-surface: oklch(0.145 0.005 260);
+  --taw-surface-raised: oklch(0.175 0.007 260);
+  --taw-surface-sunken: oklch(0.105 0.005 260);
+  --taw-border: oklch(0.24 0.01 260);
+  --taw-border-subtle: oklch(0.20 0.007 260);
+
+  --taw-text-primary: oklch(0.94 0.005 260);
+  --taw-text-secondary: oklch(0.65 0.01 260);
+  --taw-text-muted: oklch(0.50 0.01 260);
+
+  --taw-accent: oklch(0.68 0.16 260);
+  --taw-accent-hover: oklch(0.74 0.17 260);
+  --taw-accent-subtle: oklch(0.20 0.04 260);
+
+  --taw-success: oklch(0.70 0.16 155);
+  --taw-warning: oklch(0.80 0.14 75);
+  --taw-error: oklch(0.70 0.18 25);
+
+  --taw-shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
+  --taw-shadow-md: 0 2px 8px oklch(0 0 0 / 0.3);
+  --taw-shadow-ring: 0 0 0 1px oklch(1 0 0 / 0.06);
+}
+
+body {
+  background: var(--taw-surface-sunken);
+  color: var(--taw-text-primary);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Code blocks ──────────────────────────────────────── */
+
+pre, code {
+  font-family: var(--font-geist-mono), ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+}
+
+/* Code block chrome */
+.code-block {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--taw-radius-lg);
+  border: 1px solid var(--taw-border);
+  background: var(--taw-surface);
+  box-shadow: var(--taw-shadow-sm);
+}
+
+.code-block pre {
+  overflow-x: auto;
+  padding: 1rem 1.25rem;
+  font-size: 12px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--taw-border-subtle);
+  background: var(--taw-surface-sunken);
+}
+
+.code-block-label {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  color: var(--taw-text-muted);
+  font-weight: 500;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--taw-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--taw-text-muted);
+}
+
+/* ─── Selection ──────────────────────────────────────────── */
+
+::selection {
+  background: oklch(0.55 0.18 260 / 0.2);
+}
+
+.dark ::selection {
+  background: oklch(0.65 0.18 260 / 0.3);
+}
+
+/* ─── Focus ring ─────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--taw-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

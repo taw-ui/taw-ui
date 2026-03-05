@@ -3,22 +3,17 @@
 import { motion, useSpring, useTransform, type MotionProps } from "framer-motion"
 import { useEffect, useRef } from "react"
 import { cva } from "class-variance-authority"
-import {
-  safeParseKpiCard,
-  type KpiCardData,
-  type TawToolPart,
-  cn,
-  getEnterProps,
-  staggerParent,
-  enterVariants,
-  shimmerAnimation,
-} from "@taw-ui/core"
+import { KpiCard as KpiCardContract, type KpiCardData, type TawToolPart } from "@taw-ui/core"
+
+import { cn } from "./utils/cn"
+import { getEnterProps, staggerParent, enterVariants } from "./motion"
+import { ConfidenceBadge, SourceLabel, TawError, TawSkeleton } from "./shared"
 
 // ─── Variants ──────────────────────────────────────────────────────────────────
 
 const cardVariants = cva(
   [
-    "relative flex flex-col gap-1.5 rounded-[6px] border p-4",
+    "relative flex flex-col gap-1.5 rounded-[--taw-radius] border p-4",
     "bg-[--taw-surface] border-[--taw-border]",
     "font-sans",
   ],
@@ -52,7 +47,7 @@ function KpiValue({
   animate,
 }: {
   value: number | string
-  unit?: string
+  unit?: string | undefined
   animate: boolean
 }) {
   const isNumber = typeof value === "number"
@@ -92,8 +87,8 @@ function KpiDelta({
   trendPositive = true,
 }: {
   delta: number
-  trend?: "up" | "down" | "neutral"
-  trendPositive?: boolean
+  trend?: "up" | "down" | "neutral" | undefined
+  trendPositive?: boolean | undefined
 }) {
   const isGood =
     trend === "neutral" ? null : trend === "up" ? trendPositive : !trendPositive
@@ -114,119 +109,14 @@ function KpiDelta({
   )
 }
 
-function KpiConfidence({ confidence }: { confidence: number }) {
-  const pct = Math.round(confidence * 100)
-  const color =
-    pct >= 80
-      ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400"
-      : pct >= 60
-        ? "bg-amber-500/20 text-amber-700 dark:text-amber-400"
-        : "bg-red-500/20 text-red-700 dark:text-red-400"
-
-  return (
-    <span
-      className={cn(
-        "absolute right-3 top-3 rounded px-1.5 py-0.5 text-[10px] font-medium",
-        color,
-      )}
-      title={`AI confidence: ${pct}%`}
-    >
-      {pct}%
-    </span>
-  )
-}
-
-function KpiSource({
-  source,
-}: {
-  source: NonNullable<KpiCardData["source"]>
-}) {
-  return (
-    <span className="mt-1 text-[10px] text-[--taw-text-muted]">
-      {source.url ? (
-        <a
-          href={source.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline decoration-dotted hover:decoration-solid"
-        >
-          {source.label}
-        </a>
-      ) : (
-        source.label
-      )}
-      {source.freshness && (
-        <span className="ml-1 opacity-60">· {source.freshness}</span>
-      )}
-    </span>
-  )
-}
-
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
-function KpiCardSkeleton({ animate }: { animate: boolean }) {
-  return (
-    <div className={cardVariants()}>
-      <div
-        className={cn(
-          "h-3 w-16 rounded bg-[--taw-border]",
-          animate && "overflow-hidden",
-        )}
-      >
-        {animate && (
-          <motion.div
-            className="h-full w-full"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent 0%, oklch(0.88 0 0 / 0.6) 50%, transparent 100%)",
-              backgroundSize: "200% 100%",
-            }}
-            animate={shimmerAnimation.animate}
-            transition={shimmerAnimation.transition}
-          />
-        )}
-      </div>
-      <div className="h-7 w-24 rounded bg-[--taw-border]" />
-    </div>
-  )
-}
-
-// ─── Error ────────────────────────────────────────────────────────────────────
-
-function KpiCardError({
-  error,
-  animate,
-}: {
-  error?: Error | string
-  animate: boolean
-}) {
-  const msg = error instanceof Error ? error.message : error ?? "Unknown error"
-  return (
-    <motion.div
-      {...(animate ? getEnterProps(true) : {})}
-      className={cn(
-        cardVariants(),
-        "border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/30",
-      )}
-    >
-      <span className="text-[11px] font-medium uppercase tracking-widest text-red-500">
-        Error
-      </span>
-      <span className="font-mono text-xs text-red-700 dark:text-red-400">
-        {msg}
-      </span>
-    </motion.div>
-  )
-}
-
 // ─── KpiCard ──────────────────────────────────────────────────────────────────
 
 export interface KpiCardProps {
   part: TawToolPart<unknown, unknown>
   variant?: "default" | "compact" | "wide"
-  animate?: boolean
-  motionProps?: MotionProps
-  className?: string
+  animate?: boolean | undefined
+  motionProps?: MotionProps | undefined
+  className?: string | undefined
 }
 
 export function KpiCard({
@@ -240,24 +130,27 @@ export function KpiCard({
 
   // Loading states
   if (state === "input-available" || state === "streaming") {
-    return <KpiCardSkeleton animate={animate} />
+    return (
+      <TawSkeleton
+        lines={[["12px", "64px"], ["28px", "96px"]]}
+        animate={animate}
+        className={cardVariants({ variant })}
+      />
+    )
   }
 
   // Error state
   if (state === "output-error") {
-    return <KpiCardError error={error} animate={animate} />
+    return <TawError error={error} animate={animate} />
   }
 
   // Parse and validate
-  const data = safeParseKpiCard(output)
-  if (!data) {
-    return (
-      <KpiCardError
-        error="Invalid data: output does not match KpiCardSchema"
-        animate={animate}
-      />
-    )
+  const result = KpiCardContract.parse(output)
+  if (!result.success) {
+    return <TawError parseError={result.error} animate={animate} />
   }
+
+  const data = result.data as KpiCardData
 
   return (
     <motion.div
@@ -272,7 +165,7 @@ export function KpiCard({
       data-taw-id={data.id}
     >
       {data.confidence !== undefined && (
-        <KpiConfidence confidence={data.confidence} />
+        <ConfidenceBadge confidence={data.confidence} />
       )}
 
       <motion.div variants={enterVariants}>
@@ -304,7 +197,7 @@ export function KpiCard({
 
       {data.source && (
         <motion.div variants={enterVariants}>
-          <KpiSource source={data.source} />
+          <SourceLabel source={data.source} />
         </motion.div>
       )}
     </motion.div>
