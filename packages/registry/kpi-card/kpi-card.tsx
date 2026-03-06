@@ -157,12 +157,12 @@ function DiffIndicator({ diff }: { diff: StatDiff }) {
   const upIsPositive = diff.upIsPositive ?? true
 
   const isGood = isNeutral ? null : isPositive ? upIsPositive : !upIsPositive
-  const textColor =
+  const colorClass =
     isGood === null
-      ? "text-(--taw-text-muted)"
+      ? "text-(--taw-text-muted) bg-(--taw-text-muted)/10"
       : isGood
-        ? "text-(--taw-success)"
-        : "text-(--taw-error)"
+        ? "text-(--taw-success) bg-(--taw-success)/10"
+        : "text-(--taw-error) bg-(--taw-error)/10"
 
   const sign = isPositive ? "+" : ""
   const decimals = diff.decimals ?? 1
@@ -170,8 +170,8 @@ function DiffIndicator({ diff }: { diff: StatDiff }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-[3px] font-mono text-[11px] font-medium tabular-nums leading-none",
-        textColor,
+        "inline-flex w-fit items-center gap-1 rounded-full px-2 py-[3px] font-mono text-[11px] font-medium tabular-nums leading-none",
+        colorClass,
       )}
     >
       <svg
@@ -205,12 +205,16 @@ function DiffIndicator({ diff }: { diff: StatDiff }) {
 function BgSparkline({
   data,
   color = "var(--taw-accent)",
+  animate,
 }: {
   data: number[]
   color?: string
+  animate: boolean
 }) {
   const uid = useId()
   const gid = `bg${uid.replace(/:/g, "")}`
+  const fid = `bf${uid.replace(/:/g, "")}`
+  const mid = `bm${uid.replace(/:/g, "")}`
 
   const { line, area } = useMemo(() => {
     if (data.length < 2) return { line: "", area: "" }
@@ -237,74 +241,41 @@ function BgSparkline({
           <stop offset="0%" stopColor={color} stopOpacity={0.08} />
           <stop offset="100%" stopColor={color} stopOpacity={0} />
         </linearGradient>
-      </defs>
-      <path d={area} fill={`url(#${gid})`} />
-      <path
-        d={line}
-        stroke={color}
-        strokeWidth={1.2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity={0.2}
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  )
-}
-
-// ─── Inline Sparkline (for hero) ────────────────────────────────────────────
-
-function Sparkline({
-  data,
-  color = "var(--taw-accent)",
-  width = 80,
-  height = 32,
-}: {
-  data: number[]
-  color?: string
-  width?: number
-  height?: number
-}) {
-  const uid = useId()
-  const gid = `sf${uid.replace(/:/g, "")}`
-
-  const { line, area, last } = useMemo(() => {
-    if (data.length < 2) return { line: "", area: "", last: null }
-
-    const pts = computePoints(data, width, height)
-    const l = splinePath(pts)
-    const lastPt = pts[pts.length - 1]!
-    const firstPt = pts[0]!
-    const a = `${l}L${fmt(lastPt.x)},${height}L${fmt(firstPt.x)},${height}Z`
-    return { line: l, area: a, last: lastPt }
-  }, [data, width, height])
-
-  if (!last) return null
-
-  return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      fill="none"
-      className="shrink-0"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.15} />
-          <stop offset="100%" stopColor={color} stopOpacity={0} />
+        {/* Left-to-right fade so chart doesn't clash with text */}
+        <linearGradient id={fid} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="black" />
+          <stop offset="35%" stopColor="white" />
+          <stop offset="100%" stopColor="white" />
         </linearGradient>
+        <mask id={mid}>
+          <rect x="0" y="0" width="200" height="80" fill={`url(#${fid})`} />
+          {animate && (
+            <motion.rect
+              x="0"
+              y="0"
+              width="200"
+              height="80"
+              fill="black"
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+              style={{ originX: 1 }}
+            />
+          )}
+        </mask>
       </defs>
-      <path d={area} fill={`url(#${gid})`} />
-      <path
-        d={line}
-        stroke={color}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx={last.x} cy={last.y} r={2} fill={color} />
+      <g mask={`url(#${mid})`}>
+        <path d={area} fill={`url(#${gid})`} />
+        <path
+          d={line}
+          stroke={color}
+          strokeWidth={1.2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity={0.2}
+          vectorEffect="non-scaling-stroke"
+        />
+      </g>
     </svg>
   )
 }
@@ -323,13 +294,14 @@ function HeroStat({
   return (
     <motion.div
       variants={enterVariants}
-      className="relative flex flex-col items-center gap-3 overflow-hidden px-6 py-8"
+      className="relative flex flex-col gap-3 overflow-hidden px-6 py-8"
     >
       {stat.sparkline && (
-        <div className="pointer-events-none absolute inset-0">
+        <div className="pointer-events-none absolute inset-0 opacity-60">
           <BgSparkline
             data={stat.sparkline.data}
             color={stat.sparkline.color}
+            animate={animate}
           />
         </div>
       )}
@@ -338,7 +310,7 @@ function HeroStat({
         {stat.label}
       </span>
 
-      <div className="relative flex items-center gap-3">
+      <div className="relative flex flex-col gap-2">
         <AnimatedValue
           value={stat.value}
           format={stat.format}
@@ -348,17 +320,6 @@ function HeroStat({
         />
         {stat.diff && <DiffIndicator diff={stat.diff} />}
       </div>
-
-      {stat.sparkline && (
-        <div className="relative mt-1 w-full max-w-[280px]">
-          <Sparkline
-            data={stat.sparkline.data}
-            color={stat.sparkline.color}
-            width={280}
-            height={48}
-          />
-        </div>
-      )}
     </motion.div>
   )
 }
@@ -368,25 +329,37 @@ function GridStat({
   animate,
   locale,
   span,
+  index,
+  count,
 }: {
   stat: Stat
   animate: boolean
   locale?: string
   span?: boolean
+  index: number
+  count: number
 }) {
+  const isLeft = index % 2 === 0
+  const isTop = index < 2
+
   return (
     <motion.div
       variants={enterVariants}
+      whileHover={animate ? { backgroundColor: "var(--taw-surface-raised)" } : undefined}
+      transition={{ duration: 0.15 }}
       className={cn(
-        "group relative flex flex-col gap-2 overflow-hidden bg-(--taw-surface) p-4 transition-colors duration-150",
+        "group relative flex flex-col gap-2 overflow-hidden bg-(--taw-surface) p-4",
         span && "col-span-2",
+        isLeft && !span && "border-r border-(--taw-border-subtle)",
+        isTop && count > 2 && "border-b border-(--taw-border-subtle)",
       )}
     >
       {stat.sparkline && (
-        <div className="pointer-events-none absolute inset-0 opacity-100 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="pointer-events-none absolute inset-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100">
           <BgSparkline
             data={stat.sparkline.data}
             color={stat.sparkline.color}
+            animate={animate}
           />
         </div>
       )}
@@ -500,7 +473,7 @@ export function KpiCard({
           locale={locale}
         />
       ) : (
-        <div className="grid grid-cols-2 gap-px bg-(--taw-border-subtle)">
+        <div className="grid grid-cols-2">
           {data.stats.map((stat, i) => (
             <GridStat
               key={stat.key}
@@ -508,6 +481,8 @@ export function KpiCard({
               animate={animate}
               locale={locale}
               span={count === 3 && i === 2}
+              index={i}
+              count={count}
             />
           ))}
         </div>

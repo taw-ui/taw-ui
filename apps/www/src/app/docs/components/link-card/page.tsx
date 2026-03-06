@@ -9,32 +9,32 @@ import {
   RelatedComponents,
 } from "@/components/docs-components"
 import { linkCardFixtures, linkCardOptions } from "@/fixtures/link-card"
-import { CopyPage } from "@/components/copy-page"
+import { ComponentNav } from "@/components/component-nav"
+import { generateComponentCode } from "@/lib/code-gen"
 
 export default function LinkCardDocs() {
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
+      {/* ── Header ──────────────────────────────────────────────────────── */}
       <div>
         <div className="mb-2 flex items-center justify-between">
           <span className="rounded-md bg-(--taw-accent-subtle) px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-(--taw-accent)">
             Display
           </span>
-          <CopyPage />
+          <ComponentNav />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-(--taw-text-primary)">
           LinkCard
         </h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-(--taw-text-secondary)">
+        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-(--taw-text-secondary)">
           Rich link preview with Open Graph metadata, favicon, domain,
           and optional AI reasoning. Turns a bare URL into a visual,
           trustworthy reference.
         </p>
       </div>
 
+      {/* ── Preview ─────────────────────────────────────────────────────── */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Preview
-        </h2>
         <ComponentPreview
           fixtures={linkCardFixtures}
           options={linkCardOptions}
@@ -46,19 +46,31 @@ export default function LinkCardDocs() {
               tool: component,
             },
           ]}
-          code={`import { LinkCard } from "@/components/taw/link-card"
-
-<LinkCard part={part} />`}
+          code={(part) => generateComponentCode("LinkCard", "@taw-ui/react", part)}
         >
           {(part) => <LinkCard part={part} />}
         </ComponentPreview>
       </section>
 
+      {/* ── Installation ────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Define the Tool
+          Installation
         </h2>
-        <CodeBlock label="Vercel AI SDK">{`import { tool } from "ai"
+        <CodeBlock label="Terminal">{`npx taw-ui add link-card`}</CodeBlock>
+        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
+          This copies the component source and schema into your project.
+          You own the code — customize anything.
+        </p>
+      </section>
+
+      {/* ── Usage ───────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Usage
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <CodeBlock label="server — define tool">{`import { tool } from "ai"
 import { LinkCardSchema } from "@/components/taw/link-card"
 
 export const showLink = tool({
@@ -75,32 +87,37 @@ export const showLink = tool({
       image: og.image,
       domain: new URL(url).hostname,
       favicon: og.favicon,
-      reason: "Relevant to your question about RSC",
+      reason: "Relevant to your question",
       confidence: 0.94,
       source: { label: "Web Search" },
     }
   },
 })`}</CodeBlock>
+          <CodeBlock label="client — render">{`import { LinkCard } from "@/components/taw/link-card"
+import type { TawToolPart } from "taw-ui"
+
+function ToolOutput({ part }: { part: TawToolPart }) {
+  // Handles loading, error, and success states
+  return <LinkCard part={part} />
+}`}</CodeBlock>
+        </div>
       </section>
 
-      {/* Features */}
+      {/* ── Props ───────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Features
+          Props
         </h2>
-        <FeatureGrid
-          features={[
-            { icon: "schema", title: "OG metadata", desc: "Title, description, and image from Open Graph tags" },
-            { icon: "shield", title: "Favicon + domain", desc: "Visual trust signal with site identity" },
-            { icon: "chat", title: "AI reasoning", desc: "Optional callout explaining why this link matters" },
-            { icon: "diamond", title: "Confidence scoring", desc: "Visual indicator of link relevance" },
-            { icon: "zap", title: "Auto domain extraction", desc: "Parses domain from URL if not provided" },
-            { icon: "circle-dot", title: "Hover interaction", desc: "Border glow + image scale on hover" },
+        <SchemaTable
+          fields={[
+            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
+            { field: "animate", type: "boolean", desc: "Enable entrance animations and image hover (default: true)" },
+            { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
           ]}
         />
       </section>
 
-      {/* Schema */}
+      {/* ── Schema ──────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Schema
@@ -118,20 +135,38 @@ export const showLink = tool({
             { field: "reason", type: "string", desc: "Why the AI is sharing this link" },
             { field: "publishedAt", type: "string", desc: "Publication date" },
             { field: "confidence", type: "number (0-1)", desc: "AI confidence this link is relevant" },
+            { field: "caveat", type: "string", desc: "Uncertainty note" },
             { field: "source", type: "Source", desc: "Data provenance (label + freshness)" },
           ]}
         />
       </section>
 
-      {/* Related */}
+      {/* ── Features ────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Features
+        </h2>
+        <FeatureGrid
+          features={[
+            { icon: "schema", title: "OG metadata", desc: "Title, description, and image from Open Graph tags" },
+            { icon: "shield", title: "Favicon + domain", desc: "Visual trust signal with site identity" },
+            { icon: "chat", title: "AI reasoning", desc: "Optional callout explaining why this link matters" },
+            { icon: "diamond", title: "Confidence scoring", desc: "Visual indicator of link relevance" },
+            { icon: "zap", title: "Auto domain extraction", desc: "Parses domain from URL if not provided" },
+            { icon: "circle-dot", title: "Hover interaction", desc: "Border glow + image scale on hover" },
+          ]}
+        />
+      </section>
+
+      {/* ── Related ─────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Related
         </h2>
         <RelatedComponents
           items={[
+            { href: "/docs/components/insight-card", label: "InsightCard", desc: "Structured AI analysis" },
             { href: "/docs/components/kpi-card", label: "KpiCard", desc: "Animated metric display" },
-            { href: "/docs/components/data-table", label: "DataTable", desc: "Sortable rich tables" },
             { href: "/docs/concepts", label: "Concepts", desc: "Lifecycle, receipts, actions" },
           ]}
         />

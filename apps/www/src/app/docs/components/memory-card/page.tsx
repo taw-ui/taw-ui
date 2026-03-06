@@ -9,32 +9,32 @@ import {
   RelatedComponents,
 } from "@/components/docs-components"
 import { memoryCardFixtures, memoryCardOptions } from "@/fixtures/memory-card"
-import { CopyPage } from "@/components/copy-page"
+import { ComponentNav } from "@/components/component-nav"
+import { generateComponentCode } from "@/lib/code-gen"
 
 export default function MemoryCardDocs() {
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
+      {/* ── Header ──────────────────────────────────────────────────────── */}
       <div>
         <div className="mb-2 flex items-center justify-between">
           <span className="rounded-md bg-(--taw-accent-subtle) px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-(--taw-accent)">
             Interactive
           </span>
-          <CopyPage />
+          <ComponentNav />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-(--taw-text-primary)">
           MemoryCard
         </h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-(--taw-text-secondary)">
+        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-(--taw-text-secondary)">
           Transparent AI memory viewer. Shows what the AI remembers about the
           user with per-item confidence, categories, and the ability to confirm,
           dismiss, or correct each memory. Trust through radical transparency.
         </p>
       </div>
 
+      {/* ── Preview ─────────────────────────────────────────────────────── */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Preview
-        </h2>
         <ComponentPreview
           fixtures={memoryCardFixtures}
           options={memoryCardOptions}
@@ -56,26 +56,31 @@ export default function MemoryCardDocs() {
               ? [{ role: "assistant" as const, content: "Got it! I\u2019ve updated my memory based on your review." }]
               : []),
           ]}
-          code={`import { MemoryCard } from "@/components/taw/memory-card"
-
-<MemoryCard
-  part={part}
-  onAction={(actionId, payload) => {
-    setReceipt(payload.receipt)
-  }}
-  receipt={receipt}
-/>`}
+          code={(part) => generateComponentCode("MemoryCard", "@taw-ui/react", part, `onAction={handleAction} receipt={receipt}`)}
         >
           {(part) => <MemoryCard part={part} onAction={(id, payload) => console.log(id, payload)} />}
         </ComponentPreview>
       </section>
 
-
+      {/* ── Installation ────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Define the Tool
+          Installation
         </h2>
-        <CodeBlock label="Vercel AI SDK">{`import { tool } from "ai"
+        <CodeBlock label="Terminal">{`npx taw-ui add memory-card`}</CodeBlock>
+        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
+          This copies the component source and schema into your project.
+          You own the code — customize anything.
+        </p>
+      </section>
+
+      {/* ── Usage ───────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Usage
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <CodeBlock label="server — define tool">{`import { tool } from "ai"
 import { MemoryCardSchema } from "@/components/taw/memory-card"
 
 export const getMemories = tool({
@@ -87,7 +92,7 @@ export const getMemories = tool({
     return {
       id: "user-memory",
       title: "What I Remember",
-      description: \`From our last \${memories.conversationCount} conversations\`,
+      description: \`From our last \${memories.count} conversations\`,
       memories: memories.items.map(m => ({
         id: m.id,
         content: m.content,
@@ -100,26 +105,30 @@ export const getMemories = tool({
     }
   },
 })`}</CodeBlock>
+          <CodeBlock label="client — render">{`import { MemoryCard } from "@/components/taw/memory-card"
+import { createReceipt } from "taw-ui"
+
+function ToolOutput({ part }) {
+  const [receipt, setReceipt] = useState()
+
+  const handleAction = (id, payload) => {
+    if (payload.receipt) setReceipt(payload.receipt)
+    // Send verdicts to your memory store
+    await updateMemories(payload.verdicts)
+  }
+
+  return (
+    <MemoryCard
+      part={part}
+      onAction={handleAction}
+      receipt={receipt}
+    />
+  )
+}`}</CodeBlock>
+        </div>
       </section>
 
-      {/* Features */}
-      <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Features
-        </h2>
-        <FeatureGrid
-          features={[
-            { icon: "schema", title: "Category badges", desc: "Preference, fact, context, assumption — each visually distinct" },
-            { icon: "alert", title: "Assumption awareness", desc: "Dashed borders + low confidence = the AI is guessing" },
-            { icon: "shield", title: "Per-item confidence", desc: "Each memory shows how certain the AI is" },
-            { icon: "check", title: "Three verdicts", desc: "Confirm, dismiss, or correct individual memories" },
-            { icon: "receipt", title: "Undo support", desc: "Change your mind on any verdict before submitting" },
-            { icon: "circle-dot", title: "Receipt pattern", desc: "Collapses to a summary after review" },
-          ]}
-        />
-      </section>
-
-      {/* Interaction Pattern */}
+      {/* ── Interaction Pattern ─────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Interaction Pattern
@@ -145,7 +154,24 @@ export const getMemories = tool({
         </p>
       </section>
 
-      {/* Schema */}
+      {/* ── Props ───────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Props
+        </h2>
+        <SchemaTable
+          fields={[
+            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state" },
+            { field: "onAction", type: "(id, payload) => void", desc: "Callback with verdicts when user submits review" },
+            { field: "receipt", type: "TawReceipt", desc: "Renders the receipt summary when provided" },
+            { field: "pending", type: "boolean", desc: "Disables all interactions while processing" },
+            { field: "animate", type: "boolean", desc: "Enable entrance animations (default: true)" },
+            { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
+          ]}
+        />
+      </section>
+
+      {/* ── Schema ──────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Schema
@@ -159,10 +185,10 @@ export const getMemories = tool({
               { field: "description", type: "string", desc: "Context about these memories" },
               { field: "memories", type: "MemoryItem[]", req: true, desc: "Array of individual memories (min 1)" },
               { field: "confidence", type: "number (0-1)", desc: "Overall memory confidence" },
+              { field: "caveat", type: "string", desc: "Uncertainty note" },
               { field: "source", type: "Source", desc: "Data provenance (label + freshness)" },
             ]}
           />
-
           <SchemaTable
             title="MemoryItem"
             fields={[
@@ -176,7 +202,24 @@ export const getMemories = tool({
         </div>
       </section>
 
-      {/* Related */}
+      {/* ── Features ────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Features
+        </h2>
+        <FeatureGrid
+          features={[
+            { icon: "schema", title: "Category badges", desc: "Preference, fact, context, assumption — each visually distinct" },
+            { icon: "alert", title: "Assumption awareness", desc: "Dashed borders + low confidence = the AI is guessing" },
+            { icon: "shield", title: "Per-item confidence", desc: "Each memory shows how certain the AI is" },
+            { icon: "check", title: "Three verdicts", desc: "Confirm, dismiss, or correct individual memories" },
+            { icon: "receipt", title: "Undo support", desc: "Change your mind on any verdict before submitting" },
+            { icon: "circle-dot", title: "Receipt pattern", desc: "Collapses to a summary after review" },
+          ]}
+        />
+      </section>
+
+      {/* ── Related ─────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Related
@@ -184,7 +227,7 @@ export const getMemories = tool({
         <RelatedComponents
           items={[
             { href: "/docs/components/option-list", label: "OptionList", desc: "Interactive choices with receipts" },
-            { href: "/docs/components/kpi-card", label: "KpiCard", desc: "Animated metric display" },
+            { href: "/docs/components/alert-card", label: "AlertCard", desc: "Proactive AI notifications" },
             { href: "/docs/concepts", label: "Concepts", desc: "Lifecycle, receipts, actions" },
           ]}
         />

@@ -55,6 +55,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
           diff: { value: 5.0, decimals: 0 },
         },
       ],
+      confidence: 0.92,
       source: {
         label: "Stripe + Analytics",
         freshness: "2 hours ago",
@@ -183,6 +184,8 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
 export const kpiCardOptions = [
   { key: "title", label: "title", defaultOn: true },
   { key: "description", label: "description", defaultOn: true },
+  { key: "diff", label: "diff %", defaultOn: true },
+  { key: "confidence", label: "confidence", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "source", label: "source", defaultOn: true },
 ]

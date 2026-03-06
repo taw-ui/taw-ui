@@ -29,7 +29,7 @@ export function TawSkeleton({ lines, animate, className }: TawSkeletonProps) {
       {lines.map(([height, width], i) => (
         <div
           key={i}
-          className={cn("rounded bg-(--taw-border)", animate && "overflow-hidden")}
+          className={cn("rounded bg-(--taw-border-subtle)", animate && "overflow-hidden")}
           style={{ height, width }}
         >
           {animate && <ShimmerBar />}
@@ -45,7 +45,7 @@ function ShimmerBar() {
       className="h-full w-full"
       style={{
         background:
-          "linear-gradient(90deg, transparent 0%, oklch(0.88 0 0 / 0.6) 50%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, var(--taw-surface-raised) 50%, transparent 100%)",
         backgroundSize: "200% 100%",
       }}
       animate={shimmerAnimation.animate}

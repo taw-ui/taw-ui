@@ -4,7 +4,7 @@ import { useState, useCallback } from "react"
 import { OptionList } from "@taw-ui/react"
 import type { TawReceipt } from "@taw-ui/react"
 import { ComponentPreview } from "@/components/component-preview"
-import { InlineCode } from "@/components/code-block"
+import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
   SchemaTable,
   FeatureGrid,
@@ -12,7 +12,8 @@ import {
   RelatedComponents,
 } from "@/components/docs-components"
 import { optionListFixtures, optionListOptions } from "@/fixtures/option-list"
-import { CopyPage } from "@/components/copy-page"
+import { ComponentNav } from "@/components/component-nav"
+import { generateComponentCode } from "@/lib/code-gen"
 
 function InteractiveDemo() {
   const [receipt, setReceipt] = useState<TawReceipt | undefined>()
@@ -46,30 +47,27 @@ function InteractiveDemo() {
 
 export default function OptionListDocs() {
   return (
-    <div className="space-y-10">
-      {/* Header */}
+    <div className="space-y-12">
+      {/* ── Header ──────────────────────────────────────────────────────── */}
       <div>
         <div className="mb-2 flex items-center justify-between">
           <span className="rounded-md bg-(--taw-accent-subtle) px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-(--taw-accent)">
             Interactive
           </span>
-          <CopyPage />
+          <ComponentNav />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-(--taw-text-primary)">
           OptionList
         </h1>
-        <p className="mt-2 text-[14px] leading-relaxed text-(--taw-text-secondary)">
+        <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-(--taw-text-secondary)">
           Let the AI propose choices and the human decide. Single or multi-select
           with keyboard navigation, AI reasoning, selection constraints, and the
           receipt pattern for post-decision display.
         </p>
       </div>
 
-      {/* States preview */}
+      {/* ── Preview ─────────────────────────────────────────────────────── */}
       <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          States
-        </h2>
         <ComponentPreview
           fixtures={optionListFixtures}
           options={optionListOptions}
@@ -91,24 +89,75 @@ export default function OptionListDocs() {
               ? [{ role: "assistant" as const, content: "Deploying now \u2014 I\u2019ll notify you when it\u2019s done." }]
               : []),
           ]}
-          code={`import { OptionList } from "@/components/taw/option-list"
-import type { TawReceipt } from "taw-ui"
-
-const [receipt, setReceipt] = useState<TawReceipt>()
-
-<OptionList
-  part={part}
-  onAction={(actionId, payload) => {
-    setReceipt(payload.receipt)
-  }}
-  receipt={receipt}
-/>`}
+          code={(part) => generateComponentCode("OptionList", "@taw-ui/react", part, `onAction={handleAction} receipt={receipt}`)}
         >
           {(part) => <OptionList part={part} />}
         </ComponentPreview>
       </section>
 
-      {/* Interactive demo */}
+      {/* ── Installation ────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Installation
+        </h2>
+        <CodeBlock label="Terminal">{`npx taw-ui add option-list`}</CodeBlock>
+        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
+          This copies the component source and schema into your project.
+          You own the code — customize anything.
+        </p>
+      </section>
+
+      {/* ── Usage ───────────────────────────────────────────────────────── */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Usage
+        </h2>
+        <div className="grid gap-4 md:grid-cols-2">
+          <CodeBlock label="server — define tool">{`import { tool } from "ai"
+import { OptionListSchema } from "@/components/taw/option-list"
+
+export const chooseAction = tool({
+  description: "Present options for user decision",
+  parameters: z.object({ context: z.string() }),
+  outputSchema: OptionListSchema,
+  execute: async ({ context }) => {
+    const options = await generateOptions(context)
+    return {
+      id: "deploy-strategy",
+      question: "How should we proceed?",
+      options: options.map(o => ({
+        id: o.id,
+        label: o.label,
+        description: o.detail,
+        recommended: o.score > 0.8,
+      })),
+      reasoning: "Based on your infrastructure...",
+      confirmLabel: "Confirm",
+    }
+  },
+})`}</CodeBlock>
+          <CodeBlock label="client — render">{`import { OptionList } from "@/components/taw/option-list"
+import { createReceipt } from "taw-ui"
+
+function ToolOutput({ part }) {
+  const [receipt, setReceipt] = useState()
+
+  const handleAction = (id, payload) => {
+    if (payload.receipt) setReceipt(payload.receipt)
+  }
+
+  return (
+    <OptionList
+      part={part}
+      onAction={handleAction}
+      receipt={receipt}
+    />
+  )
+}`}</CodeBlock>
+        </div>
+      </section>
+
+      {/* ── Try It ──────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Try It
@@ -121,41 +170,32 @@ const [receipt, setReceipt] = useState<TawReceipt>()
         </div>
       </section>
 
-      {/* Features */}
+      {/* ── Props ───────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Features
+          Props
         </h2>
-        <FeatureGrid
-          features={[
-            { icon: "circle-dot", title: "Single or multi-select", desc: "Radio buttons for single, checkboxes for multi — controlled by selectionMode" },
-            { icon: "shield", title: "Selection constraints", desc: "minSelections and maxSelections enforce valid choices, auto-disabling when max is reached" },
-            { icon: "chat", title: "AI reasoning", desc: "Optional reasoning panel explains why these options were presented" },
-            { icon: "receipt", title: "Receipt pattern", desc: "Collapses to a compact card showing selected options after decision" },
-            { icon: "check", title: "Pre-selects recommended", desc: "Options marked recommended are selected by default" },
-            { icon: "schema", title: "Cross-field validation", desc: "Duplicate IDs and invalid min/max caught at parse time via .superRefine()" },
+        <SchemaTable
+          fields={[
+            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state" },
+            { field: "onAction", type: "(id, payload) => void", desc: "Callback for confirm/cancel actions" },
+            { field: "receipt", type: "TawReceipt", desc: "Renders the receipt state when provided" },
+            { field: "pending", type: "boolean", desc: "Disables all interactions while processing" },
+            { field: "animate", type: "boolean", desc: "Enable entrance animations (default: true)" },
+            { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
           ]}
         />
       </section>
 
-      {/* Receipt pattern */}
-      <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Receipt Pattern
-        </h2>
-        <p className="text-[13px] leading-relaxed text-(--taw-text-muted)">
-          After the user decides, the full list collapses to a compact receipt showing
-          what was chosen — with descriptions preserved. This is critical for chat UIs where
-          vertical space matters. Pass a <InlineCode>receipt</InlineCode> prop to render
-          the receipt state. Use <InlineCode>createReceipt()</InlineCode> to construct receipts.
-        </p>
-      </section>
-
-      {/* Schema */}
+      {/* ── Schema ──────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Schema
         </h2>
+        <p className="mb-4 text-[13px] text-(--taw-text-muted)">
+          Cross-field validation catches duplicate option IDs and
+          invalid <InlineCode>minSelections</InlineCode> / <InlineCode>maxSelections</InlineCode> at parse time.
+        </p>
         <div className="space-y-4">
           <SchemaTable
             title="OptionListSchema"
@@ -175,14 +215,13 @@ const [receipt, setReceipt] = useState<TawReceipt>()
               { field: "source", type: "Source", desc: "Data provenance (label + freshness)" },
             ]}
           />
-
           <SchemaTable
             title="Option"
             fields={[
               { field: "id", type: "string", req: true, desc: "Unique identifier within the list" },
               { field: "label", type: "string", req: true, desc: "Display label" },
               { field: "description", type: "string", desc: "Detail text below the label" },
-              { field: "badge", type: "string", desc: "Custom badge text (e.g. \"Recommended\")" },
+              { field: "badge", type: "string", desc: 'Custom badge text (e.g. "Recommended")' },
               { field: "recommended", type: "boolean", desc: "Pre-selects and shows green badge if no custom badge" },
               { field: "disabled", type: "boolean", desc: "Prevents selection of this option" },
               { field: "meta", type: "Record<string, unknown>", desc: "Arbitrary metadata passed through to receipts" },
@@ -191,24 +230,24 @@ const [receipt, setReceipt] = useState<TawReceipt>()
         </div>
       </section>
 
-      {/* Props */}
+      {/* ── Features ────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Props
+          Features
         </h2>
-        <SchemaTable
-          fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state" },
-            { field: "onAction", type: "(id, payload) => void", desc: "Callback for confirm/cancel actions" },
-            { field: "receipt", type: "TawReceipt", desc: "Renders the receipt state when provided" },
-            { field: "pending", type: "boolean", desc: "Disables all interactions while processing" },
-            { field: "animate", type: "boolean", desc: "Enable entrance animations (default: true)" },
-            { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
+        <FeatureGrid
+          features={[
+            { icon: "circle-dot", title: "Single or multi-select", desc: "Radio buttons for single, checkboxes for multi — controlled by selectionMode" },
+            { icon: "shield", title: "Selection constraints", desc: "minSelections and maxSelections enforce valid choices, auto-disabling when max is reached" },
+            { icon: "chat", title: "AI reasoning", desc: "Optional reasoning panel explains why these options were presented" },
+            { icon: "receipt", title: "Receipt pattern", desc: "Collapses to a compact card showing selected options after decision" },
+            { icon: "check", title: "Pre-selects recommended", desc: "Options marked recommended are selected by default" },
+            { icon: "schema", title: "Cross-field validation", desc: 'Duplicate IDs and invalid min/max caught at parse time via .superRefine()' },
           ]}
         />
       </section>
 
-      {/* Accessibility */}
+      {/* ── Accessibility ───────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Accessibility
@@ -231,7 +270,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
         />
       </section>
 
-      {/* Related */}
+      {/* ── Related ─────────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Related
@@ -239,8 +278,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
         <RelatedComponents
           items={[
             { href: "/docs/components/memory-card", label: "MemoryCard", desc: "Interactive memory review with receipts" },
-            { href: "/docs/components/kpi-card", label: "KpiCard", desc: "Animated metric display" },
-            { href: "/docs/components/data-table", label: "DataTable", desc: "Sortable rich tables" },
+            { href: "/docs/components/alert-card", label: "AlertCard", desc: "Proactive AI notifications with actions" },
             { href: "/docs/concepts", label: "Concepts", desc: "Lifecycle, receipts, actions" },
           ]}
         />

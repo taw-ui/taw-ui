@@ -95,11 +95,11 @@ export function ComparisonSlider({
         style={{ touchAction: "none" }}
       >
         {/* Before layer */}
-        <div className="col-start-1 row-start-1 [&>*]:flex [&>*]:h-full [&>*]:flex-col [&>*>*:last-child]:flex-1">{before}</div>
+        <div className="col-start-1 row-start-1 *:flex *:h-full *:flex-col [&>*>*:last-child]:flex-1">{before}</div>
 
         {/* After layer — clipped from the left */}
         <motion.div
-          className="col-start-1 row-start-1 z-10 bg-(--taw-surface-sunken) [&>*]:flex [&>*]:h-full [&>*]:flex-col [&>*>*:last-child]:flex-1"
+          className="col-start-1 row-start-1 z-10 bg-(--taw-surface-sunken) *:flex *:h-full *:flex-col [&>*>*:last-child]:flex-1"
           style={{ clipPath: useTransform(clipRight, (v) => `inset(0 ${v} 0 0)`) }}
         >
           {after}

@@ -57,6 +57,7 @@ function getServerDark() {
 function toggleTheme() {
   const next = !document.documentElement.classList.contains("dark")
   document.documentElement.classList.toggle("dark", next)
+  localStorage.setItem("taw-theme", next ? "dark" : "light")
   // Enable transitions after first user toggle (not on initial load)
   document.documentElement.classList.add("theme-ready")
 }
@@ -159,11 +160,13 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
   const openSearch = useCallback(() => setSearchOpen(true), [])
   const closeSearch = useCallback(() => setSearchOpen(false), [])
 
-  // Listen for system theme changes and sync to .dark class
+  // Listen for system theme changes — only if user hasn't set a preference
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
     const handler = (e: MediaQueryListEvent) => {
-      document.documentElement.classList.toggle("dark", e.matches)
+      if (!localStorage.getItem("taw-theme")) {
+        document.documentElement.classList.toggle("dark", e.matches)
+      }
     }
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
