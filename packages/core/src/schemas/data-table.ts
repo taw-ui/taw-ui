@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ConfidenceSchema, SourceSchema } from "./shared"
+import { ConfidenceSchema, CaveatSchema, SourceSchema } from "./shared"
 import { defineTawContract } from "../contract"
 
 const ColumnFormatSchema = z.object({
@@ -46,6 +46,7 @@ export const DataTableSchema = z
       })
       .optional(),
     confidence: ConfidenceSchema,
+    caveat: CaveatSchema,
     source: SourceSchema,
   })
   .superRefine((data, ctx) => {

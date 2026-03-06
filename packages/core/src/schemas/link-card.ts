@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ConfidenceSchema, SourceSchema } from "./shared"
+import { ConfidenceSchema, CaveatSchema, SourceSchema } from "./shared"
 import { defineTawContract } from "../contract"
 
 export const LinkCardSchema = z.object({
@@ -15,6 +15,7 @@ export const LinkCardSchema = z.object({
   /** Published or last-updated date (ISO 8601 or human-readable) */
   publishedAt: z.string().optional(),
   confidence: ConfidenceSchema,
+  caveat: CaveatSchema,
   source: SourceSchema,
 })
 

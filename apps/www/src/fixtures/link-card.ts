@@ -1,4 +1,4 @@
-import type { TawToolPart } from "@taw-ui/core"
+import type { TawToolPart } from "@taw-ui/react"
 
 export const linkCardFixtures: Record<string, TawToolPart> = {
   ready: {
@@ -17,42 +17,8 @@ export const linkCardFixtures: Record<string, TawToolPart> = {
       favicon: "https://react.dev/favicon-32x32.png",
       reason: "This explains the RSC pattern you asked about",
       publishedAt: "Dec 2024",
-      confidence: 0.94,
+      caveat: "Documentation may reference canary features not yet stable",
       source: { label: "React Docs", freshness: "current" },
-    },
-  },
-  "no-image": {
-    id: "link-2",
-    toolName: "showLink",
-    input: { url: "https://zod.dev" },
-    state: "output-available",
-    output: {
-      id: "zod-docs",
-      url: "https://zod.dev",
-      title: "Zod – TypeScript-first schema validation with static type inference",
-      description:
-        "Zod is a TypeScript-first schema declaration and validation library. Define a schema, and Zod will ensure your data matches it.",
-      domain: "zod.dev",
-      confidence: 0.88,
-    },
-  },
-  "with-reason": {
-    id: "link-3",
-    toolName: "showLink",
-    input: { url: "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API" },
-    state: "output-available",
-    output: {
-      id: "mdn-fetch",
-      url: "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API",
-      title: "Fetch API - Web APIs | MDN",
-      description:
-        "The Fetch API provides an interface for fetching resources across the network.",
-      domain: "developer.mozilla.org",
-      favicon: "https://developer.mozilla.org/favicon-48x48.png",
-      reason:
-        "Since you're building a custom data fetcher, this covers the Fetch API patterns you'll need",
-      publishedAt: "Jan 2025",
-      source: { label: "MDN Web Docs" },
     },
   },
   loading: {
@@ -69,3 +35,13 @@ export const linkCardFixtures: Record<string, TawToolPart> = {
     error: "Failed to fetch Open Graph metadata for this URL.",
   },
 }
+
+export const linkCardOptions = [
+  { key: "image", label: "image", defaultOn: true },
+  { key: "description", label: "description", defaultOn: true },
+  { key: "reason", label: "reason", defaultOn: true },
+  { key: "caveat", label: "caveat", defaultOn: false },
+  { key: "favicon", label: "favicon", defaultOn: true },
+  { key: "publishedAt", label: "date", defaultOn: true },
+  { key: "source", label: "source", defaultOn: true },
+]

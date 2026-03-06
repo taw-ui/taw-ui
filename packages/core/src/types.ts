@@ -49,6 +49,7 @@ export interface TawComponentProps<TOutput = unknown> extends TawBaseProps {
 /**
  * A taw-ui component function signature.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TawComponent<TOutput = unknown> = (
   props: TawComponentProps<TOutput>,
-) => React.ReactElement
+) => any

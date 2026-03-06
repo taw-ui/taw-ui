@@ -21,7 +21,7 @@ export function CopyPage() {
     <motion.button
       onClick={handleCopy}
       whileTap={{ scale: 0.95 }}
-      className="flex items-center gap-1.5 rounded-lg border border-[--taw-border] bg-[--taw-surface] px-2.5 py-1 text-[11px] text-[--taw-text-muted] shadow-[--taw-shadow-sm] transition-colors hover:text-[--taw-text-primary]"
+      className="flex items-center gap-1.5 rounded-lg border border-(--taw-border) bg-(--taw-surface) px-2.5 py-1 text-[11px] text-(--taw-text-muted) shadow-(--taw-shadow-sm) transition-colors hover:text-(--taw-text-primary)"
     >
       <AnimatePresence mode="wait" initial={false}>
         {copied ? (
@@ -31,7 +31,7 @@ export function CopyPage() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.12 }}
-            className="flex items-center gap-1.5 text-[--taw-success]"
+            className="flex items-center gap-1.5 text-(--taw-success)"
           >
             <PixelIcon name="check" size={12} />
             Copied

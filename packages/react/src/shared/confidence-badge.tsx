@@ -14,7 +14,7 @@ export function ConfidenceBadge({ confidence }: { confidence: number }) {
   return (
     <span
       className={cn(
-        "absolute right-3 top-3 rounded px-1.5 py-0.5 text-[10px] font-medium",
+        "absolute right-3 top-3 z-10 rounded px-1.5 py-0.5 text-[10px] font-medium",
         color,
       )}
       title={`AI confidence: ${pct}%`}

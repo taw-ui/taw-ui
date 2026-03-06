@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useSyncExternalStore } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@taw-ui/react"
 import { components, categories } from "@/lib/registry"
@@ -35,11 +35,39 @@ const navSections = [
     })),
 ]
 
-function ThemeToggle({ dark, setDark }: { dark: boolean; setDark: (d: boolean) => void }) {
+// ─── Theme: direct DOM, no React state ───────────────────────────────────────
+// The blocking <script> in layout.tsx sets .dark before paint.
+// We toggle it directly on <html> so every CSS variable updates in one repaint.
+// useSyncExternalStore keeps the icon in sync without causing the toggle itself.
+
+function subscribeToDark(cb: () => void) {
+  const observer = new MutationObserver(cb)
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+  return () => observer.disconnect()
+}
+
+function getIsDark() {
+  return document.documentElement.classList.contains("dark")
+}
+
+function getServerDark() {
+  return false
+}
+
+function toggleTheme() {
+  const next = !document.documentElement.classList.contains("dark")
+  document.documentElement.classList.toggle("dark", next)
+  // Enable transitions after first user toggle (not on initial load)
+  document.documentElement.classList.add("theme-ready")
+}
+
+function ThemeToggle() {
+  const dark = useSyncExternalStore(subscribeToDark, getIsDark, getServerDark)
+
   return (
     <button
-      onClick={() => setDark(!dark)}
-      className="flex h-7 w-7 items-center justify-center rounded-lg text-[--taw-text-muted] transition-colors hover:text-[--taw-text-primary]"
+      onClick={toggleTheme}
+      className="flex h-7 w-7 items-center justify-center rounded-lg text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -79,7 +107,7 @@ function SidebarNav({
     <nav className="flex flex-col gap-6">
       {navSections.map((section) => (
         <div key={section.title}>
-          <span className="mb-1 block px-2 font-pixel text-[10px] uppercase tracking-[0.15em] text-[--taw-text-muted]">
+          <span className="mb-1 block px-2 font-pixel text-[10px] uppercase tracking-[0.15em] text-(--taw-text-muted)">
             {section.title}
           </span>
           <ul className="flex flex-col gap-0.5">
@@ -90,7 +118,7 @@ function SidebarNav({
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute inset-0 rounded-lg bg-[--taw-accent-subtle]"
+                      className="absolute inset-0 rounded-lg bg-(--taw-accent-subtle)"
                       transition={{ type: "spring", stiffness: 500, damping: 35 }}
                     />
                   )}
@@ -100,13 +128,13 @@ function SidebarNav({
                     className={cn(
                       "group relative flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] transition-colors",
                       isActive
-                        ? "font-medium text-[--taw-accent]"
-                        : "text-[--taw-text-secondary] hover:bg-[--taw-surface-sunken] hover:text-[--taw-text-primary]",
+                        ? "font-medium text-(--taw-accent)"
+                        : "text-(--taw-text-secondary) hover:bg-(--taw-surface-sunken) hover:text-(--taw-text-primary)",
                     )}
                   >
                     {item.label}
                     {"status" in item && item.status === "coming-soon" && (
-                      <span className="ml-auto rounded-md bg-[--taw-border] px-1.5 py-0.5 font-pixel text-[8px] uppercase text-[--taw-text-muted]">
+                      <span className="ml-auto rounded-md bg-(--taw-border) px-1.5 py-0.5 font-pixel text-[8px] uppercase text-(--taw-text-muted)">
                         soon
                       </span>
                     )}
@@ -125,20 +153,18 @@ function SidebarNav({
 
 export function DocsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [dark, setDark] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const openSearch = useCallback(() => setSearchOpen(true), [])
   const closeSearch = useCallback(() => setSearchOpen(false), [])
 
-  // Sync with system theme on mount
+  // Listen for system theme changes and sync to .dark class
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: dark)")
-    setDark(mq.matches)
-    setMounted(true)
-    const handler = (e: MediaQueryListEvent) => setDark(e.matches)
+    const handler = (e: MediaQueryListEvent) => {
+      document.documentElement.classList.toggle("dark", e.matches)
+    }
     mq.addEventListener("change", handler)
     return () => mq.removeEventListener("change", handler)
   }, [])
@@ -178,15 +204,15 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <div className={cn("min-h-screen bg-[--taw-surface-sunken]", dark && "dark")} style={{ visibility: mounted ? "visible" : "hidden" }}>
+    <div className="min-h-screen bg-(--taw-surface-sunken)">
       <div className="flex min-h-screen flex-col">
         {/* ─── Header (edge to edge) ─── */}
-        <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-[--taw-border] bg-[--taw-surface]/80 px-4 backdrop-blur-md">
+        <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-(--taw-border) bg-(--taw-surface)/80 px-4 backdrop-blur-md">
           {/* Left: Hamburger (mobile) + Logo */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMobileNavOpen((v) => !v)}
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-[--taw-text-muted] transition-colors hover:text-[--taw-text-primary] lg:hidden"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary) lg:hidden"
               aria-label="Toggle navigation"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -221,7 +247,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                   className="hidden h-6 dark:block"
                 />
               </motion.div>
-              <span className="hidden rounded-md border border-[--taw-border] px-1.5 py-0.5 font-mono text-[10px] text-[--taw-text-muted] sm:inline">
+              <span className="hidden rounded-md border border-(--taw-border) px-1.5 py-0.5 font-mono text-[10px] text-(--taw-text-muted) sm:inline">
                 v0.0.1
               </span>
             </Link>
@@ -236,11 +262,11 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <button
               onClick={openSearch}
-              className="flex h-7 items-center gap-2 rounded-lg border border-[--taw-border] bg-[--taw-surface] px-2 text-[12px] text-[--taw-text-muted] shadow-[--taw-shadow-sm] transition-all hover:border-[--taw-accent]/30 hover:text-[--taw-text-primary] sm:px-3"
+              className="flex h-7 items-center gap-2 rounded-lg border border-(--taw-border) bg-(--taw-surface) px-2 text-[12px] text-(--taw-text-muted) shadow-(--taw-shadow-sm) transition-all hover:border-(--taw-accent)/30 hover:text-(--taw-text-primary) sm:px-3"
             >
               <PixelIcon name="search" size={12} />
               <span className="hidden sm:inline">Search...</span>
-              <kbd className="ml-1 hidden rounded border border-[--taw-border] bg-[--taw-surface-sunken] px-1 py-0.5 font-mono text-[10px] text-[--taw-text-muted] sm:inline">
+              <kbd className="ml-1 hidden rounded border border-(--taw-border) bg-(--taw-surface-sunken) px-1 py-0.5 font-mono text-[10px] text-(--taw-text-muted) sm:inline">
                 /
               </kbd>
             </button>
@@ -248,20 +274,20 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
               href="https://github.com/taw-ui/taw-ui"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-[--taw-text-muted] transition-colors hover:text-[--taw-text-primary]"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
               </svg>
             </a>
-            <ThemeToggle dark={dark} setDark={setDark} />
+            <ThemeToggle />
           </div>
         </header>
 
         {/* ─── Body: sidebar + content ─── */}
         <div className="flex flex-1">
           {/* Desktop sidebar */}
-          <aside className="sticky top-12 z-20 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col border-r border-[--taw-border] bg-[--taw-surface] lg:flex">
+          <aside className="sticky top-12 z-20 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col border-r border-(--taw-border) bg-(--taw-surface) lg:flex">
             <div className="flex-1 overflow-y-auto px-3 pt-4 pb-4">
               <SidebarNav pathname={pathname} />
             </div>
@@ -284,7 +310,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                   animate={{ x: 0 }}
                   exit={{ x: "-100%" }}
                   transition={{ type: "spring", stiffness: 400, damping: 35 }}
-                  className="fixed left-0 top-12 z-50 h-[calc(100vh-3rem)] w-64 overflow-y-auto border-r border-[--taw-border] bg-[--taw-surface] px-3 pt-4 pb-4 lg:hidden"
+                  className="fixed left-0 top-12 z-50 h-[calc(100vh-3rem)] w-64 overflow-y-auto border-r border-(--taw-border) bg-(--taw-surface) px-3 pt-4 pb-4 lg:hidden"
                 >
                   <SidebarNav
                     pathname={pathname}
@@ -340,6 +366,9 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
     "data-table": "DataTable",
     "option-list": "OptionList",
     "link-card": "LinkCard",
+    "memory-card": "MemoryCard",
+    "insight-card": "InsightCard",
+    "alert-card": "AlertCard",
     chart: "Chart",
   }
 
@@ -350,11 +379,11 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
         return (
           <span key={`${part}-${i}`} className="flex items-center gap-1">
             {i > 0 && (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[--taw-border]">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-(--taw-border)">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             )}
-            <span className={isLast ? "font-medium text-[--taw-text-primary]" : "text-[--taw-text-muted]"}>
+            <span className={isLast ? "font-medium text-(--taw-text-primary)" : "text-(--taw-text-muted)"}>
               {labels[part] ?? part}
             </span>
           </span>

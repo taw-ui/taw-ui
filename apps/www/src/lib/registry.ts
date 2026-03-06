@@ -36,6 +36,27 @@ export const components: ComponentMeta[] = [
     status: "ready",
   },
   {
+    id: "memory-card",
+    label: "MemoryCard",
+    description: "Transparent AI memory viewer with per-item confidence, categories, and review verdicts.",
+    category: "interactive",
+    status: "ready",
+  },
+  {
+    id: "insight-card",
+    label: "InsightCard",
+    description: "Structured AI analysis with metrics, sentiment-coded recommendation, and reasoning.",
+    category: "display",
+    status: "ready",
+  },
+  {
+    id: "alert-card",
+    label: "AlertCard",
+    description: "Proactive AI notification with severity levels, inline metrics, and action buttons.",
+    category: "interactive",
+    status: "ready",
+  },
+  {
     id: "chart",
     label: "Chart",
     description: "Line, bar, area, scatter, pie, and donut charts via Recharts.",

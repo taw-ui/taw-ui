@@ -1,0 +1,96 @@
+{
+  "lib": {
+    "description": "Visual utilities and shared sub-components. Installed by `npx taw-ui init`.",
+    "files": [
+      "lib/motion.ts",
+      "lib/utils.ts",
+      "lib/index.ts",
+      "lib/shared/source-label.tsx",
+      "lib/shared/taw-error.tsx",
+      "lib/shared/taw-skeleton.tsx",
+      "lib/shared/typewriter.tsx",
+      "lib/shared/confidence-badge.tsx",
+      "lib/shared/index.ts"
+    ],
+    "dependencies": ["taw-ui", "framer-motion", "clsx", "tailwind-merge"]
+  },
+  "components": {
+    "kpi-card": {
+      "name": "KpiCard",
+      "description": "Single metric display with animated value counting, trend delta, and source attribution.",
+      "category": "display",
+      "files": [
+        "kpi-card/kpi-card.tsx",
+        "kpi-card/schema.ts",
+        "kpi-card/index.ts"
+      ],
+      "dependencies": ["class-variance-authority"]
+    },
+    "option-list": {
+      "name": "OptionList",
+      "description": "Interactive single or multi-select with keyboard navigation and receipt pattern.",
+      "category": "interactive",
+      "files": [
+        "option-list/option-list.tsx",
+        "option-list/schema.ts",
+        "option-list/index.ts"
+      ],
+      "dependencies": []
+    },
+    "data-table": {
+      "name": "DataTable",
+      "description": "Sortable table with rich column formatting — currency, percent, delta, badges.",
+      "category": "display",
+      "files": [
+        "data-table/data-table.tsx",
+        "data-table/schema.ts",
+        "data-table/index.ts"
+      ],
+      "dependencies": []
+    },
+    "link-card": {
+      "name": "LinkCard",
+      "description": "Rich link preview with Open Graph metadata, favicon, and AI reasoning.",
+      "category": "display",
+      "files": [
+        "link-card/link-card.tsx",
+        "link-card/schema.ts",
+        "link-card/index.ts"
+      ],
+      "dependencies": []
+    },
+    "memory-card": {
+      "name": "MemoryCard",
+      "description": "Transparent AI memory viewer with per-item confidence and review verdicts.",
+      "category": "interactive",
+      "files": [
+        "memory-card/memory-card.tsx",
+        "memory-card/schema.ts",
+        "memory-card/index.ts"
+      ],
+      "dependencies": []
+    },
+    "insight-card": {
+      "name": "InsightCard",
+      "description": "Structured AI analysis with key metrics and sentiment-coded recommendation.",
+      "category": "display",
+      "files": [
+        "insight-card/insight-card.tsx",
+        "insight-card/schema.ts",
+        "insight-card/index.ts"
+      ],
+      "dependencies": []
+    },
+    "alert-card": {
+      "name": "AlertCard",
+      "description": "Proactive AI notification with severity levels and action buttons.",
+      "category": "interactive",
+      "files": [
+        "alert-card/alert-card.tsx",
+        "alert-card/schema.ts",
+        "alert-card/index.ts"
+      ],
+      "dependencies": []
+    }
+  }
+}

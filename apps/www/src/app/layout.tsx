@@ -10,6 +10,9 @@ export const metadata: Metadata = {
     "Production-grade React components for rendering AI tool call outputs. Schema-first, motion-native, SDK-agnostic.",
 }
 
+// Blocking script that sets .dark before first paint — prevents flash
+const themeScript = `(function(){try{if(window.matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.classList.add('dark')}catch(e){}})()`
+
 export default function RootLayout({
   children,
 }: {
@@ -17,6 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable} ${GeistPixelSquare.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   )

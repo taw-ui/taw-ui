@@ -1,6 +1,6 @@
 "use client"
 
-import type { TawToolPart, TawComponent } from "@taw-ui/core"
+import type { TawToolPart, TawComponent } from "taw-ui"
 
 // ─── Registry ─────────────────────────────────────────────────────────────────
 
@@ -25,12 +25,6 @@ export function TawRenderer({ registry, part, fallback }: TawRendererProps) {
 
   if (!Component) {
     if (fallback !== undefined) return <>{fallback}</>
-    if (process.env.NODE_ENV === "development") {
-      console.warn(
-        `[taw-ui] No component registered for tool "${part.toolName}". ` +
-          `Available: ${Object.keys(registry).join(", ")}`,
-      )
-    }
     return null
   }
 

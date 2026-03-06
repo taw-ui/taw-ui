@@ -1,12 +1,12 @@
 "use client"
 
-import type { SourceData } from "@taw-ui/core"
+import type { SourceData } from "taw-ui"
 
 type Source = NonNullable<SourceData>
 
 export function SourceLabel({ source }: { source: Source }) {
   return (
-    <span className="mt-1 text-[10px] text-[--taw-text-muted]">
+    <span className="mt-1 text-[10px] text-(--taw-text-muted)">
       {source.url ? (
         <a
           href={source.url}

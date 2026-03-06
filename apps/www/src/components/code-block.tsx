@@ -37,7 +37,7 @@ export function CodeBlock({ children, label, className }: CodeBlockProps) {
             <CopyButton copied={copied} onCopy={handleCopy} />
           </div>
         )}
-        <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.7] text-[--taw-text-primary]">
+        <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-[1.7] text-(--taw-text-primary)">
           <code>{highlighted}</code>
         </pre>
       </div>
@@ -50,7 +50,7 @@ function CopyButton({ copied, onCopy }: { copied: boolean; onCopy: () => void })
     <motion.button
       onClick={onCopy}
       whileTap={{ scale: 0.9 }}
-      className="flex h-6 items-center gap-1 rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 text-[10px] text-[--taw-text-muted] transition-colors hover:text-[--taw-text-primary]"
+      className="flex h-6 items-center gap-1 rounded-md border border-(--taw-border) bg-(--taw-surface) px-1.5 text-[10px] text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
     >
       <AnimatePresence mode="wait" initial={false}>
         {copied ? (
@@ -60,7 +60,7 @@ function CopyButton({ copied, onCopy }: { copied: boolean; onCopy: () => void })
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ duration: 0.12 }}
-            className="flex items-center gap-1 text-[--taw-success]"
+            className="flex items-center gap-1 text-(--taw-success)"
           >
             <PixelIcon name="check" size={12} />
             Copied
@@ -84,7 +84,7 @@ function CopyButton({ copied, onCopy }: { copied: boolean; onCopy: () => void })
 
 export function InlineCode({ children }: { children: React.ReactNode }) {
   return (
-    <code className="rounded-md border border-[--taw-border] bg-[--taw-surface] px-1.5 py-0.5 font-mono text-[12px] text-[--taw-accent]">
+    <code className="rounded-md border border-(--taw-border) bg-(--taw-surface) px-1.5 py-0.5 font-mono text-[12px] text-(--taw-accent)">
       {children}
     </code>
   )

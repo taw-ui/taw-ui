@@ -2,136 +2,128 @@
 
 **UI components for AI tool calls.**
 
-Schema-first. SDK-agnostic. Motion-native.
+Schema-validated. SDK-agnostic. Motion-native. You own the code.
 
 ---
 
 ## What is this?
 
-When an AI calls a tool, you get raw JSON back. `taw-ui` turns that JSON into production-grade UI — with loading states during streaming, smooth animations on arrival, and helpful errors when data doesn't match.
+When an AI calls a tool, you get raw JSON back. taw-ui turns that JSON into production-grade UI — with loading states during streaming, spring-animated entrances, and helpful errors when data doesn't match the schema.
 
 ```tsx
-// Before taw-ui
+// Before: raw JSON, no types, no loading, no errors
 const data = part.output as any
-return <div>{data.value}</div>  // no types, no loading, no errors
+return <div>{data.value}</div>
 
-// With taw-ui
-return <KpiCard part={part} />  // schema-validated, animated, streamed
+// After: schema-validated, animated, all states handled
+return <KpiCard part={part} />
 ```
 
-## Philosophy
-
-**Schema-first.** Every component ships with a Zod schema. You use the same schema to define your tool's `outputSchema`, validate the client-side output, and get TypeScript types — one source of truth.
-
-**Part-aware.** Components accept the full tool call `part`, not just the output. They know when data is streaming, complete, or errored — and render the right state automatically.
-
-**SDK-agnostic.** The core is zero-dependency. Adapters for Vercel AI SDK, Anthropic, and OpenAI normalize their different formats into a single `TawToolPart` interface.
-
-**Motion-native.** Built on Framer Motion with spring physics. Skeletons breathe. Values count up. Pass `animate={false}` to opt out entirely.
-
----
-
-## Installation
-
-### Via shadcn (recommended)
+## Install
 
 ```bash
-npx shadcn@latest add https://taw-ui.dev/r/kpi-card
+npm i taw-ui
+npx taw-ui add kpi-card
 ```
 
-This copies the component and its schema directly into your project. You own the code.
-
-### Via npm
-
-```bash
-pnpm add @taw-ui/react @taw-ui/core framer-motion
-```
-
----
+`taw-ui` installs the runtime (schemas, types, validation). The CLI copies components into your project — you own them, customize anything.
 
 ## Quick start
 
-### 1. Add CSS variables
-
-```css
-/* app/globals.css */
-@import "@taw-ui/core/taw.css";
-```
-
-### 2. Define your tool with the schema
+### 1. Define your tool with the schema
 
 ```ts
 import { tool } from "ai"
-import { KpiCardSchema } from "@taw-ui/core"
+import { KpiCardSchema } from "@/components/taw/kpi-card"
 
-const tools = {
-  getRevenue: tool({
-    description: "Get current revenue metrics",
-    parameters: z.object({ period: z.string() }),
-    outputSchema: KpiCardSchema,
-    execute: async ({ period }) => ({
-      id: "revenue",
-      label: "Monthly Revenue",
-      value: 48200,
-      unit: "R$",
-      delta: 3200,
-      trend: "up",
-      confidence: 0.94,
-      source: { label: "Stripe", freshness: "2 min ago" },
-    }),
+const getMetrics = tool({
+  description: "Get business metrics",
+  parameters: z.object({ metric: z.string() }),
+  outputSchema: KpiCardSchema,
+  execute: async ({ metric }) => ({
+    id: metric,
+    stats: [{
+      key: metric,
+      label: "Revenue",
+      value: 142580,
+      format: { kind: "currency", currency: "USD" },
+      diff: { value: 12.4 },
+    }],
+    confidence: 0.92,
+    source: { label: "Stripe", freshness: "2 min ago" },
   }),
+})
+```
+
+### 2. Render
+
+```tsx
+import { KpiCard } from "@/components/taw/kpi-card"
+import type { TawToolPart } from "taw-ui"
+
+function ToolOutput({ part }: { part: TawToolPart }) {
+  switch (part.toolName) {
+    case "getMetrics":
+      return <KpiCard part={part} />
+    default:
+      return null
+  }
 }
 ```
 
-### 3. Render
+That's it. The component handles loading, streaming, error, and success states automatically.
 
-```tsx
-import { KpiCard } from "@taw-ui/react"
+## How it works
 
-{message.parts.map((part) =>
-  part.type === "tool-getRevenue" ? (
-    <KpiCard key={part.toolCallId} part={part} />
-  ) : null
-)}
+```
+┌─ Your project ─────────────────────────────┐
+│                                             │
+│  @/components/taw/kpi-card.tsx    ← YOURS   │
+│  @/components/taw/data-table.tsx  ← YOURS   │
+│  @/components/taw/option-list.tsx ← YOURS   │
+│                                             │
+│  imports from:                              │
+│  ┌─ taw-ui (npm) ──────────────────────┐   │
+│  │  schemas, types, parse, actions     │   │
+│  │  versioned, tested, guaranteed      │   │
+│  └─────────────────────────────────────┘   │
+│                                             │
+└─────────────────────────────────────────────┘
 ```
 
----
+Components are copied into your project (like shadcn). Types, schemas, and validation come from the `taw-ui` npm package so contracts stay versioned.
 
 ## Components
 
-| Component | Description | Has Receipt |
+| Component | Type | Description |
 |---|---|---|
-| `KpiCard` | Single metric with delta, trend, and confidence | — |
-| `DataTable` | Typed tabular data with sorting | — |
-| `Chart` | Line, bar, area, pie — wraps Recharts | — |
-| `OptionList` | User choice that feeds back into conversation | ✓ |
+| `KpiCard` | Display | Metrics with sparklines, animated counting, delta indicators |
+| `DataTable` | Display | Sortable table with 9 column types — currency, percent, delta, badges |
+| `OptionList` | Interactive | Single/multi-select with keyboard nav and receipt pattern |
+| `LinkCard` | Display | Rich link preview with OG metadata and favicon |
+| `InsightCard` | Display | Structured AI analysis with sentiment-coded recommendation |
+| `AlertCard` | Interactive | Severity-based alerts with inline metrics and actions |
+| `MemoryCard` | Interactive | AI memory viewer with per-item review verdicts |
 
----
+## What makes taw-ui different
 
-## Part states
+- **AI-native fields** — every schema supports `confidence` (0-1) and `source` provenance
+- **Part-aware lifecycle** — one prop handles loading, streaming, error, and success
+- **Spring physics motion** — numbers count up with springs, entrances are smooth
+- **Helpful errors** — parse failures show field-level details and "Did you mean?" suggestions
+- **SDK-agnostic** — works with Vercel AI SDK, Anthropic, OpenAI, or raw JSON
+- **Receipt pattern** — interactive components collapse to compact summaries after decisions
 
-Every taw-ui component handles all four states automatically:
+## CLI
 
-```
-input-available  →  skeleton (tool called, executing)
-streaming        →  skeleton (data arriving)
-output-available →  full component (animated entrance)
-output-error     →  error display (with message)
-```
-
----
-
-## SDK adapters
-
-Adapters normalize each SDK's format into `TawToolPart`:
-
-```tsx
-import { toTawPart } from "@taw-ui/vercel-ai"
-<KpiCard part={toTawPart(part)} />
+```bash
+npx taw-ui init              # Set up shared utilities
+npx taw-ui add kpi-card      # Add a component
+npx taw-ui add --all         # Add all components
 ```
 
----
+Auto-detects your package manager (npm, pnpm, yarn, bun).
 
 ## License
 
-MIT © [taw-ui](https://github.com/taw-ui)
+MIT

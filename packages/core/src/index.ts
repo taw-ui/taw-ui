@@ -2,13 +2,23 @@
 export { defineTawContract } from "./contract"
 export type { TawContract } from "./contract"
 
-// Schemas
-export * from "./schemas/shared"
+// Shared schemas (used by all component schemas)
+export {
+  ConfidenceSchema,
+  CaveatSchema,
+  SourceSchema,
+} from "./schemas/shared"
+export type { SourceData } from "./schemas/shared"
+
+// Component schemas (also co-located in registry components)
 export * from "./schemas/kpi-card"
 export * from "./schemas/option-list"
 export * from "./schemas/data-table"
 export * from "./schemas/chart"
 export * from "./schemas/link-card"
+export * from "./schemas/memory-card"
+export * from "./schemas/insight-card"
+export * from "./schemas/alert-card"
 
 // Actions & Receipts
 export {
@@ -25,9 +35,16 @@ export type {
   TawInteractiveProps,
 } from "./actions"
 
-// Utilities
+// Parse utilities
 export { tawParse } from "./utils/parse"
 export type { ParseResult, TawParseError } from "./utils/parse"
 
 // Types
-export type * from "./types"
+export type {
+  TawPartState,
+  TawToolPart,
+  TawPartMeta,
+  TawBaseProps,
+  TawComponentProps,
+  TawComponent,
+} from "./types"

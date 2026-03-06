@@ -1,6 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* ─── Source scanning ─────────────────────────────────────── */
+@source "../../components/**/*.tsx";
+@source "../../lib/**/*.ts";
+@source "../../../../packages/react/src/**/*.tsx";
+
+/* ─── Theme: custom fonts ─────────────────────────────────── */
+@theme {
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+  --font-pixel: var(--font-geist-pixel-square), monospace;
+}
 
 /* ═══════════════════════════════════════════════════════════════
    Theme: Alucard (Light) — inspired by Dracula Pro Alucard
@@ -20,33 +30,33 @@
   --taw-text-secondary: oklch(0.40 0.03 290);
   --taw-text-muted: oklch(0.52 0.04 290);
 
-  /* Accent — Dracula Purple */
-  --taw-accent: oklch(0.55 0.20 295);
+  /* Accent — Alucard Purple #644AC9 */
+  --taw-accent: oklch(0.5091 0.188 287.15);
   --taw-accent-hover: oklch(0.50 0.22 295);
   --taw-accent-subtle: oklch(0.93 0.06 295);
 
-  /* Semantic — Dracula palette */
-  --taw-success: oklch(0.58 0.18 155);       /* Green #50FA7B mapped */
-  --taw-warning: oklch(0.72 0.14 65);        /* Orange #FFB86C mapped */
-  --taw-error: oklch(0.58 0.22 25);          /* Red #FF5555 mapped */
+  /* Semantic — Dracula PRO Alucard */
+  --taw-success: oklch(0.4784 0.155 141.90);       /* Green #14710A */
+  --taw-warning: oklch(0.5205 0.131 48.46);        /* Orange #A34D14 */
+  --taw-error: oklch(0.5632 0.184 30.08);          /* Red #CB3A2A */
 
-  /* Dracula extended palette — for code, badges, special UI */
-  --taw-cyan: oklch(0.60 0.12 210);
+  /* Dracula PRO Alucard extended palette */
+  --taw-cyan: oklch(0.4961 0.106 236.17);          /* Cyan #036A96 */
   --taw-pink: oklch(0.60 0.22 350);
-  --taw-yellow: oklch(0.78 0.14 100);
+  --taw-yellow: oklch(0.5440 0.104 93.88);         /* Yellow #846E15 */
 
   /* Syntax highlighting — Alucard (light) */
-  --taw-syn-keyword: oklch(0.55 0.22 350);      /* Pink — import, const, function */
-  --taw-syn-string: oklch(0.55 0.16 100);       /* Yellow — "strings" */
-  --taw-syn-comment: oklch(0.58 0.04 290);      /* Muted purple — // comments */
-  --taw-syn-type: oklch(0.50 0.14 210);         /* Cyan — types, interfaces */
-  --taw-syn-function: oklch(0.50 0.18 155);     /* Green — function names */
-  --taw-syn-number: oklch(0.50 0.20 295);       /* Purple — numbers */
-  --taw-syn-operator: oklch(0.55 0.22 350);     /* Pink — operators, => */
-  --taw-syn-property: oklch(0.35 0.04 290);     /* Foreground — object keys */
-  --taw-syn-tag: oklch(0.55 0.22 350);          /* Pink — JSX tags */
-  --taw-syn-attr: oklch(0.50 0.18 155);         /* Green — JSX attributes */
-  --taw-syn-punctuation: oklch(0.45 0.03 290);  /* Subtle — braces, parens */
+  --taw-syn-keyword: oklch(0.4682 0.177 4.96);      /* Magenta #A3144D */
+  --taw-syn-string: oklch(0.5440 0.104 93.88);      /* Yellow #846E15 */
+  --taw-syn-comment: oklch(0.5093 0.091 287.46);    /* Comment #635D97 */
+  --taw-syn-type: oklch(0.4961 0.106 236.17);       /* Cyan #036A96 */
+  --taw-syn-function: oklch(0.4784 0.155 141.90);   /* Green #14710A */
+  --taw-syn-number: oklch(0.5091 0.188 287.15);     /* Blue #644AC9 */
+  --taw-syn-operator: oklch(0.4682 0.177 4.96);     /* Magenta #A3144D */
+  --taw-syn-property: oklch(0.2393 0.000 0);        /* Foreground #1F1F1F */
+  --taw-syn-tag: oklch(0.4682 0.177 4.96);          /* Magenta #A3144D */
+  --taw-syn-attr: oklch(0.4784 0.155 141.90);       /* Green #14710A */
+  --taw-syn-punctuation: oklch(0.45 0.03 290);      /* Subtle */
 
   /* Radius */
   --taw-radius: 8px;
@@ -71,38 +81,38 @@
   --taw-border: oklch(0.32 0.03 280);
   --taw-border-subtle: oklch(0.28 0.025 280);
 
-  /* Text — Dracula foreground tones */
-  --taw-text-primary: oklch(0.95 0.01 90);       /* #F8F8F2 — warm white */
-  --taw-text-secondary: oklch(0.78 0.01 280);    /* Clear readable gray-blue */
-  --taw-text-muted: oklch(0.60 0.06 270);        /* #6272A4 — Dracula comment blue */
+  /* Text — Dracula PRO Base foreground tones */
+  --taw-text-primary: oklch(0.9775 0.008 106.55);      /* Foreground #F8F8F2 */
+  --taw-text-secondary: oklch(0.78 0.01 280);
+  --taw-text-muted: oklch(0.5764 0.087 290.65);        /* Comment #7970A9 */
 
   /* Accent — vivid Dracula Purple */
   --taw-accent: oklch(0.72 0.16 295);
   --taw-accent-hover: oklch(0.78 0.17 295);
   --taw-accent-subtle: oklch(0.28 0.06 295);
 
-  /* Semantic — vivid Dracula palette (brighter for dark bg) */
-  --taw-success: oklch(0.78 0.20 155);       /* Green */
-  --taw-warning: oklch(0.82 0.14 65);        /* Orange */
-  --taw-error: oklch(0.70 0.22 25);          /* Red */
+  /* Semantic — Dracula PRO Base palette */
+  --taw-success: oklch(0.9029 0.197 142.21);       /* Green #8AFF80 */
+  --taw-warning: oklch(0.82 0.14 65);              /* Orange */
+  --taw-error: oklch(0.70 0.22 25);                /* Red */
 
-  /* Dracula extended */
-  --taw-cyan: oklch(0.85 0.11 210);
-  --taw-pink: oklch(0.72 0.20 350);
-  --taw-yellow: oklch(0.88 0.14 100);
+  /* Dracula PRO Base extended */
+  --taw-cyan: oklch(0.9214 0.118 181.40);          /* Cyan #80FFEA */
+  --taw-pink: oklch(0.7616 0.168 350.80);          /* Magenta #FF80BF */
+  --taw-yellow: oklch(0.9750 0.149 108.88);        /* Yellow #FFFF80 */
 
-  /* Syntax highlighting — Dracula (dark) */
-  --taw-syn-keyword: oklch(0.72 0.20 350);      /* Pink #FF79C6 */
-  --taw-syn-string: oklch(0.88 0.14 100);       /* Yellow #F1FA8C */
-  --taw-syn-comment: oklch(0.55 0.04 270);      /* Comment #6272A4 */
-  --taw-syn-type: oklch(0.85 0.11 210);         /* Cyan #8BE9FD */
-  --taw-syn-function: oklch(0.78 0.20 155);     /* Green #50FA7B */
-  --taw-syn-number: oklch(0.72 0.16 295);       /* Purple #BD93F9 */
-  --taw-syn-operator: oklch(0.72 0.20 350);     /* Pink */
-  --taw-syn-property: oklch(0.95 0.01 90);      /* Foreground #F8F8F2 */
-  --taw-syn-tag: oklch(0.72 0.20 350);          /* Pink */
-  --taw-syn-attr: oklch(0.78 0.20 155);         /* Green */
-  --taw-syn-punctuation: oklch(0.70 0.02 90);   /* Subtle foreground */
+  /* Syntax highlighting — Dracula PRO Base (dark) */
+  --taw-syn-keyword: oklch(0.7616 0.168 350.80);      /* Magenta #FF80BF */
+  --taw-syn-string: oklch(0.9750 0.149 108.88);       /* Yellow #FFFF80 */
+  --taw-syn-comment: oklch(0.5764 0.087 290.65);      /* Comment #7970A9 */
+  --taw-syn-type: oklch(0.9214 0.118 181.40);         /* Cyan #80FFEA */
+  --taw-syn-function: oklch(0.9029 0.197 142.21);     /* Green #8AFF80 */
+  --taw-syn-number: oklch(0.6775 0.181 288.17);       /* Blue #9580FF */
+  --taw-syn-operator: oklch(0.7616 0.168 350.80);     /* Magenta #FF80BF */
+  --taw-syn-property: oklch(0.95 0.01 90);            /* Foreground #F8F8F2 */
+  --taw-syn-tag: oklch(0.7616 0.168 350.80);          /* Magenta #FF80BF */
+  --taw-syn-attr: oklch(0.9029 0.197 142.21);         /* Green #8AFF80 */
+  --taw-syn-punctuation: oklch(0.70 0.02 90);         /* Subtle foreground */
 
   /* Shadows — deep purple glow */
   --taw-shadow-sm: 0 1px 3px oklch(0.10 0.03 280 / 0.4);
@@ -112,10 +122,20 @@
 
 /* ═══════════════════════════════════════════════════════════════ */
 
+/* ─── Dark mode: class-based ──────────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ─── Theme transition ─────────────────────────────────── */
+html.theme-ready *,
+html.theme-ready *::before,
+html.theme-ready *::after {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
 body {
   background: var(--taw-surface-sunken);
   color: var(--taw-text-primary);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* ─── Heading anchors ─────────────────────────────────── */
@@ -128,7 +148,7 @@ body {
 /* ─── Code blocks ──────────────────────────────────────── */
 
 pre, code {
-  font-family: var(--font-geist-mono), ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+  font-family: var(--font-mono);
 }
 
 .code-block {
@@ -166,13 +186,13 @@ pre, code {
 }
 
 .code-block-label {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--taw-text-muted);
   font-weight: 500;
 }
 
-/* ─── Scrollbar (scoped — avoid overriding native overlay scrollbar) ── */
+/* ─── Scrollbar ───────────────────────────────────────────── */
 
 .code-block pre::-webkit-scrollbar,
 aside::-webkit-scrollbar {

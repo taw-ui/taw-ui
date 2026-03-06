@@ -108,11 +108,11 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -8 }}
             transition={{ type: "spring", stiffness: 500, damping: 32 }}
-            className="relative w-full max-w-lg overflow-hidden rounded-[--taw-radius-lg] border border-[--taw-border] bg-[--taw-surface] shadow-[--taw-shadow-md]"
+            className="relative w-full max-w-lg overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) shadow-(--taw-shadow-md)"
           >
             {/* Input */}
-            <div className="flex items-center gap-2 border-b border-[--taw-border] px-4 py-3">
-              <PixelIcon name="search" size={16} className="shrink-0 text-[--taw-text-muted]" />
+            <div className="flex items-center gap-2 border-b border-(--taw-border) px-4 py-3">
+              <PixelIcon name="search" size={16} className="shrink-0 text-(--taw-text-muted)" />
               <input
                 ref={inputRef}
                 type="text"
@@ -120,9 +120,9 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Search docs..."
-                className="flex-1 bg-transparent text-[14px] text-[--taw-text-primary] outline-none placeholder:text-[--taw-text-muted]"
+                className="flex-1 bg-transparent text-[14px] text-(--taw-text-primary) outline-none placeholder:text-(--taw-text-muted)"
               />
-              <kbd className="rounded border border-[--taw-border] bg-[--taw-surface-sunken] px-1.5 py-0.5 font-mono text-[10px] text-[--taw-text-muted]">
+              <kbd className="rounded border border-(--taw-border) bg-(--taw-surface-sunken) px-1.5 py-0.5 font-mono text-[10px] text-(--taw-text-muted)">
                 ESC
               </kbd>
             </div>
@@ -130,7 +130,7 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
             {/* Results */}
             <div ref={listRef} className="max-h-[300px] overflow-y-auto p-2">
               {filtered.length === 0 ? (
-                <div className="px-3 py-6 text-center text-[13px] text-[--taw-text-muted]">
+                <div className="px-3 py-6 text-center text-[13px] text-(--taw-text-muted)">
                   No results found.
                 </div>
               ) : (
@@ -142,14 +142,14 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
                     className={cn(
                       "relative flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors",
                       i === activeIndex
-                        ? "text-[--taw-accent]"
-                        : "text-[--taw-text-secondary] hover:bg-[--taw-surface-sunken]",
+                        ? "text-(--taw-accent)"
+                        : "text-(--taw-text-secondary) hover:bg-(--taw-surface-sunken)",
                     )}
                   >
                     {i === activeIndex && (
                       <motion.div
                         layoutId="search-active"
-                        className="absolute inset-0 rounded-lg bg-[--taw-accent-subtle]"
+                        className="absolute inset-0 rounded-lg bg-(--taw-accent-subtle)"
                         transition={{ type: "spring", stiffness: 500, damping: 35 }}
                       />
                     )}
@@ -159,7 +159,7 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
                       <span className="text-[11px] opacity-60">{item.section}</span>
                     </div>
                     {i === activeIndex && (
-                      <kbd className="relative ml-auto rounded border border-[--taw-border] bg-[--taw-surface-sunken] px-1.5 py-0.5 font-mono text-[10px] text-[--taw-text-muted]">
+                      <kbd className="relative ml-auto rounded border border-(--taw-border) bg-(--taw-surface-sunken) px-1.5 py-0.5 font-mono text-[10px] text-(--taw-text-muted)">
                         Enter
                       </kbd>
                     )}

@@ -21,15 +21,15 @@ export function TawSkeleton({ lines, animate, className }: TawSkeletonProps) {
   return (
     <div
       className={cn(
-        "relative flex flex-col gap-2 rounded-[--taw-radius] border p-4",
-        "bg-[--taw-surface] border-[--taw-border]",
+        "relative flex flex-col gap-2 rounded-(--taw-radius) border p-4",
+        "bg-(--taw-surface) border-(--taw-border)",
         className,
       )}
     >
       {lines.map(([height, width], i) => (
         <div
           key={i}
-          className={cn("rounded bg-[--taw-border]", animate && "overflow-hidden")}
+          className={cn("rounded bg-(--taw-border)", animate && "overflow-hidden")}
           style={{ height, width }}
         >
           {animate && <ShimmerBar />}

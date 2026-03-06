@@ -1,6 +1,4 @@
 {
   "installCommand": "corepack enable && pnpm install",
-  "buildCommand": "pnpm build",
-  "outputDirectory": "apps/www/.next",
-  "framework": null
+  "buildCommand": "pnpm build"
 }

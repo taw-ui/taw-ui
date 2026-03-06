@@ -6,11 +6,11 @@ import {
   DataTable as DataTableContract,
   type DataTableData,
   type TawToolPart,
-} from "@taw-ui/core"
+} from "taw-ui"
 
 import { cn } from "./utils/cn"
 import { getEnterProps, staggerParent, enterVariants } from "./motion"
-import { ConfidenceBadge, SourceLabel, TawError, TawSkeleton } from "./shared"
+import { SourceLabel, TawError, TawSkeleton, Typewriter } from "./shared"
 
 // ─── Cell formatters ──────────────────────────────────────────────────────────
 
@@ -19,7 +19,7 @@ function formatCell(
   column: DataTableData["columns"][number],
 ): React.ReactNode {
   if (value === null || value === undefined) {
-    return <span className="text-[--taw-text-muted]">—</span>
+    return <span className="text-(--taw-text-muted)">&mdash;</span>
   }
 
   switch (column.type) {
@@ -57,9 +57,7 @@ function formatCell(
         <span
           className={cn(
             "font-mono tabular-nums",
-            isNeg
-              ? "text-red-600 dark:text-red-400"
-              : "text-emerald-600 dark:text-emerald-400",
+            isNeg ? "text-(--taw-error)" : "text-(--taw-success)",
           )}
         >
           {isNeg ? "" : "+"}
@@ -72,16 +70,16 @@ function formatCell(
       const num = Number(value)
       if (Number.isNaN(num)) return String(value)
       const isNeg = num < 0
-      const arrow = isNeg ? "↓" : num > 0 ? "↑" : "→"
+      const arrow = isNeg ? "\u2193" : num > 0 ? "\u2191" : "\u2192"
       return (
         <span
           className={cn(
             "font-mono text-xs tabular-nums",
             isNeg
-              ? "text-red-600 dark:text-red-400"
+              ? "text-(--taw-error)"
               : num > 0
-                ? "text-emerald-600 dark:text-emerald-400"
-                : "text-[--taw-text-muted]",
+                ? "text-(--taw-success)"
+                : "text-(--taw-text-muted)",
           )}
         >
           {arrow} {isNeg ? "" : "+"}{num}
@@ -92,11 +90,15 @@ function formatCell(
     case "date": {
       const str = String(value)
       try {
-        return new Date(str).toLocaleDateString(column.format?.locale, {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
+        return (
+          <span className="text-(--taw-text-secondary)">
+            {new Date(str).toLocaleDateString(column.format?.locale, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </span>
+        )
       } catch {
         return str
       }
@@ -104,7 +106,7 @@ function formatCell(
 
     case "badge":
       return (
-        <span className="inline-flex rounded-full bg-[--taw-accent]/10 px-2 py-0.5 text-[11px] font-medium text-[--taw-accent]">
+        <span className="inline-flex rounded-full bg-(--taw-surface-sunken) px-2.5 py-0.5 text-[11px] font-medium text-(--taw-text-secondary)">
           {String(value)}
         </span>
       )
@@ -116,7 +118,7 @@ function formatCell(
           href={str}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[--taw-accent] underline decoration-dotted hover:decoration-solid"
+          className="text-(--taw-accent) underline decoration-dotted hover:decoration-solid"
         >
           {str}
         </a>
@@ -125,8 +127,8 @@ function formatCell(
 
     case "boolean":
       return (
-        <span className={value ? "text-emerald-600 dark:text-emerald-400" : "text-[--taw-text-muted]"}>
-          {value ? "✓" : "✗"}
+        <span className={value ? "text-(--taw-success)" : "text-(--taw-text-muted)"}>
+          {value ? "\u2713" : "\u2014"}
         </span>
       )
 
@@ -145,14 +147,26 @@ function SortIcon({
   active: boolean
 }) {
   return (
-    <span
+    <svg
+      width="10"
+      height="10"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={cn(
-        "ml-1 inline-block text-[10px]",
-        active ? "text-[--taw-text-primary]" : "text-[--taw-text-muted] opacity-0 group-hover:opacity-50",
+        "ml-1 inline-block shrink-0 transition-opacity",
+        active ? "opacity-100" : "opacity-0 group-hover:opacity-30",
       )}
     >
-      {direction === "asc" ? "↑" : "↓"}
-    </span>
+      {direction === "asc" ? (
+        <polyline points="18 15 12 9 6 15" />
+      ) : (
+        <polyline points="6 9 12 15 18 9" />
+      )}
+    </svg>
   )
 }
 
@@ -264,55 +278,57 @@ function DataTableView({
       {...getEnterProps(animate)}
       variants={staggerParent}
       className={cn(
-        "relative overflow-hidden rounded-[--taw-radius] border",
-        "bg-[--taw-surface] border-[--taw-border]",
+        "overflow-hidden rounded-(--taw-radius) border border-(--taw-border) bg-(--taw-surface) font-sans",
         className,
       )}
       data-taw-component="data-table"
       data-taw-id={data.id}
     >
-      {data.confidence !== undefined && (
-        <ConfidenceBadge confidence={data.confidence} />
-      )}
-
+      {/* Header */}
       {(data.title || data.description) && (
-        <motion.div variants={enterVariants} className="px-4 pt-4 pb-2">
+        <motion.div
+          variants={enterVariants}
+          className="border-b border-(--taw-border) bg-(--taw-surface-sunken) px-4 py-3"
+        >
           {data.title && (
-            <h3 className="text-sm font-semibold text-[--taw-text-primary]">
+            <h3 className="text-[14px] font-semibold text-(--taw-text-primary)">
               {data.title}
             </h3>
           )}
           {data.description && (
-            <p className="mt-0.5 text-xs text-[--taw-text-muted]">
+            <p className="mt-0.5 text-[11px] text-(--taw-text-muted)">
               {data.description}
             </p>
           )}
         </motion.div>
       )}
 
+      {/* Table */}
       <motion.div variants={enterVariants} className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
+        <table className="w-full border-collapse text-[13px]">
           <thead>
-            <tr className="border-b border-[--taw-border]">
+            <tr className="border-b border-(--taw-border)">
               {data.columns.map((col) => (
                 <th
                   key={col.key}
                   className={cn(
-                    "group px-4 py-2 text-[11px] font-medium uppercase tracking-widest text-[--taw-text-muted]",
+                    "group whitespace-nowrap px-4 py-2.5 text-[11px] font-medium uppercase tracking-widest text-(--taw-text-muted)",
                     col.align === "right" && "text-right",
                     col.align === "center" && "text-center",
-                    col.sortable && "cursor-pointer select-none hover:text-[--taw-text-primary]",
+                    col.sortable && "cursor-pointer select-none transition-colors hover:text-(--taw-text-primary)",
                   )}
                   style={col.width ? { width: col.width } : undefined}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
                 >
-                  {col.label}
-                  {col.sortable && (
-                    <SortIcon
-                      direction={sort?.key === col.key ? sort.direction : "asc"}
-                      active={sort?.key === col.key}
-                    />
-                  )}
+                  <span className="inline-flex items-center">
+                    {col.label}
+                    {col.sortable && (
+                      <SortIcon
+                        direction={sort?.key === col.key ? sort.direction : "asc"}
+                        active={sort?.key === col.key}
+                      />
+                    )}
+                  </span>
                 </th>
               ))}
             </tr>
@@ -322,18 +338,17 @@ function DataTableView({
               <motion.tr
                 key={i}
                 variants={enterVariants}
-                className={cn(
-                  "border-b border-[--taw-border] last:border-b-0",
-                  "hover:bg-[--taw-surface-raised] transition-colors",
-                )}
+                className="border-b border-(--taw-border) transition-colors last:border-b-0 hover:bg-(--taw-surface-sunken)"
               >
-                {data.columns.map((col) => (
+                {data.columns.map((col, colIdx) => (
                   <td
                     key={col.key}
                     className={cn(
-                      "px-4 py-2.5 text-[--taw-text-primary]",
+                      "whitespace-nowrap px-4 py-2.5",
                       col.align === "right" && "text-right",
                       col.align === "center" && "text-center",
+                      colIdx === 0 && "font-medium text-(--taw-text-primary)",
+                      colIdx !== 0 && "text-(--taw-text-secondary)",
                     )}
                   >
                     {formatCell(row[col.key], col)}
@@ -345,19 +360,35 @@ function DataTableView({
         </table>
       </motion.div>
 
+      {/* Footer */}
       {(data.total || data.source) && (
         <motion.div
           variants={enterVariants}
-          className="flex items-center justify-between px-4 py-2 text-[10px] text-[--taw-text-muted]"
+          className="flex items-center justify-between border-t border-(--taw-border) bg-(--taw-surface-sunken) px-4 py-2.5"
         >
-          {data.total ? (
-            <span>
-              {sortedRows.length} of {data.total} rows
-            </span>
-          ) : (
-            <span>{sortedRows.length} rows</span>
-          )}
+          <span className="text-[11px] text-(--taw-text-muted)">
+            {data.total
+              ? `${sortedRows.length} of ${data.total} rows`
+              : `${sortedRows.length} rows`}
+          </span>
           {data.source && <SourceLabel source={data.source} />}
+        </motion.div>
+      )}
+
+      {/* Caveat */}
+      {data.caveat && (
+        <motion.div
+          variants={enterVariants}
+          className="border-t border-(--taw-border) px-4 py-2.5"
+        >
+          <div className="flex gap-1.5 rounded-[6px] bg-(--taw-accent-subtle) px-2.5 py-1.5">
+            <span className="mt-px text-[10px] text-(--taw-accent)">{"\u2192"}</span>
+            <Typewriter
+              text={data.caveat}
+              animate={animate}
+              className="text-[11px] leading-relaxed text-(--taw-accent)"
+            />
+          </div>
         </motion.div>
       )}
     </motion.div>

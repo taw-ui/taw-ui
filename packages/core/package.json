@@ -1,11 +1,14 @@
 {
-  "name": "@taw-ui/core",
+  "name": "taw-ui",
   "version": "0.0.1",
   "private": false,
-  "description": "Core schemas, utilities, and motion system for taw-ui",
+  "description": "Schema contracts, types, and validation for AI tool UI components",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "taw-ui": "./dist/cli/index.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,6 +16,9 @@
       "require": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -21,10 +27,26 @@
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
+  "keywords": [
+    "ai",
+    "tool-calling",
+    "ui",
+    "schema",
+    "zod",
+    "llm",
+    "react",
+    "cli"
+  ],
   "dependencies": {
-    "zod": "^3.24.0"
+    "zod": "^3.24.0",
+    "commander": "^13.1.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2",
+    "fs-extra": "^11.2.0"
   },
   "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
     "typescript": "^5.7.0",
     "tsup": "^8.3.0",
     "vitest": "^4.0.0"

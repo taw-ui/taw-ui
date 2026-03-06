@@ -5,7 +5,7 @@ export default defineConfig({
   format: ["cjs", "esm"],
   dts: true,
   clean: true,
-  external: ["react", "react-dom", "framer-motion", "@taw-ui/core"],
+  external: ["react", "react-dom", "framer-motion", "taw-ui"],
   banner: {
     js: '"use client";',
   },

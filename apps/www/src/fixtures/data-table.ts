@@ -1,4 +1,4 @@
-import type { TawToolPart } from "@taw-ui/core"
+import type { TawToolPart } from "@taw-ui/react"
 
 export const dataTableFixtures: Record<string, TawToolPart> = {
   ready: {
@@ -9,6 +9,7 @@ export const dataTableFixtures: Record<string, TawToolPart> = {
     output: {
       id: "top-customers",
       title: "Top Customers by Revenue",
+      description: "Ranked by total lifetime revenue across all plans",
       columns: [
         { key: "name", label: "Customer", type: "text" },
         { key: "revenue", label: "Revenue", type: "currency", align: "right", sortable: true, format: { currency: "USD" } },
@@ -25,7 +26,7 @@ export const dataTableFixtures: Record<string, TawToolPart> = {
       ],
       total: 5,
       defaultSort: { key: "revenue", direction: "desc" },
-      confidence: 0.95,
+      caveat: "Revenue figures exclude pending invoices",
       source: { label: "Billing API", freshness: "5 min ago" },
     },
   },
@@ -43,3 +44,11 @@ export const dataTableFixtures: Record<string, TawToolPart> = {
     error: "Query timed out after 30s",
   },
 }
+
+export const dataTableOptions = [
+  { key: "title", label: "title", defaultOn: true },
+  { key: "description", label: "description", defaultOn: true },
+  { key: "caveat", label: "caveat", defaultOn: false },
+  { key: "source", label: "source", defaultOn: true },
+  { key: "total", label: "row count", defaultOn: true },
+]

@@ -1,7 +1,8 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
-import { useState, useCallback } from "react"
+import { motion } from "framer-motion"
+import { useState, useCallback, useMemo, useRef } from "react"
+import type { KeyboardEvent } from "react"
 import {
   OptionList as OptionListContract,
   type OptionListData,
@@ -10,91 +11,119 @@ import {
   type TawReceipt,
   type TawInteractiveProps,
   createReceipt,
-} from "@taw-ui/core"
+} from "taw-ui"
 
 import { cn } from "./utils/cn"
-import { getEnterProps, staggerParent, enterVariants, transitions } from "./motion"
-import { TawError, TawSkeleton } from "./shared"
+import { getEnterProps, staggerParent, enterVariants } from "./motion"
+import { SourceLabel, TawError, TawSkeleton, Typewriter } from "./shared"
+
+// ─── Selection indicator (radio vs checkbox) ────────────────────────────────
+
+function SelectionIndicator({
+  mode,
+  selected,
+}: {
+  mode: "single" | "multi"
+  selected: boolean
+}) {
+  if (mode === "single") {
+    return (
+      <span
+        className={cn(
+          "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-all",
+          selected
+            ? "border-(--taw-text-primary) bg-(--taw-text-primary)"
+            : "border-(--taw-border)",
+        )}
+      >
+        {selected && <span className="h-1.5 w-1.5 rounded-full bg-(--taw-surface)" />}
+      </span>
+    )
+  }
+
+  return (
+    <span
+      className={cn(
+        "mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[4px] border-2 transition-all",
+        selected
+          ? "border-(--taw-text-primary) bg-(--taw-text-primary)"
+          : "border-(--taw-border)",
+      )}
+    >
+      {selected && (
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--taw-surface)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      )}
+    </span>
+  )
+}
 
 // ─── Option item ──────────────────────────────────────────────────────────────
 
 function OptionItem({
   option,
   selected,
-  onToggle,
   disabled,
+  selectionMode,
+  onToggle,
+  tabIndex,
+  onFocus,
+  buttonRef,
+  isLast,
 }: {
   option: OptionData
   selected: boolean
-  onToggle: () => void
   disabled: boolean
+  selectionMode: "single" | "multi"
+  onToggle: () => void
+  tabIndex?: number
+  onFocus?: () => void
+  buttonRef?: (el: HTMLButtonElement | null) => void
+  isLast?: boolean
 }) {
   return (
     <motion.button
+      ref={buttonRef}
       variants={enterVariants}
       onClick={onToggle}
+      onFocus={onFocus}
       disabled={disabled}
+      tabIndex={tabIndex}
       type="button"
+      role="option"
+      aria-selected={selected}
       className={cn(
-        "group relative flex w-full items-start gap-3 rounded-[--taw-radius] border p-3 text-left",
-        "transition-colors",
-        selected
-          ? "border-[--taw-accent] bg-[--taw-accent]/5"
-          : "border-[--taw-border] bg-[--taw-surface] hover:border-[--taw-accent]/40",
+        "group relative flex w-full items-start gap-3.5 px-4 py-3.5 text-left",
+        "transition-colors hover:bg-(--taw-text-primary)/3",
+        !isLast && "border-b border-(--taw-border)",
         disabled && "pointer-events-none opacity-50",
       )}
     >
-      {/* Selection indicator */}
-      <span
-        className={cn(
-          "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[10px]",
-          selected
-            ? "border-[--taw-accent] bg-[--taw-accent] text-white"
-            : "border-[--taw-border]",
-        )}
-      >
-        {selected && "✓"}
-      </span>
+      <SelectionIndicator mode={selectionMode} selected={selected} />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[--taw-text-primary]">
+          <span className="text-sm font-medium text-(--taw-text-primary)">
             {option.label}
           </span>
           {option.badge && (
-            <span className="rounded-full bg-[--taw-accent]/10 px-2 py-0.5 text-[10px] font-medium text-[--taw-accent]">
+            <span className="rounded-full bg-(--taw-accent)/10 px-2 py-0.5 text-[10px] font-medium text-(--taw-accent)">
               {option.badge}
             </span>
           )}
           {option.recommended && !option.badge && (
-            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="rounded-full bg-(--taw-success)/10 px-2 py-0.5 text-[10px] font-medium text-(--taw-success)">
               Recommended
             </span>
           )}
         </div>
         {option.description && (
-          <p className="mt-0.5 text-xs text-[--taw-text-muted]">
+          <p className="mt-1 text-xs text-(--taw-text-muted)">
             {option.description}
           </p>
         )}
       </div>
-
-      {/* Score bar */}
-      {option.score !== undefined && (
-        <div className="flex shrink-0 flex-col items-end gap-0.5">
-          <span className="font-mono text-[10px] text-[--taw-text-muted]">
-            {Math.round(option.score * 100)}
-          </span>
-          <div className="h-1 w-10 overflow-hidden rounded-full bg-[--taw-border]">
-            <motion.div
-              className="h-full rounded-full bg-[--taw-accent]"
-              initial={{ width: 0 }}
-              animate={{ width: `${option.score * 100}%` }}
-              transition={transitions.smooth}
-            />
-          </div>
-        </div>
-      )}
     </motion.button>
   )
 }
@@ -119,34 +148,45 @@ function OptionListReceipt({
     <motion.div
       {...getEnterProps(animate)}
       className={cn(
-        "flex items-center gap-3 rounded-[--taw-radius] border p-3",
-        "bg-[--taw-surface] border-[--taw-border]",
+        "flex flex-col rounded-(--taw-radius) border border-(--taw-border) bg-(--taw-surface) overflow-hidden",
         isCancelled && "opacity-60",
       )}
       data-taw-component="option-list"
       data-taw-id={data.id}
       data-taw-receipt
     >
-      <span
-        className={cn(
-          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px]",
-          isCancelled
-            ? "bg-[--taw-border] text-[--taw-text-muted]"
-            : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
-        )}
-      >
-        {isCancelled ? "✗" : "✓"}
-      </span>
-      <div className="min-w-0 flex-1">
-        <span className="text-sm text-[--taw-text-primary]">
-          {receipt.summary}
-        </span>
-        {selectedOptions.length > 0 && (
-          <span className="ml-2 text-xs text-[--taw-text-muted]">
-            {selectedOptions.map((o) => o.label).join(", ")}
+      {selectedOptions.length > 0 ? (
+        <div className="flex flex-col divide-y divide-(--taw-border)">
+          {selectedOptions.map((option) => (
+            <div key={option.id} className="flex items-start gap-3 px-4 py-3">
+              <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center text-(--taw-success)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div className="min-w-0">
+                <span className="text-sm font-medium text-(--taw-text-primary)">
+                  {option.label}
+                </span>
+                {option.description && (
+                  <p className="mt-0.5 text-xs text-(--taw-text-muted)">
+                    {option.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 px-4 py-3">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-(--taw-border) text-(--taw-text-muted) text-[11px]">
+            ✗
           </span>
-        )}
-      </div>
+          <span className="text-sm text-(--taw-text-muted)">
+            {receipt.summary}
+          </span>
+        </div>
+      )}
     </motion.div>
   )
 }
@@ -231,28 +271,58 @@ function OptionListInteractive({
   onAction?: ((actionId: string, payload: unknown) => void) | undefined
   pending: boolean
 }) {
-  const [selected, setSelected] = useState<Set<string>>(
-    () => {
-      const rec = data.options.find((o) => o.recommended)
-      return rec ? new Set([rec.id]) : new Set()
-    },
-  )
+  const mode = data.selectionMode ?? "single"
+  const maxSelections = mode === "single" ? 1 : data.maxSelections
+  const minSelections = data.minSelections ?? 1
+
+  const [selected, setSelected] = useState<Set<string>>(() => {
+    const rec = data.options.find((o) => o.recommended)
+    return rec ? new Set([rec.id]) : new Set()
+  })
+
+  const [activeIndex, setActiveIndex] = useState(() => {
+    const recIdx = data.options.findIndex((o) => o.recommended)
+    return recIdx >= 0 ? recIdx : 0
+  })
+
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([])
+
+  // Compute disabled state per option
+  const optionStates = useMemo(() => {
+    return data.options.map((option) => {
+      const isSelected = selected.has(option.id)
+      const isMaxed =
+        mode === "multi" &&
+        maxSelections !== undefined &&
+        selected.size >= maxSelections &&
+        !isSelected
+      return {
+        option,
+        isSelected,
+        isDisabled: option.disabled || isMaxed || pending,
+      }
+    })
+  }, [data.options, selected, mode, maxSelections, pending])
 
   const handleToggle = useCallback(
     (id: string) => {
       setSelected((prev) => {
         const next = new Set(prev)
-        if (data.multiple) {
-          if (next.has(id)) next.delete(id)
-          else next.add(id)
-        } else {
+        if (mode === "single") {
           next.clear()
           next.add(id)
+        } else {
+          if (next.has(id)) {
+            next.delete(id)
+          } else {
+            if (maxSelections && next.size >= maxSelections) return prev
+            next.add(id)
+          }
         }
         return next
       })
     },
-    [data.multiple],
+    [mode, maxSelections],
   )
 
   const handleConfirm = useCallback(() => {
@@ -275,73 +345,159 @@ function OptionListInteractive({
     })
   }, [onAction])
 
-  const canConfirm = !data.required || selected.size > 0
+  // Keyboard navigation
+  const focusOption = useCallback((index: number) => {
+    optionRefs.current[index]?.focus()
+    setActiveIndex(index)
+  }, [])
+
+  const findNextEnabled = useCallback(
+    (from: number, dir: 1 | -1) => {
+      const len = optionStates.length
+      for (let step = 1; step <= len; step++) {
+        const idx = (from + dir * step + len) % len
+        if (!optionStates[idx]!.isDisabled) return idx
+      }
+      return from
+    },
+    [optionStates],
+  )
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      const { key } = e
+      if (key === "ArrowDown") {
+        e.preventDefault()
+        focusOption(findNextEnabled(activeIndex, 1))
+      } else if (key === "ArrowUp") {
+        e.preventDefault()
+        focusOption(findNextEnabled(activeIndex, -1))
+      } else if (key === "Home") {
+        e.preventDefault()
+        const first = optionStates.findIndex((s) => !s.isDisabled)
+        if (first >= 0) focusOption(first)
+      } else if (key === "End") {
+        e.preventDefault()
+        for (let i = optionStates.length - 1; i >= 0; i--) {
+          if (!optionStates[i]!.isDisabled) { focusOption(i); break }
+        }
+      } else if (key === "Enter" || key === " ") {
+        e.preventDefault()
+        const current = optionStates[activeIndex]
+        if (current && !current.isDisabled) {
+          handleToggle(current.option.id)
+        }
+      }
+    },
+    [activeIndex, optionStates, focusOption, findNextEnabled, handleToggle],
+  )
+
+  const canConfirm = selected.size >= minSelections && selected.size > 0
+  const confirmLabel = mode === "multi" && selected.size > 0
+    ? `${data.confirmLabel} (${selected.size})`
+    : data.confirmLabel
 
   return (
     <motion.div
       {...getEnterProps(animate)}
       variants={staggerParent}
       className={cn(
-        "flex flex-col gap-3 rounded-[--taw-radius] border p-4",
-        "bg-[--taw-surface] border-[--taw-border]",
+        "flex flex-col gap-4",
         className,
       )}
       data-taw-component="option-list"
       data-taw-id={data.id}
     >
-      <motion.div variants={enterVariants}>
-        <h3 className="text-sm font-semibold text-[--taw-text-primary]">
-          {data.question}
-        </h3>
-        {data.description && (
-          <p className="mt-0.5 text-xs text-[--taw-text-muted]">
-            {data.description}
-          </p>
-        )}
-      </motion.div>
-
-      {data.reasoning && (
-        <motion.div
-          variants={enterVariants}
-          className="rounded-[--taw-radius] bg-[--taw-surface-sunken] px-3 py-2"
-        >
-          <span className="text-[10px] font-medium uppercase tracking-widest text-[--taw-text-muted]">
-            AI Reasoning
-          </span>
-          <p className="mt-0.5 text-xs text-[--taw-text-muted]">
-            {data.reasoning}
-          </p>
+      {(data.question || data.description) && (
+        <motion.div variants={enterVariants}>
+          {data.question && (
+            <h3 className="text-sm font-semibold text-(--taw-text-primary)">
+              {data.question}
+            </h3>
+          )}
+          {data.description && (
+            <p className="mt-1 text-xs text-(--taw-text-muted)">
+              {data.description}
+            </p>
+          )}
         </motion.div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <AnimatePresence>
-          {data.options.map((option) => (
-            <OptionItem
-              key={option.id}
-              option={option}
-              selected={selected.has(option.id)}
-              onToggle={() => handleToggle(option.id)}
-              disabled={pending}
-            />
-          ))}
-        </AnimatePresence>
+      <div
+        className="flex flex-col overflow-hidden rounded-(--taw-radius) border border-(--taw-border) bg-(--taw-surface)"
+        role="listbox"
+        aria-multiselectable={mode === "multi"}
+        aria-label={data.question}
+        onKeyDown={handleKeyDown}
+      >
+        {optionStates.map(({ option, isSelected, isDisabled }, index) => (
+          <OptionItem
+            key={option.id}
+            option={option}
+            selected={isSelected}
+            disabled={isDisabled}
+            selectionMode={mode}
+            onToggle={() => handleToggle(option.id)}
+            tabIndex={index === activeIndex ? 0 : -1}
+            onFocus={() => setActiveIndex(index)}
+            buttonRef={(el) => { optionRefs.current[index] = el }}
+            isLast={index === optionStates.length - 1}
+          />
+        ))}
       </div>
 
+      {/* Source */}
+      {data.source && (
+        <motion.div variants={enterVariants}>
+          <SourceLabel source={data.source} />
+        </motion.div>
+      )}
+
+      {/* AI reasoning */}
+      {data.reasoning && (
+        <motion.div
+          variants={enterVariants}
+          className="flex gap-2 rounded-(--taw-radius) bg-(--taw-accent-subtle) px-3 py-2"
+        >
+          <span className="mt-px text-[10px] text-(--taw-accent)">{"\u2192"}</span>
+          <Typewriter
+            text={data.reasoning}
+            animate={animate}
+            className="text-[11px] leading-relaxed text-(--taw-accent)"
+          />
+        </motion.div>
+      )}
+
+      {/* Caveat */}
+      {data.caveat && (
+        <motion.div
+          variants={enterVariants}
+          className="flex gap-2 rounded-(--taw-radius) bg-(--taw-accent-subtle) px-3 py-2"
+        >
+          <span className="mt-px text-[10px] text-(--taw-accent)">{"\u2192"}</span>
+          <Typewriter
+            text={data.caveat}
+            animate={animate}
+            className="text-[11px] leading-relaxed text-(--taw-accent)"
+          />
+        </motion.div>
+      )}
+
+      {/* Actions */}
       {onAction && (
-        <motion.div variants={enterVariants} className="flex justify-end gap-2 pt-1">
+        <motion.div variants={enterVariants} className="flex justify-end gap-3">
           {!data.required && (
             <button
               type="button"
               onClick={handleCancel}
               disabled={pending}
               className={cn(
-                "rounded-[--taw-radius] px-3 py-1.5 text-xs font-medium",
-                "text-[--taw-text-muted] hover:text-[--taw-text-primary] transition-colors",
+                "px-3 py-1.5 text-xs font-medium",
+                "text-(--taw-text-muted) hover:text-(--taw-text-primary) transition-colors",
                 pending && "pointer-events-none opacity-50",
               )}
             >
-              Skip
+              {data.cancelLabel}
             </button>
           )}
           <button
@@ -349,12 +505,14 @@ function OptionListInteractive({
             onClick={handleConfirm}
             disabled={!canConfirm || pending}
             className={cn(
-              "rounded-[--taw-radius] px-4 py-1.5 text-xs font-medium transition-colors",
-              "bg-[--taw-accent] text-white hover:opacity-90",
-              (!canConfirm || pending) && "pointer-events-none opacity-50",
+              "rounded-(--taw-radius) px-4 py-1.5 text-xs font-medium transition-all",
+              canConfirm
+                ? "bg-(--taw-text-primary) text-(--taw-surface) hover:opacity-90"
+                : "bg-(--taw-border) text-(--taw-text-muted) cursor-default",
+              pending && "pointer-events-none opacity-50",
             )}
           >
-            {pending ? "…" : data.confirmLabel}
+            {pending ? "…" : confirmLabel}
           </button>
         </motion.div>
       )}
