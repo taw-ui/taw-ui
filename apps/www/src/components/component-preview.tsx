@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useMemo, useCallback, useId, useRef, useEffect } from "react"
-import type { TawToolPart, TawReceipt } from "@taw-ui/react"
+import type { TawToolPart, TawReceipt } from "taw-ui"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@taw-ui/react"
+import { cn } from "@/lib/cn"
 import { highlightCode } from "@/lib/syntax"
 import { PixelIcon } from "./pixel-icon"
 
@@ -594,7 +594,7 @@ export function ComponentPreview({
                   transition={{ duration: 0.2 }}
                   className="absolute inset-x-0 bottom-0 flex items-end justify-center rounded-b-(--taw-radius-lg)"
                 >
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-(--taw-surface-sunken) to-transparent" />
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-(--taw-surface-sunken) to-transparent" />
                   <motion.button
                     onClick={() => setCodeExpanded(true)}
                     whileHover={{ scale: 1.04 }}
