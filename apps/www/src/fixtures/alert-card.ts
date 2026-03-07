@@ -17,8 +17,8 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
     output: {
       id: "alert-overdue",
       severity: "warning",
-      title: "12 pedidos sem aprova\u00e7\u00e3o",
-      description: "H\u00e1 pedidos em aberto h\u00e1 mais de 5 dias nas lojas Palmas e Porto Nacional.",
+      title: "12 pedidos sem aprovação",
+      description: "Há pedidos em aberto há mais de 5 dias nas lojas Palmas e Porto Nacional.",
       metrics: [
         { label: "Em aberto", value: 12 },
         { label: "Valor total", value: "R$ 45.200" },
@@ -28,7 +28,8 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
         { id: "review", label: "Ver pedidos", primary: true },
         { id: "dismiss", label: "Dispensar" },
       ],
-      reasoning: "Pedidos parados h\u00e1 mais de 5 dias podem impactar o abastecimento das lojas no per\u00edodo de safra.",
+      reasoning: "Pedidos parados há mais de 5 dias podem impactar o abastecimento das lojas no período de safra.",
+      caveat: "Alguns pedidos podem estar aguardando aprovação de crédito do cliente",
       source: { label: "Order Monitor", freshness: "live" },
     },
   },
@@ -41,9 +42,9 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
       id: "alert-stockout",
       severity: "critical",
       title: "Risco de ruptura de estoque",
-      description: "3 produtos na loja Palmas est\u00e3o com estoque abaixo de 1 semana de cobertura.",
+      description: "3 produtos na loja Palmas estão com estoque abaixo de 1 semana de cobertura.",
       metrics: [
-        { label: "Produtos cr\u00edticos", value: 3 },
+        { label: "Produtos críticos", value: 3 },
         { label: "Loja", value: "Palmas" },
         { label: "Impacto estimado", value: "R$ 28.000" },
       ],
@@ -51,6 +52,8 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
         { id: "create-orders", label: "Criar pedidos", primary: true },
         { id: "view-details", label: "Ver detalhes" },
       ],
+      reasoning: "Produtos com cobertura inferior a 1 semana têm 85% de chance de ruptura antes da próxima entrega programada.",
+      caveat: "Há uma entrega do fornecedor prevista para sexta — pode reduzir a urgência",
       source: { label: "Stock Monitor", freshness: "live" },
     },
   },
@@ -71,7 +74,9 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
       actions: [
         { id: "view", label: "Ver entregas", primary: true },
       ],
-      source: { label: "Logistics API" },
+      reasoning: "Entregas programadas para o turno da manhã. Equipe de recebimento já foi notificada.",
+      caveat: "Horários de entrega são estimativas do transportador",
+      source: { label: "Logistics API", freshness: "30 min ago" },
     },
   },
   loading: {

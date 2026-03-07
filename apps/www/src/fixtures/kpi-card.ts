@@ -56,6 +56,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
         },
       ],
       confidence: 0.92,
+      caveat: "NPS data is from a sample of 2,400 respondents, not the full user base",
       source: {
         label: "Stripe + Analytics",
         freshness: "2 hours ago",
@@ -69,6 +70,8 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     state: "output-available",
     output: {
       id: "revenue-hero",
+      title: "Monthly Revenue",
+      description: "Current month to date",
       stats: [
         {
           key: "revenue",
@@ -82,6 +85,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
           diff: { value: 12.4, decimals: 1 },
         },
       ],
+      confidence: 0.88,
       caveat: "Based on partial data — full sync completes tonight",
       source: {
         label: "Stripe Dashboard",
@@ -97,6 +101,8 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     state: "output-available",
     output: {
       id: "two-kpis",
+      title: "Growth Overview",
+      description: "Last 10 months trend",
       stats: [
         {
           key: "mrr",
@@ -121,6 +127,9 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
           diff: { value: 3.1, decimals: 1 },
         },
       ],
+      confidence: 0.95,
+      caveat: "Customer count includes trial accounts that haven't converted yet",
+      source: { label: "Stripe", freshness: "10 min ago" },
     },
   },
   "three-stats": {
@@ -130,6 +139,8 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     state: "output-available",
     output: {
       id: "three-kpis",
+      title: "Infrastructure Health",
+      description: "Production cluster metrics",
       stats: [
         {
           key: "latency",
@@ -147,6 +158,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
           label: "Uptime",
           value: 99.98,
           format: { kind: "percent", decimals: 2, basis: "unit" },
+          diff: { value: 0.01, decimals: 2 },
         },
         {
           key: "errors",
@@ -156,6 +168,8 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
           diff: { value: -0.01, decimals: 2, upIsPositive: false },
         },
       ],
+      confidence: 0.99,
+      caveat: "Latency measured at edge, not origin — actual server latency may differ",
       source: { label: "Datadog", freshness: "5 min ago" },
     },
   },
