@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/v/taw-ui?style=flat-square&color=black)](https://www.npmjs.com/package/taw-ui)
+[![license](https://img.shields.io/badge/license-MIT-black?style=flat-square)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-black?style=flat-square)](./tsconfig.json)
+
 # taw-ui
 
 **UI components for AI tool calls.**
