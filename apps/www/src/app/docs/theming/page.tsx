@@ -426,9 +426,9 @@ export default function ThemingPage() {
 
         <Callout variant="warning">
           shadcn v1 (Tailwind v3) uses raw HSL channel values like{" "}
-          <InlineCode className="text-(--taw-warning)">240 5% 64%</InlineCode>{" "}
+          <span className="text-(--taw-warning)"><InlineCode>240 5% 64%</InlineCode></span>{" "}
           which are not valid CSS colors and will not cascade. If you{"'"}re on
-          shadcn v1, override <InlineCode className="text-(--taw-warning)">--taw-*</InlineCode>{" "}
+          shadcn v1, override <span className="text-(--taw-warning)"><InlineCode>--taw-*</InlineCode></span>{" "}
           tokens directly in your CSS, or upgrade to shadcn v2 + Tailwind v4.
         </Callout>
       </section>
