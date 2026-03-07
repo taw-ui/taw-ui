@@ -436,8 +436,8 @@ export function HeroPlayground() {
                 >
                   ✦
                 </motion.span>
-                <span className="font-pixel text-[13px] tracking-[0.2em] text-(--taw-text-muted) uppercase">
-                  taw-ui
+                <span className="font-pixel text-[13px] tracking-[0.15em] text-(--taw-text-muted)">
+                  The interface layer for the HAI era
                 </span>
               </div>
 
