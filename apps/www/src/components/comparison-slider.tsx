@@ -18,18 +18,21 @@ export function ComparisonSlider({
   afterLabel,
   className = "",
 }: ComparisonSliderProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const isDragging = useRef(false)
   const hasInteracted = useRef(false)
   const [interacted, setInteracted] = useState(false)
 
+  // position = % from left where the divider sits
+  // at 50%: left half = before, right half = after
   const rawPosition = useMotionValue(50)
   const position = useSpring(rawPosition, { stiffness: 300, damping: 30 })
-  const clipRight = useTransform(position, (v) => `${100 - v}%`)
-  const handleLeft = useTransform(position, (v) => `${v}%`)
 
+  // After layer: clip from the left so it's only visible RIGHT of the divider
+  const clipLeft = useTransform(position, (v) => `inset(0 0 0 ${v}%)`)
+  const dividerLeft = useTransform(position, (v) => `${v}%`)
 
+  // Nudge animation to hint it's draggable
   useEffect(() => {
     const nudge = setTimeout(() => {
       if (hasInteracted.current) return
@@ -83,7 +86,7 @@ export function ComparisonSlider({
   }, [])
 
   return (
-    <div ref={containerRef} className={`relative select-none ${className}`}>
+    <div className={`relative select-none ${className}`}>
       {/* Comparison track — grid overlap so tallest child sets height */}
       <div
         ref={trackRef}
@@ -94,13 +97,13 @@ export function ComparisonSlider({
         onPointerCancel={onPointerUp}
         style={{ touchAction: "none" }}
       >
-        {/* Before layer */}
-        <div className="col-start-1 row-start-1 *:flex *:h-full *:flex-col [&>*>*:last-child]:flex-1">{before}</div>
+        {/* Before layer — fully rendered, visible on the LEFT of the divider */}
+        <div className="col-start-1 row-start-1">{before}</div>
 
-        {/* After layer — clipped from the left */}
+        {/* After layer — fully rendered, clipped to only show RIGHT of divider */}
         <motion.div
-          className="col-start-1 row-start-1 z-10 bg-(--taw-surface-sunken) *:flex *:h-full *:flex-col [&>*>*:last-child]:flex-1"
-          style={{ clipPath: useTransform(clipRight, (v) => `inset(0 ${v} 0 0)`) }}
+          className="col-start-1 row-start-1 z-10"
+          style={{ clipPath: clipLeft }}
         >
           {after}
         </motion.div>
@@ -109,7 +112,7 @@ export function ComparisonSlider({
         <motion.div
           className="absolute inset-y-0 z-20 w-px"
           style={{
-            left: handleLeft,
+            left: dividerLeft,
             background: "var(--taw-accent)",
             boxShadow: "0 0 8px oklch(0.55 0.18 295 / 0.3), 0 0 2px oklch(0.55 0.18 295 / 0.5)",
           }}
@@ -118,7 +121,7 @@ export function ComparisonSlider({
         {/* Drag handle */}
         <motion.div
           className="absolute z-30 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-          style={{ left: handleLeft, top: "50%" }}
+          style={{ left: dividerLeft, top: "50%" }}
         >
           <motion.div
             className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-(--taw-accent) bg-(--taw-surface) shadow-[0_2px_12px_oklch(0.55_0.18_295/0.25)]"
@@ -142,7 +145,7 @@ export function ComparisonSlider({
           </motion.div>
         </motion.div>
 
-        {/* "Drag to compare" hint — fades after first interaction */}
+        {/* "Drag to compare" hint */}
         {!interacted && (
           <motion.div
             initial={{ opacity: 0, y: 4 }}
@@ -158,7 +161,7 @@ export function ComparisonSlider({
         )}
       </div>
 
-      {/* Labels — always visible below the slider */}
+      {/* Labels */}
       <div className="mt-3 flex items-center justify-between">
         <span className="flex items-center gap-1.5 font-mono text-[11px] font-medium text-(--taw-error)">
           {beforeLabel}

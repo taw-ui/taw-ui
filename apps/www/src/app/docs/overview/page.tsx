@@ -182,9 +182,7 @@ export default function OverviewPage() {
               <UserMessage>What{"'"}s our current revenue?</UserMessage>
               <AiMessage>
                 <AiTextBubble>Here{"'"}s the current revenue data:</AiTextBubble>
-                <div className="pointer-events-none mt-2">
-                  <KpiCard part={kpiCardFixtures["single"]!} animate={false} />
-                </div>
+                <pre className="mt-2 overflow-x-auto rounded-xl border border-(--taw-border) bg-(--taw-surface) p-3 font-mono text-[10.5px] leading-relaxed text-(--taw-text-muted)">{rawJson}</pre>
               </AiMessage>
             </ChatWindow>
           }
@@ -193,7 +191,9 @@ export default function OverviewPage() {
               <UserMessage>What{"'"}s our current revenue?</UserMessage>
               <AiMessage>
                 <AiTextBubble>Here{"'"}s the current revenue data:</AiTextBubble>
-                <pre className="mt-2 overflow-x-auto rounded-xl border border-(--taw-border) bg-(--taw-surface) p-3 font-mono text-[10.5px] leading-relaxed text-(--taw-text-muted)">{rawJson}</pre>
+                <div className="pointer-events-none mt-2">
+                  <KpiCard part={kpiCardFixtures["single"]!} animate={false} />
+                </div>
               </AiMessage>
             </ChatWindow>
           }

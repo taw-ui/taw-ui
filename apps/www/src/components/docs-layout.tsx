@@ -288,7 +288,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* ─── Body: sidebar + content ─── */}
-        <div className="flex flex-1">
+        <div className="flex min-w-0 flex-1">
           {/* Desktop sidebar */}
           <aside className="sticky top-12 z-20 hidden h-[calc(100vh-3rem)] w-60 shrink-0 flex-col border-r border-(--taw-border) bg-(--taw-surface) lg:flex">
             <div className="flex-1 overflow-y-auto px-3 pt-4 pb-4">
@@ -325,16 +325,16 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
           </AnimatePresence>
 
           {/* Main area */}
-          <div className="flex flex-1">
+          <div className="flex min-w-0 flex-1">
             {/* Content */}
-            <main className="flex-1 overflow-x-hidden">
+            <main className="min-w-0 flex-1 overflow-x-hidden">
               <motion.div
                 key={pathname}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 id="docs-content"
-                className="mx-auto max-w-3xl overflow-x-hidden px-5 py-8 sm:px-8 sm:py-10"
+                className="mx-auto w-full max-w-3xl overflow-x-hidden px-4 py-8 sm:px-8 sm:py-10"
               >
                 {children}
               </motion.div>

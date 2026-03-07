@@ -206,7 +206,7 @@ return <KpiCard data={data} />`}</CodeBlock>
           certain the data is and where it came from.
         </Rule>
 
-        <div className="overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border)">
+        <div className="overflow-x-auto rounded-(--taw-radius-lg) border border-(--taw-border)">
           <table className="w-full text-[12.5px]">
             <thead>
               <tr className="border-b border-(--taw-border) bg-(--taw-surface)">
@@ -366,7 +366,7 @@ return <KpiCard data={data} />`}</CodeBlock>
           understood — it{"'"}s too complex.
         </Rule>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
           {[
             { metric: "400–600px", label: "Max width" },
             { metric: "300px", label: "First impression" },

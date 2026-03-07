@@ -39,7 +39,7 @@ export const linkCardFixtures: Record<string, TawToolPart> = {
 export const linkCardOptions = [
   { key: "image", label: "image", defaultOn: true },
   { key: "description", label: "description", defaultOn: true },
-  { key: "reason", label: "reason", defaultOn: true },
+  { key: "reason", label: "reason", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "favicon", label: "favicon", defaultOn: true },
   { key: "publishedAt", label: "date", defaultOn: true },

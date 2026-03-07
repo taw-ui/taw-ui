@@ -341,6 +341,7 @@ function GridStat({
 }) {
   const isLeft = index % 2 === 0
   const isTop = index < 2
+  const isLast = index === count - 1
 
   return (
     <motion.div
@@ -349,9 +350,12 @@ function GridStat({
       transition={{ duration: 0.15 }}
       className={cn(
         "group relative flex flex-col gap-2 overflow-hidden bg-(--taw-surface) p-4",
-        span && "col-span-2",
-        isLeft && !span && "border-r border-(--taw-border-subtle)",
-        isTop && count > 2 && "border-b border-(--taw-border-subtle)",
+        span && "sm:col-span-2",
+        // Mobile (1 col): bottom border on all except last
+        !isLast && "border-b border-(--taw-border-subtle) sm:border-b-0",
+        // Desktop (2 cols): right border on left cells, bottom border on top row
+        isLeft && !span && "sm:border-r sm:border-(--taw-border-subtle)",
+        isTop && count > 2 && "sm:border-b sm:border-(--taw-border-subtle)",
       )}
     >
       {stat.sparkline && (
@@ -473,7 +477,7 @@ export function KpiCard({
           locale={locale}
         />
       ) : (
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
           {data.stats.map((stat, i) => (
             <GridStat
               key={stat.key}

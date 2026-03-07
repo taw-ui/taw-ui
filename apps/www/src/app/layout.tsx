@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "taw-ui — AI Tool UI Components",
   description:
     "Production-grade React components for rendering AI tool call outputs. Schema-first, motion-native, SDK-agnostic.",
+  icons: { icon: "/favicon.svg" },
 }
 
 // Blocking script that sets .dark before first paint — prevents flash

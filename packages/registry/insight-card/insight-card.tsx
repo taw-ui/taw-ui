@@ -60,14 +60,22 @@ function SentimentIcon({ sentiment, className }: { sentiment: keyof typeof senti
 
 // ─── Metric ──────────────────────────────────────────────────────────────────
 
-function InsightMetric({ metric, animate }: { metric: InsightMetricData; animate: boolean }) {
+function InsightMetric({ metric, animate, index, count }: { metric: InsightMetricData; animate: boolean; index: number; count: number }) {
   const valueColor = metric.status
     ? statusColors[metric.status]
     : "text-(--taw-text-primary)"
 
+  const isLast = index === count - 1
+
   return (
     <motion.div
-      className="group relative flex flex-col gap-1 rounded-lg p-2.5 transition-colors hover:bg-(--taw-surface)"
+      className={cn(
+        "group relative flex flex-col gap-1 p-3 transition-colors hover:bg-(--taw-surface)",
+        // Mobile (1 col): bottom border except last
+        !isLast && "border-b border-(--taw-border-subtle) sm:border-b-0",
+        // Desktop: right border except last
+        !isLast && "sm:border-r sm:border-(--taw-border-subtle)",
+      )}
       {...(animate ? { whileHover: { y: -1 } } : {})}
       transition={transitions.snappy}
     >
@@ -142,13 +150,14 @@ export function InsightCard({
   const sentiment = sentimentConfig[data.sentiment ?? "caution"]
   const sentimentKey = data.sentiment ?? "caution"
 
-  // Grid columns based on metric count
+  // Grid columns: stack on mobile, row on desktop
+  const metricCount = data.metrics.length
   const metricCols =
-    data.metrics.length <= 2
-      ? "grid-cols-2"
-      : data.metrics.length <= 4
-        ? "grid-cols-2 sm:grid-cols-4"
-        : "grid-cols-2 sm:grid-cols-4"
+    metricCount <= 2
+      ? "grid-cols-1 sm:grid-cols-2"
+      : metricCount <= 4
+        ? "grid-cols-1 sm:grid-cols-4"
+        : "grid-cols-1 sm:grid-cols-4"
 
   return (
     <motion.div
@@ -182,24 +191,6 @@ export function InsightCard({
         </motion.div>
 
         {/* Recommendation — hero element */}
-        {data.recommendation && (
-          <motion.div
-            variants={enterVariants}
-            className={cn(
-              "flex items-start gap-2.5 rounded-(--taw-radius) border px-3 py-2.5",
-              sentiment.bg,
-              sentiment.border,
-            )}
-          >
-            <span className={cn("mt-0.5 shrink-0", sentiment.text)}>
-              <SentimentIcon sentiment={sentimentKey} />
-            </span>
-            <span className={cn("text-[13px] font-medium leading-relaxed", sentiment.text)}>
-              {data.recommendation}
-            </span>
-          </motion.div>
-        )}
-
         {/* Metrics grid */}
         <motion.div
           variants={enterVariants}
@@ -208,26 +199,36 @@ export function InsightCard({
             metricCols,
           )}
         >
-          {data.metrics.map((metric) => (
-            <InsightMetric key={metric.label} metric={metric} animate={animate} />
+          {data.metrics.map((metric, i) => (
+            <InsightMetric key={metric.label} metric={metric} animate={animate} index={i} count={metricCount} />
           ))}
         </motion.div>
+
+        {/* Recommendation */}
+        {data.recommendation && (
+          <motion.div variants={enterVariants} className="flex items-start gap-2 px-0.5">
+            <span className={cn("mt-0.5 shrink-0", sentiment.text)}>
+              <SentimentIcon sentiment={sentimentKey} />
+            </span>
+            <Typewriter
+              text={data.recommendation}
+              animate={animate}
+              className="text-[12px] leading-relaxed text-(--taw-text-secondary)"
+            />
+          </motion.div>
+        )}
 
         {/* Reasoning */}
         {data.reasoning && (
           <motion.div
             variants={enterVariants}
-            className="flex gap-2 rounded-(--taw-radius) border border-(--taw-border) bg-(--taw-surface-sunken) px-3 py-2"
+            className="flex gap-2 rounded-(--taw-radius) bg-(--taw-accent-subtle) px-3 py-2"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0 text-(--taw-text-muted)">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="16" x2="12" y2="12" />
-              <line x1="12" y1="8" x2="12.01" y2="8" />
-            </svg>
+            <span className="mt-px text-[10px] text-(--taw-accent)">{"\u2192"}</span>
             <Typewriter
               text={data.reasoning}
               animate={animate}
-              className="text-[11px] leading-relaxed text-(--taw-text-secondary)"
+              className="text-[11px] leading-relaxed text-(--taw-accent)"
             />
           </motion.div>
         )}

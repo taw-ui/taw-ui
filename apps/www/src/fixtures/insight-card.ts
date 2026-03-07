@@ -2,7 +2,8 @@ import type { TawToolPart } from "@taw-ui/react"
 
 export const insightCardOptions = [
   { key: "recommendation", label: "recommendation", defaultOn: true },
-  { key: "reasoning", label: "reasoning", defaultOn: true },
+  { key: "confidence", label: "confidence", defaultOn: true },
+  { key: "reasoning", label: "reasoning", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "source", label: "source", defaultOn: false },
 ]
