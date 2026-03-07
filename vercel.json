@@ -1,4 +1,4 @@
 {
   "installCommand": "corepack enable && pnpm install",
-  "buildCommand": "pnpm build"
+  "buildCommand": "pnpm turbo build --filter=@taw-ui/www"
 }
