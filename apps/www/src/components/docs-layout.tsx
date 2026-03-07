@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback, useSyncExternalStore } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@taw-ui/react"
 import { components, categories } from "@/lib/registry"
+import { version } from "@/lib/version"
 import { TableOfContents } from "./table-of-contents"
 import { SearchDialog } from "./search-dialog"
 import { CopyPage } from "./copy-page"
@@ -251,7 +252,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
                 />
               </motion.div>
               <span className="hidden rounded-md border border-(--taw-border) px-1.5 py-0.5 font-mono text-[10px] text-(--taw-text-muted) sm:inline">
-                v0.0.1
+                v{version}
               </span>
             </Link>
           </div>

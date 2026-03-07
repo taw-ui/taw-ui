@@ -6,10 +6,10 @@ export function ConfidenceBadge({ confidence }: { confidence: number }) {
   const pct = Math.round(confidence * 100)
   const color =
     pct >= 80
-      ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400"
+      ? "bg-(--taw-success)/20 text-(--taw-success)"
       : pct >= 60
-        ? "bg-amber-500/20 text-amber-700 dark:text-amber-400"
-        : "bg-red-500/20 text-red-700 dark:text-red-400"
+        ? "bg-(--taw-warning)/20 text-(--taw-warning)"
+        : "bg-(--taw-error)/20 text-(--taw-error)"
 
   return (
     <span

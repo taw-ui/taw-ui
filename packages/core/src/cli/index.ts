@@ -1,6 +1,7 @@
 import { Command } from "commander"
 import { init } from "./commands/init"
 import { add } from "./commands/add"
+import { list } from "./commands/list"
 
 const program = new Command()
 
@@ -24,5 +25,10 @@ program
   .option("-y, --yes", "Skip confirmation prompts")
   .option("-a, --all", "Add all components")
   .action(add)
+
+program
+  .command("list")
+  .description("List all available components")
+  .action(list)
 
 program.parse()

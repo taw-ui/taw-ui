@@ -15,10 +15,17 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    }
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/motion.mjs",
+      "require": "./dist/motion.js"
+    },
+    "./taw.css": "./src/taw.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/taw.css"
   ],
   "scripts": {
     "build": "tsup",
