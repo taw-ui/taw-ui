@@ -3,7 +3,7 @@ import { defineConfig } from "tsup"
 export default defineConfig([
   // Runtime library (schemas, types, actions, parse)
   {
-    entry: ["src/index.ts", "src/motion.ts"],
+    entry: ["src/index.ts"],
     format: ["cjs", "esm"],
     dts: true,
     clean: true,
