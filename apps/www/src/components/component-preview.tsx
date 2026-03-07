@@ -150,7 +150,7 @@ function StateDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
-            className="absolute right-0 top-full z-50 mt-1.5 min-w-[160px] overflow-hidden rounded-xl border border-(--taw-border) bg-(--taw-surface) p-1 shadow-(--taw-shadow-lg)"
+            className="absolute right-0 top-full z-50 mt-1.5 min-w-[160px] overflow-hidden rounded-xl border border-(--taw-border) bg-(--taw-surface) p-1 shadow-(--taw-shadow-md)"
           >
             {showCategories ? (
               <>

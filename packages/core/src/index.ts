@@ -39,6 +39,15 @@ export type {
 export { tawParse } from "./utils/parse"
 export type { ParseResult, TawParseError } from "./utils/parse"
 
+// Theme tokens
+export {
+  TAW_TOKENS,
+  TAW_TOKEN_CATEGORIES,
+  tawVar,
+  tawVarRef,
+} from "./tokens"
+export type { TawToken } from "./tokens"
+
 // Types
 export type {
   TawPartState,

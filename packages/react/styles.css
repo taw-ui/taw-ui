@@ -1,7 +1,8 @@
 /* ═══════════════════════════════════════════════════════════════
    taw-ui — default theme
 
-   @import "@taw-ui/react/styles.css";
+   Usage:
+     @import "@taw-ui/react/styles.css";
 
    Works out of the box with or without shadcn/ui.
 
@@ -10,76 +11,87 @@
      Your existing theme is picked up automatically.
 
    Without shadcn:
-     Falls back to a clean purple theme with light/dark support.
+     Falls back to a clean neutral theme with light/dark support.
      Override any --taw-* variable to customize.
 
-   shadcn v1 (Tailwind v3) note:
-     Raw HSL values are not valid CSS colors. Override --taw-*
-     vars manually or upgrade to shadcn v2 + Tailwind v4.
+   shadcn v1 (Tailwind v3):
+     Raw HSL channel values are not valid CSS colors and will not
+     cascade correctly. Override --taw-* vars directly or upgrade
+     to shadcn v2 + Tailwind v4.
+
+   Token contract: 23 tokens
+   See packages/core/src/tokens.ts for the canonical list.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Surfaces */
+  /* ── Surfaces ─────────────────────────────────────────────── */
   --taw-surface: var(--background, #ffffff);
   --taw-surface-raised: var(--card, #fafafa);
   --taw-surface-sunken: var(--muted, #f5f5f5);
 
-  /* Borders */
+  /* ── Borders ──────────────────────────────────────────────── */
   --taw-border: var(--border, #e5e7eb);
-  --taw-border-subtle: var(--border, #f0f0f0);
+  --taw-border-subtle: color-mix(in oklch, var(--border, #e5e7eb) 60%, white);
+  --taw-border-strong: var(--input, #d1d5db);
 
-  /* Text */
+  /* ── Text ──────────────────────────────────────────────────── */
   --taw-text-primary: var(--foreground, #0a0a0a);
   --taw-text-secondary: var(--secondary-foreground, #525252);
   --taw-text-muted: var(--muted-foreground, #a3a3a3);
+  --taw-text-disabled: color-mix(in oklch, var(--muted-foreground, #a3a3a3) 60%, white);
 
-  /* Accent — maps from shadcn --primary */
+  /* ── Accent ────────────────────────────────────────────────── */
   --taw-accent: var(--primary, #7c3aed);
-  --taw-accent-hover: color-mix(in oklch, var(--primary, #7c3aed) 85%, black);
   --taw-accent-subtle: color-mix(in oklch, var(--primary, #7c3aed) 8%, var(--background, #ffffff));
+  --taw-accent-hover: color-mix(in oklch, var(--primary, #7c3aed) 85%, black);
 
-  /* Semantic */
+  /* ── Semantic ──────────────────────────────────────────────── */
   --taw-success: #16a34a;
   --taw-warning: #d97706;
   --taw-error: var(--destructive, #dc2626);
 
-  /* Radii */
+  /* ── Radius ────────────────────────────────────────────────── */
   --taw-radius: var(--radius, 0.5rem);
-  --taw-radius-lg: calc(var(--radius, 0.5rem) + 0.25rem);
+  --taw-radius-sm: calc(var(--radius, 0.5rem) - 2px);
+  --taw-radius-lg: calc(var(--radius, 0.5rem) + 4px);
 
-  /* Shadows */
+  /* ── Shadows ───────────────────────────────────────────────── */
   --taw-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
-  --taw-shadow-md: 0 2px 8px rgb(0 0 0 / 0.08);
+  --taw-shadow-md: 0 2px 8px rgb(0 0 0 / 0.08), 0 1px 2px rgb(0 0 0 / 0.04);
   --taw-shadow-ring: 0 0 0 1px rgb(0 0 0 / 0.05);
 }
 
 .dark {
-  /* Surfaces */
+  /* ── Surfaces ─────────────────────────────────────────────── */
   --taw-surface: var(--background, #171717);
   --taw-surface-raised: var(--card, #262626);
   --taw-surface-sunken: var(--muted, #0a0a0a);
 
-  /* Borders */
+  /* ── Borders ──────────────────────────────────────────────── */
   --taw-border: var(--border, #2e2e2e);
-  --taw-border-subtle: var(--border, #1f1f1f);
+  --taw-border-subtle: color-mix(in oklch, var(--border, #2e2e2e) 70%, black);
+  --taw-border-strong: var(--input, #3f3f3f);
 
-  /* Text */
+  /* ── Text ──────────────────────────────────────────────────── */
   --taw-text-primary: var(--foreground, #fafafa);
   --taw-text-secondary: var(--secondary-foreground, #a3a3a3);
   --taw-text-muted: var(--muted-foreground, #737373);
+  --taw-text-disabled: color-mix(in oklch, var(--muted-foreground, #737373) 50%, black);
 
-  /* Accent */
+  /* ── Accent ────────────────────────────────────────────────── */
   --taw-accent: var(--primary, #a78bfa);
-  --taw-accent-hover: color-mix(in oklch, var(--primary, #a78bfa) 85%, white);
   --taw-accent-subtle: color-mix(in oklch, var(--primary, #a78bfa) 12%, var(--background, #171717));
+  --taw-accent-hover: color-mix(in oklch, var(--primary, #a78bfa) 85%, white);
 
-  /* Semantic */
+  /* ── Semantic ──────────────────────────────────────────────── */
   --taw-success: #4ade80;
   --taw-warning: #fbbf24;
   --taw-error: var(--destructive, #ef4444);
 
-  /* Shadows */
+  /* ── Radius (inherited from :root) ─────────────────────────── */
+
+  /* ── Shadows ───────────────────────────────────────────────── */
   --taw-shadow-sm: 0 1px 3px rgb(0 0 0 / 0.3);
-  --taw-shadow-md: 0 2px 10px rgb(0 0 0 / 0.4);
+  --taw-shadow-md: 0 2px 10px rgb(0 0 0 / 0.4), 0 1px 2px rgb(0 0 0 / 0.2);
   --taw-shadow-ring: 0 0 0 1px rgb(255 255 255 / 0.05);
 }

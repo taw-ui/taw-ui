@@ -24,11 +24,13 @@
   --taw-surface-sunken: oklch(0.945 0.010 85);
   --taw-border: oklch(0.88 0.015 85);
   --taw-border-subtle: oklch(0.92 0.010 85);
+  --taw-border-strong: oklch(0.80 0.015 85);
 
   /* Text — Dracula foreground tones on light */
   --taw-text-primary: oklch(0.22 0.04 290);
   --taw-text-secondary: oklch(0.40 0.03 290);
   --taw-text-muted: oklch(0.52 0.04 290);
+  --taw-text-disabled: oklch(0.68 0.03 290);
 
   /* Accent — Alucard Purple #644AC9 */
   --taw-accent: oklch(0.5091 0.188 287.15);
@@ -60,6 +62,7 @@
 
   /* Radius */
   --taw-radius: 8px;
+  --taw-radius-sm: 5px;
   --taw-radius-lg: 12px;
 
   /* Shadows — warm-tinted */
@@ -80,11 +83,13 @@
   --taw-surface-sunken: oklch(0.18 0.025 280);
   --taw-border: oklch(0.32 0.03 280);
   --taw-border-subtle: oklch(0.28 0.025 280);
+  --taw-border-strong: oklch(0.40 0.03 280);
 
   /* Text — Dracula PRO Base foreground tones */
   --taw-text-primary: oklch(0.9775 0.008 106.55);      /* Foreground #F8F8F2 */
   --taw-text-secondary: oklch(0.78 0.01 280);
   --taw-text-muted: oklch(0.5764 0.087 290.65);        /* Comment #7970A9 */
+  --taw-text-disabled: oklch(0.42 0.04 280);
 
   /* Accent — vivid Dracula Purple */
   --taw-accent: oklch(0.72 0.16 295);
