@@ -511,14 +511,16 @@ function ToolOutput({ part }: { part: TawToolPart }) {
           A dedicated Theming page with the full token reference is coming soon.
         </p>
 
-        {/* Theming placeholder */}
-        <div className="mt-4 flex items-center gap-3 rounded-(--taw-radius-lg) border border-(--taw-border) border-dashed bg-(--taw-surface) px-4 py-3">
+        <a
+          href="/docs/theming"
+          className="mt-4 flex items-center gap-3 rounded-(--taw-radius-lg) border border-(--taw-accent)/30 bg-(--taw-accent-subtle) px-4 py-3 transition-all hover:border-(--taw-accent)/60"
+        >
           <PixelIcon name="zap" size={14} />
           <div>
-            <span className="block text-[12px] font-medium text-(--taw-text-secondary)">Theming page — coming soon</span>
-            <span className="text-[11px] text-(--taw-text-muted)">Full token reference, dark/light examples, and custom theme guide</span>
+            <span className="block text-[12px] font-medium text-(--taw-accent)">Theming →</span>
+            <span className="text-[11px] text-(--taw-text-muted)">Full token reference, shadcn v2 compatibility, override examples, and troubleshooting</span>
           </div>
-        </div>
+        </a>
       </section>
 
       {/* What's next — improved */}

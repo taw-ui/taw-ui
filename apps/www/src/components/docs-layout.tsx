@@ -20,6 +20,7 @@ const navSections = [
       { label: "Quick Start", href: "/docs/quick-start" },
       { label: "Concepts", href: "/docs/concepts" },
       { label: "Principles", href: "/docs/principles" },
+      { label: "Theming", href: "/docs/theming" },
     ],
   },
   ...Object.entries(categories)
@@ -365,6 +366,7 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
     "quick-start": "Quick Start",
     principles: "Principles",
     concepts: "Concepts",
+    theming: "Theming",
     components: "Components",
     "kpi-card": "KpiCard",
     "data-table": "DataTable",
