@@ -2,5 +2,5 @@
   "framework": "nextjs",
   "installCommand": "corepack enable && pnpm install",
   "buildCommand": "pnpm turbo build --filter=@taw-ui/www",
-  "outputDirectory": "apps/www/.next"
+  "outputDirectory": ".next"
 }
