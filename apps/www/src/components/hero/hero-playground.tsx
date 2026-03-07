@@ -211,7 +211,7 @@ function PromptInput({
           }}
           disabled={disabled}
           placeholder="Ask for any interface or type / for commands..."
-          className="w-full bg-transparent py-1 text-[14px] text-(--taw-text-primary) placeholder:text-(--taw-text-muted) outline-none! focus-visible:outline-none!"
+          className="w-full bg-transparent py-1 text-[16px] sm:text-[14px] text-(--taw-text-primary) placeholder:text-(--taw-text-muted) outline-none! focus-visible:outline-none!"
         />
         <div className="flex items-center justify-between">
           <button
