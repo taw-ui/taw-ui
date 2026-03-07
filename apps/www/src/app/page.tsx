@@ -147,7 +147,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden bg-(--taw-surface-sunken)">
+    <div className="flex h-dvh flex-col overflow-hidden bg-(--taw-surface-sunken)">
       <HomeHeader />
       <main className="flex min-h-0 flex-1 flex-col">
         <HeroPlayground />
