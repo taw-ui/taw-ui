@@ -15,12 +15,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./taw.css": "./src/taw.css"
+    }
   },
   "files": [
-    "dist",
-    "src/taw.css"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
