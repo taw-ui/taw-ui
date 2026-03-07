@@ -18,8 +18,8 @@ const navSections = [
     items: [
       { label: "Overview", href: "/docs/overview" },
       { label: "Quick Start", href: "/docs/quick-start" },
-      { label: "Principles", href: "/docs/principles" },
       { label: "Concepts", href: "/docs/concepts" },
+      { label: "Principles", href: "/docs/principles" },
     ],
   },
   ...Object.entries(categories)

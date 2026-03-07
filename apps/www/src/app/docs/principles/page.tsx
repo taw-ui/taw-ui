@@ -108,16 +108,87 @@ export default function PrinciplesPage() {
           Principles
         </h1>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-(--taw-text-secondary)">
-          taw-ui is built for the next generation of Human-AI Interaction.
-          These are the rules we follow — and the rules we think every AI
-          tool UI library should follow.
+          The way we build AI interfaces reflects what we believe about AI{"'"}s
+          role in products. These are taw-ui{"'"}s convictions — not conventions.
+          Some will feel obvious. Others will challenge how you{"'"}ve been building.
         </p>
 
         <Callout>
-          The AI returns JSON. The component renders it. The developer writes
-          zero glue code. That{"'"}s the entire contract.
+          These aren{"'"}t style guidelines. They{"'"}re positions. We believe AI products
+          that ignore interface quality are leaving the most important part of
+          the experience on the floor.
         </Callout>
       </div>
+
+      {/* ─── The HAI Contract ─── (moved to top as foundation) */}
+      <section>
+        <h2 className="mb-2 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          The HAI Contract
+        </h2>
+        <p className="mb-6 text-[14px] leading-relaxed text-(--taw-text-secondary)">
+          Human-AI Interaction has three participants. Each has a clear
+          responsibility. When any one oversteps, the experience breaks.
+          The seven principles below are how this contract gets implemented in practice.
+        </p>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {([
+            {
+              role: "AI",
+              icon: "diamond" as PixelIconName,
+              does: "Returns structured data matching a schema. Introduces the component with context. References it later by ID in follow-up turns.",
+              doesnt: "Describe what the component already shows. Make rendering decisions. Generate HTML or styles.",
+            },
+            {
+              role: "Component",
+              icon: "circle-dot" as PixelIconName,
+              does: "Validates data. Renders all lifecycle states. Provides built-in affordances. Produces receipts from decisions.",
+              doesnt: "Fetch data. Make AI calls. Render outside its container. Assume context about the conversation.",
+            },
+            {
+              role: "Developer",
+              icon: "triangle" as PixelIconName,
+              does: "Registers tools with output schemas. Maps tool names to components. Passes the part prop.",
+              doesnt: "Write conditional rendering. Build loading states. Validate data manually. Style individual tool results.",
+            },
+          ]).map(({ role, icon, does, doesnt }) => (
+            <div
+              key={role}
+              className="group rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) p-5 shadow-(--taw-shadow-sm) transition-all hover:shadow-(--taw-shadow-md)"
+            >
+              <div className="mb-3 flex items-center gap-2.5">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-(--taw-accent-subtle) text-(--taw-accent)">
+                  <PixelIcon name={icon} size={16} />
+                </span>
+                <span className="font-pixel text-[13px] text-(--taw-text-primary)">
+                  {role}
+                </span>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-(--taw-success)">
+                    <span className="h-1 w-1 rounded-full bg-(--taw-success)" />
+                    Responsible for
+                  </span>
+                  <p className="text-[12px] leading-relaxed text-(--taw-text-muted)">
+                    {does}
+                  </p>
+                </div>
+                <div className="border-t border-(--taw-border-subtle) pt-3">
+                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-(--taw-error)">
+                    <span className="h-1 w-1 rounded-full bg-(--taw-error)" />
+                    Never does
+                  </span>
+                  <p className="text-[12px] leading-relaxed text-(--taw-text-muted)">
+                    {doesnt}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ─── Principle 01 ─── */}
       <Principle number="01" title="The Schema Is the API">
@@ -356,14 +427,22 @@ return <KpiCard data={data} />`}</CodeBlock>
         </div>
       </Principle>
 
-      {/* ─── Principle 06 ─── */}
-      <Principle number="06" title="Chat-Native by Default">
+      {/* ─── Principle 06 ─── (retitled) */}
+      <Principle number="06" title="Designed for the Interface Layer">
         <Rule>
-          AI tool UIs live inside chat. Chat is a vertical feed, 400–600px
-          wide, where attention is scarce. Every component must communicate
-          its purpose within the first 300px of vertical space. If a
-          component needs tabs, navigation, or horizontal scrolling to be
-          understood — it{"'"}s too complex.
+          AI interfaces have a different constraint set than traditional product
+          UIs. They live inside a conversation flow. They appear at unpredictable
+          moments. They must communicate their purpose immediately — without
+          navigation, tabs, or a learning curve. taw-ui components are designed
+          to satisfy these constraints first, not as an afterthought.
+        </Rule>
+
+        <Rule>
+          Chat is often where AI interfaces live today — but the principles
+          here apply anywhere AI returns structured output: sidebars, command
+          palettes, embedded panels, async notifications. The rules stay the
+          same: single-column, immediately scannable, actionable with one
+          interaction.
         </Rule>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -389,7 +468,7 @@ return <KpiCard data={data} />`}</CodeBlock>
 
         <div className="grid gap-2 sm:grid-cols-2">
           <Dont>
-            Build components that need tabs, forms, or horizontal scroll
+            Build components that need tabs, forms, or horizontal scroll to be understood
           </Dont>
           <Do>
             Single-column, scannable in 300px, actionable with one tap
@@ -447,76 +526,7 @@ return <KpiCard data={data} />`}</CodeBlock>
         </div>
       </Principle>
 
-      {/* ─── The HAI Contract ─── */}
-      <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          The HAI Contract
-        </h2>
-        <p className="mb-6 text-[14px] leading-relaxed text-(--taw-text-secondary)">
-          Human-AI Interaction has three participants. Each has a clear
-          responsibility. When one oversteps, the experience breaks.
-        </p>
-
-        <div className="grid gap-3 sm:grid-cols-3">
-          {([
-            {
-              role: "AI",
-              icon: "diamond" as PixelIconName,
-              does: "Returns structured data matching a schema. Introduces the component with context. References it later by ID.",
-              doesnt: "Describe what the component already shows. Make rendering decisions. Generate HTML or styles.",
-            },
-            {
-              role: "Component",
-              icon: "circle-dot" as PixelIconName,
-              does: "Validates data. Renders all states. Provides built-in affordances. Produces receipts from decisions.",
-              doesnt: "Fetch data. Make AI calls. Render outside its container. Assume context about the conversation.",
-            },
-            {
-              role: "Developer",
-              icon: "triangle" as PixelIconName,
-              does: "Registers tools with schemas. Maps tool names to components. Passes the part prop.",
-              doesnt: "Write conditional rendering. Build loading states. Validate data manually. Style individual tool results.",
-            },
-          ]).map(({ role, icon, does, doesnt }) => (
-            <div
-              key={role}
-              className="group rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) p-5 shadow-(--taw-shadow-sm) transition-all hover:shadow-(--taw-shadow-md)"
-            >
-              <div className="mb-3 flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-(--taw-accent-subtle) text-(--taw-accent)">
-                  <PixelIcon name={icon} size={16} />
-                </span>
-                <span className="font-pixel text-[13px] text-(--taw-text-primary)">
-                  {role}
-                </span>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-(--taw-success)">
-                    <span className="h-1 w-1 rounded-full bg-(--taw-success)" />
-                    Responsible for
-                  </span>
-                  <p className="text-[12px] leading-relaxed text-(--taw-text-muted)">
-                    {does}
-                  </p>
-                </div>
-                <div className="border-t border-(--taw-border-subtle) pt-3">
-                  <span className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-(--taw-error)">
-                    <span className="h-1 w-1 rounded-full bg-(--taw-error)" />
-                    Never does
-                  </span>
-                  <p className="text-[12px] leading-relaxed text-(--taw-text-muted)">
-                    {doesnt}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── TL;DR ─── */}
+      {/* ─── Closing statement ─── */}
       <section className="relative overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-accent-subtle) px-6 py-6">
         <div
           className="absolute inset-0 opacity-[0.03]"
@@ -526,6 +536,20 @@ return <KpiCard data={data} />`}</CodeBlock>
             backgroundSize: "16px 16px",
           }}
         />
+        <p className="relative mb-4 text-[14px] leading-relaxed text-(--taw-text-primary)">
+          These principles exist because we believe taw-ui has a job that
+          matters. AI is getting faster. Outputs are getting richer. The
+          interface layer is what decides whether that richness reaches
+          users — or disappears into walls of text.
+        </p>
+        <p className="relative text-[14px] leading-relaxed text-(--taw-text-secondary)">
+          Build components that respect these principles, and your AI will
+          feel smarter. Not because the model changed. Because the interface did.
+        </p>
+      </section>
+
+      {/* ─── TL;DR ─── */}
+      <section className="relative overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-6 py-6">
         <h2 className="relative mb-4 font-pixel text-[12px] uppercase tracking-wider text-(--taw-accent)">
           TL;DR
         </h2>
@@ -536,7 +560,7 @@ return <KpiCard data={data} />`}</CodeBlock>
             ["03", "Confidence and source are first-class"],
             ["04", "Decisions collapse into receipts"],
             ["05", "Everything has a stable ID"],
-            ["06", "Chat-native, single-column, no forms"],
+            ["06", "Single-column, scannable, no forms"],
             ["07", "Errors are visible, never silent"],
           ].map(([num, text]) => (
             <div key={num} className="flex items-baseline gap-2.5">
@@ -545,6 +569,24 @@ return <KpiCard data={data} />`}</CodeBlock>
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ─── Next steps ─── */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        <a
+          href="/docs/concepts"
+          className="group flex flex-col gap-1 rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-4 py-3.5 shadow-(--taw-shadow-sm) transition-all hover:border-(--taw-accent)/30 hover:shadow-(--taw-shadow-md)"
+        >
+          <span className="text-[13px] font-medium text-(--taw-text-primary)">Concepts →</span>
+          <span className="text-[12px] text-(--taw-text-muted)">Build the vocabulary: lifecycle, confidence, receipts, and more</span>
+        </a>
+        <a
+          href="/docs/quick-start"
+          className="group flex flex-col gap-1 rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-4 py-3.5 shadow-(--taw-shadow-sm) transition-all hover:border-(--taw-accent)/30 hover:shadow-(--taw-shadow-md)"
+        >
+          <span className="text-[13px] font-medium text-(--taw-text-primary)">Quick Start →</span>
+          <span className="text-[12px] text-(--taw-text-muted)">See the principles in action — first component in under 10 minutes</span>
+        </a>
       </section>
     </div>
   )

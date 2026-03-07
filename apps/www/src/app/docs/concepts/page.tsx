@@ -4,6 +4,7 @@ import { KpiCard, OptionList } from "@taw-ui/react"
 import type { TawToolPart } from "@taw-ui/react"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
+import { PixelIcon } from "@/components/pixel-icon"
 
 // ─── Fixtures for lifecycle demos ─────────────────────────────────────────────
 
@@ -50,8 +51,6 @@ const errorPart: TawToolPart = {
   error: new Error("Connection timeout after 30s"),
 }
 
-// Using shared CodeBlock and InlineCode from @/components/code-block
-
 function StateCard({
   label,
   state,
@@ -88,6 +87,7 @@ function StateCard({
 export default function ConceptsPage() {
   return (
     <div className="space-y-12">
+      {/* Hero */}
       <div>
         <div className="mb-3 flex items-center justify-between">
           <span className="rounded-md bg-(--taw-accent-subtle) px-2 py-0.5 font-pixel text-[10px] uppercase tracking-wider text-(--taw-accent)">
@@ -99,28 +99,98 @@ export default function ConceptsPage() {
           Concepts
         </h1>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-(--taw-text-secondary)">
-          The mental model behind taw-ui: tool call lifecycle, AI-native fields,
-          and the patterns that make interactive components work in chat UIs.
+          taw-ui is built around one core idea: every AI tool call is a{" "}
+          <strong className="font-semibold text-(--taw-text-primary)">part</strong>,
+          and every part has a{" "}
+          <strong className="font-semibold text-(--taw-text-primary)">lifecycle</strong>.
+          Once you understand that model, everything else — schemas, confidence
+          fields, receipt patterns — follows naturally.
+        </p>
+        <p className="mt-3 max-w-xl text-[14px] leading-relaxed text-(--taw-text-muted)">
+          This page builds that vocabulary. Read it before going deep on
+          individual components.
         </p>
       </div>
 
+      {/* ─── The Core Model ─── (new opening section) */}
+      <section>
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          The Core Model
+        </h2>
+        <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          An AI tool call isn{"'"}t a single event. It{"'"}s a sequence: the tool is
+          invoked, data starts arriving (or doesn{"'"}t), the result is complete
+          (or fails). taw-ui calls this the{" "}
+          <strong className="font-medium text-(--taw-text-primary)">part lifecycle</strong>.
+        </p>
+        <p className="mb-5 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          taw-ui components are designed around this lifecycle. They don{"'"}t ask
+          you to manage state. They don{"'"}t ask you to write conditionals. They
+          accept a <InlineCode>part</InlineCode> — and render the right interface
+          for whatever state that part is in.
+        </p>
+
+        {/* Lifecycle flow diagram */}
+        <div className="flex flex-wrap items-center gap-2 rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-5 py-4">
+          {[
+            { label: "input-available", desc: "Called, waiting" },
+            { label: "streaming", desc: "Partial data arriving" },
+            { label: "output-available", desc: "Complete result" },
+          ].map((step, i) => (
+            <div key={step.label} className="flex items-center gap-2">
+              {i > 0 && (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-(--taw-border)">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              )}
+              <div className="text-center">
+                <span className="block rounded-md bg-(--taw-accent-subtle) px-2 py-1 font-mono text-[10px] font-medium text-(--taw-accent)">
+                  {step.label}
+                </span>
+                <span className="mt-1 block text-[10px] text-(--taw-text-muted)">
+                  {step.desc}
+                </span>
+              </div>
+            </div>
+          ))}
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-(--taw-border)">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <div className="text-center">
+              <span className="block rounded-md bg-(--taw-error)/10 px-2 py-1 font-mono text-[10px] font-medium text-(--taw-error)">
+                output-error
+              </span>
+              <span className="mt-1 block text-[10px] text-(--taw-text-muted)">
+                Tool failed
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          Every concept on this page connects back to this model. The
+          schema validates output. Confidence and source annotate it.
+          The receipt pattern closes interactive states. They{"'"}re all
+          facets of how taw-ui handles the part lifecycle.
+        </p>
+      </section>
+
       {/* Tool Call Lifecycle */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Tool Call Lifecycle
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          Every AI tool call goes through a lifecycle. SDKs represent this as a
-          {" "}<InlineCode>part</InlineCode> object with a <InlineCode>state</InlineCode> field.
-          taw-ui components handle all four states from a single prop — no
-          conditional rendering needed.
+          taw-ui components handle all four lifecycle states from a single prop.
+          Here{"'"}s what each state looks like in practice:
         </p>
 
         <div className="grid gap-4">
           <StateCard
             label="Loading"
             state="input-available"
-            description="Tool was called but hasn't returned yet. Component shows a skeleton."
+            description="Tool was called but hasn't returned yet. Component shows a shimmer skeleton automatically."
           >
             <KpiCard part={loadingPart} animate={false} />
           </StateCard>
@@ -136,7 +206,7 @@ export default function ConceptsPage() {
           <StateCard
             label="Output"
             state="output-available"
-            description="Tool returned successfully. Component validates and renders the full result."
+            description="Tool returned successfully. Component validates against the schema and renders the full result."
           >
             <KpiCard part={outputPart} animate={false} />
           </StateCard>
@@ -144,7 +214,7 @@ export default function ConceptsPage() {
           <StateCard
             label="Error"
             state="output-error"
-            description="Tool failed or returned invalid data. Component shows a helpful error panel."
+            description="Tool failed or returned invalid data. Component shows a helpful error panel — never null."
           >
             <KpiCard part={errorPart} animate={false} />
           </StateCard>
@@ -162,13 +232,14 @@ function ToolResult({ part }: { part: TawToolPart }) {
 
       {/* The Part Object */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           The Part Object
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
           <InlineCode>TawToolPart</InlineCode> is the universal shape for tool call data.
-          It matches the structure used by Vercel AI SDK, Anthropic SDK, and
-          OpenAI SDK — so you can pass SDK parts directly without transformation.
+          It{"'"}s deliberately shaped to match what Vercel AI SDK, Anthropic SDK, and
+          OpenAI SDK already return from their streaming hooks — so you can pass
+          SDK parts directly without transformation.
         </p>
         <CodeBlock>{`interface TawToolPart<TInput = unknown, TOutput = unknown> {
   id: string           // Unique call ID
@@ -186,7 +257,7 @@ function ToolResult({ part }: { part: TawToolPart }) {
 
       {/* Confidence & Caveat */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Confidence & Caveat
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
@@ -204,7 +275,8 @@ function ToolResult({ part }: { part: TawToolPart }) {
             </span>
             <p className="mt-1.5 text-[12px] text-(--taw-text-muted)">
               Machine-readable signal for developers. Use it to filter, threshold,
-              or decide when to set a caveat. Never rendered as a number in the UI.
+              or decide when to set a caveat. Drives the confidence badge in the
+              UI — never rendered as a raw number.
             </p>
           </div>
           <div className="rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-4 py-3 shadow-(--taw-shadow-sm)">
@@ -216,7 +288,7 @@ function ToolResult({ part }: { part: TawToolPart }) {
             </span>
             <p className="mt-1.5 text-[12px] text-(--taw-text-muted)">
               Human-readable uncertainty note from the AI. Only set when there{"'"}s
-              something to say — silence is confidence.
+              something meaningful to say — silence is confidence.
             </p>
           </div>
         </div>
@@ -235,13 +307,13 @@ return {
 
       {/* Source Provenance */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Source Provenance
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
           Where did this data come from? The optional <InlineCode>source</InlineCode> field
           lets your tools declare their data origin. Components render this as a
-          subtle footer with the source name, freshness timestamp, and optional link.
+          subtle footer with the source name, freshness timestamp, and an optional link.
         </p>
         <CodeBlock>{`// Included in every schema
 source: {
@@ -258,7 +330,7 @@ source: {
 
       {/* Schema Validation */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Schema Validation
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
@@ -304,44 +376,32 @@ const partial = KpiCard.safeParse(output)
 
       {/* Receipt Pattern */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           The Receipt Pattern
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          In chat UIs, interactive components (choice lists, forms, confirmations)
+          In AI interfaces, interactive components (choice lists, confirmations)
           have a problem: after the user decides, the full component wastes vertical
-          space. The receipt pattern solves this — after a decision, the component
-          collapses into a compact, read-only summary of what was chosen.
+          space — and the buttons are now stale and potentially confusing. The receipt
+          pattern solves this: after a decision, the component collapses into a
+          compact, read-only summary of what was chosen.
         </p>
         <div className="space-y-3">
           <span className="block font-mono text-[10px] font-medium text-(--taw-text-muted)">
             How it works
           </span>
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--taw-accent)/10 font-mono text-[10px] font-bold text-(--taw-accent)">1</span>
-              <span className="text-xs text-(--taw-text-muted)">
-                AI presents options via <InlineCode>OptionList</InlineCode>
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--taw-accent)/10 font-mono text-[10px] font-bold text-(--taw-accent)">2</span>
-              <span className="text-xs text-(--taw-text-muted)">
-                User selects and confirms — <InlineCode>onAction</InlineCode> fires with the decision
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--taw-accent)/10 font-mono text-[10px] font-bold text-(--taw-accent)">3</span>
-              <span className="text-xs text-(--taw-text-muted)">
-                You create a <InlineCode>TawReceipt</InlineCode> and pass it back as a prop
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--taw-accent)/10 font-mono text-[10px] font-bold text-(--taw-accent)">4</span>
-              <span className="text-xs text-(--taw-text-muted)">
-                Component collapses to a compact receipt — scroll back and it{"'"}s just one line
-              </span>
-            </div>
+            {[
+              { n: "1", text: <>AI presents options via <InlineCode>OptionList</InlineCode></> },
+              { n: "2", text: <>User selects and confirms — <InlineCode>onAction</InlineCode> fires with the decision</> },
+              { n: "3", text: <>You create a <InlineCode>TawReceipt</InlineCode> and pass it back as a prop</> },
+              { n: "4", text: <>Component collapses to a compact receipt — scroll back and it{"'"}s just one line</> },
+            ].map(({ n, text }) => (
+              <div key={n} className="flex items-center gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-(--taw-accent)/10 font-mono text-[10px] font-bold text-(--taw-accent)">{n}</span>
+                <span className="text-xs text-(--taw-text-muted)">{text}</span>
+              </div>
+            ))}
           </div>
         </div>
         <div className="mt-4">
@@ -363,7 +423,7 @@ const [receipt, setReceipt] = useState<TawReceipt>()
 
       {/* Actions */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Actions
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
@@ -392,12 +452,13 @@ actions: [
 
       {/* Routing tool calls */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Routing Tool Calls
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
           When your app has multiple tools, route each tool call to the
           right component using the <InlineCode>toolName</InlineCode> from the part object.
+          This is the only wiring taw-ui asks you to do.
         </p>
         <CodeBlock>{`import { KpiCard } from "@/components/taw/kpi-card"
 import { DataTable } from "@/components/taw/data-table"
@@ -418,74 +479,86 @@ function ToolOutput({ part }: { part: TawToolPart }) {
 }`}</CodeBlock>
       </section>
 
-      {/* Design Tokens */}
+      {/* Theming bridge (replaces full Design Tokens section) */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Design Tokens
+        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          Theming
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          taw-ui uses CSS custom properties for theming — no Tailwind theme extension,
-          no build-time config. The default theme ships with Dracula-inspired dark mode
-          and Alucard-inspired light mode. Override any token to match your design system.
-          All colors use oklch for perceptual uniformity.
+          taw-ui uses CSS custom properties for theming — no Tailwind theme
+          extension, no build-time config. Import the default theme, then override
+          any <InlineCode>--taw-*</InlineCode> token to match your design system.
         </p>
-        <div className="overflow-x-auto rounded-(--taw-radius-lg) border border-(--taw-border) shadow-(--taw-shadow-sm)">
-          <table className="w-full text-[13px]">
-            <thead>
-              <tr className="border-b border-(--taw-border) bg-(--taw-surface)">
-                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-(--taw-text-muted)">Token</th>
-                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-(--taw-text-muted)">Purpose</th>
-                <th className="px-4 py-2.5 text-left text-[11px] font-medium text-(--taw-text-muted)">Preview</th>
-              </tr>
-            </thead>
-            <tbody className="bg-(--taw-surface-raised)">
-              {[
-                ["--taw-surface", "Default component background"],
-                ["--taw-surface-raised", "Elevated elements (cards, modals)"],
-                ["--taw-surface-sunken", "Recessed areas (page bg, code blocks)"],
-                ["--taw-border", "All borders and dividers"],
-                ["--taw-text-primary", "Headings and important text"],
-                ["--taw-text-muted", "Secondary text and labels"],
-                ["--taw-accent", "Interactive elements, links, badges"],
-                ["--taw-success", "Positive states, confirmations"],
-                ["--taw-warning", "Caution states, amber alerts"],
-                ["--taw-error", "Error states, destructive actions"],
-                ["--taw-cyan", "Info highlights, special badges"],
-                ["--taw-pink", "Emphasis, decorative accents"],
-                ["--taw-yellow", "Highlights, attention markers"],
-              ].map(([token, purpose]) => (
-                <tr key={token} className="border-b border-(--taw-border) last:border-0">
-                  <td className="px-4 py-2.5 font-mono text-[12px] text-(--taw-accent)">{token}</td>
-                  <td className="px-4 py-2.5 text-[12px] text-(--taw-text-muted)">{purpose}</td>
-                  <td className="px-4 py-2.5">
-                    <span className="inline-block h-4 w-4 rounded" style={{ background: `var(${token})` }} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <CodeBlock label="globals.css">{`@import "@taw-ui/react/styles.css";`}</CodeBlock>
+        <p className="mt-3 mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          The default theme provides sensible defaults and automatically picks up
+          shadcn/ui v2 variables (<InlineCode>--primary</InlineCode>,{" "}
+          <InlineCode>--background</InlineCode>, <InlineCode>--border</InlineCode>,
+          etc.) when available. Override any token directly:
+        </p>
+        <CodeBlock>{`:root {
+  --taw-accent: oklch(0.55 0.2 260);   /* Primary interactive color */
+  --taw-surface: oklch(0.98 0 0);       /* Component background */
+  --taw-border: oklch(0.9 0 0);         /* Borders and dividers */
+  /* ... override any of the 22 tokens */
+}`}</CodeBlock>
+        <p className="mt-3 text-[13px] text-(--taw-text-muted)">
+          Components use semantic tokens like{" "}
+          <InlineCode>bg-(--taw-surface)</InlineCode> and{" "}
+          <InlineCode>text-(--taw-text-primary)</InlineCode>. Dark mode
+          works automatically — the <InlineCode>.dark</InlineCode> class
+          on <InlineCode>{"<html>"}</InlineCode> swaps all token values.
+          A dedicated Theming page with the full token reference is coming soon.
+        </p>
+
+        {/* Theming placeholder */}
+        <div className="mt-4 flex items-center gap-3 rounded-(--taw-radius-lg) border border-(--taw-border) border-dashed bg-(--taw-surface) px-4 py-3">
+          <PixelIcon name="zap" size={14} />
+          <div>
+            <span className="block text-[12px] font-medium text-(--taw-text-secondary)">Theming page — coming soon</span>
+            <span className="text-[11px] text-(--taw-text-muted)">Full token reference, dark/light examples, and custom theme guide</span>
+          </div>
         </div>
       </section>
 
-      {/* What's next */}
-      <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          What{"'"}s Next
+      {/* What's next — improved */}
+      <section className="rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) p-5 shadow-(--taw-shadow-sm)">
+        <h2 className="mb-1 text-[14px] font-semibold text-(--taw-text-primary)">
+          You now have the vocabulary.
         </h2>
-        <ul className="space-y-2 text-xs text-(--taw-text-muted)">
-          <li>
-            <a href="/docs/components/kpi-card" className="font-medium text-(--taw-accent) hover:underline">KpiCard</a>
-            {" "} — Start with the simplest component
-          </li>
-          <li>
-            <a href="/docs/components/data-table" className="font-medium text-(--taw-accent) hover:underline">DataTable</a>
-            {" "} — Rich tabular data with 9 column types
-          </li>
-          <li>
-            <a href="/docs/components/option-list" className="font-medium text-(--taw-accent) hover:underline">OptionList</a>
-            {" "} — See the receipt pattern in action
-          </li>
-        </ul>
+        <p className="mb-5 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          You understand what a part is, how the lifecycle states work, how
+          confidence and provenance surface in the interface, and how decisions
+          produce receipts. Pick a component and see these concepts in action.
+        </p>
+        <div className="grid gap-2 sm:grid-cols-3">
+          {[
+            {
+              href: "/docs/components/kpi-card",
+              label: "KpiCard",
+              desc: "The simplest component — metrics, sparklines, confidence. Start here.",
+            },
+            {
+              href: "/docs/components/data-table",
+              label: "DataTable",
+              desc: "Sortable tables with 9 column types. Rich schemas in action.",
+            },
+            {
+              href: "/docs/components/option-list",
+              label: "OptionList",
+              desc: "Choices with the receipt pattern — the most complete lifecycle demo.",
+            },
+          ].map(({ href, label, desc }) => (
+            <a
+              key={href}
+              href={href}
+              className="group flex flex-col gap-1 rounded-(--taw-radius) border border-(--taw-border) bg-(--taw-surface-sunken) px-3.5 py-3 transition-all hover:border-(--taw-accent)/30 hover:bg-(--taw-surface)"
+            >
+              <span className="text-[13px] font-medium text-(--taw-accent)">{label} →</span>
+              <span className="text-[11px] leading-relaxed text-(--taw-text-muted)">{desc}</span>
+            </a>
+          ))}
+        </div>
       </section>
     </div>
   )

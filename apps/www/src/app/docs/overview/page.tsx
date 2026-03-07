@@ -33,7 +33,6 @@ function ChatWindow({
 }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) shadow-(--taw-shadow-md)">
-      {/* Title bar */}
       <div className="flex items-center gap-2 border-b border-(--taw-border) bg-(--taw-surface) px-3.5 py-2">
         <div className="flex items-center gap-1.5">
           <span className="h-[9px] w-[9px] rounded-full bg-(--taw-error) opacity-70" />
@@ -42,7 +41,6 @@ function ChatWindow({
         </div>
         <span className="ml-1 font-mono text-[11px] text-(--taw-text-muted)">{label}</span>
       </div>
-      {/* Messages */}
       <div className="flex flex-col gap-3 bg-(--taw-surface-sunken) p-4">
         {children}
       </div>
@@ -152,18 +150,36 @@ export default function OverviewPage() {
           Overview
         </h1>
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-(--taw-text-secondary)">
-          When an LLM calls a tool, it returns raw JSON. Today, developers either
-          dump it as text or write one-off UI for every tool. taw-ui solves this
-          with schema-validated, motion-native React components that handle the
-          full tool call lifecycle.
+          Text, markdown, raw JSON — these are the default outputs of an AI.
+          They{"'"}re also the wrong outputs for most real interactions.
         </p>
+        <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-(--taw-text-secondary)">
+          taw-ui is the interface layer for the HAI era: AI-native React
+          components that turn structured tool outputs into production-quality
+          UI — with loading states, spring-physics motion, schema validation,
+          and built-in affordances for uncertainty.
+        </p>
+
+        <div className="mt-5 overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-accent)/20 bg-(--taw-accent-subtle) px-5 py-4">
+          <p className="text-[14px] font-medium leading-relaxed text-(--taw-text-primary)">
+            The future of AI products is not more text. It{"'"}s better interfaces.
+            The right component makes AI feel smarter — not because the model
+            changed, but because the interface did.
+          </p>
+        </div>
       </div>
 
       {/* Before / After — Comparison slider */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          The Problem
+        <h2 className="mb-2 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+          The Gap
         </h2>
+        <p className="mb-5 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          Most AI products treat text as the universal interface. When a user
+          asks for metrics, choices, or a confirmation — text is the wrong
+          answer. taw-ui fills the gap between what the LLM returns and what
+          users should see.
+        </p>
         <ComparisonSlider
           beforeLabel={
             <>
@@ -208,25 +224,28 @@ export default function OverviewPage() {
 
       {/* How It Works */}
       <section>
-        <h2 className="mb-5 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
+        <h2 className="mb-2 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           How It Works
         </h2>
+        <p className="mb-5 text-[13px] leading-relaxed text-(--taw-text-muted)">
+          Three steps. No glue code.
+        </p>
         <div className="grid gap-4 md:grid-cols-3">
           {[
             {
               n: "01",
-              title: "Define your tool",
-              desc: "Your tool returns JSON matching a taw-ui schema. Same schema works as your tool's outputSchema and for client-side validation.",
+              title: "Define the output schema",
+              desc: "Your tool returns JSON matching a taw-ui schema. That same schema validates on the server, validates at render time, and infers TypeScript types. One schema, no duplication.",
             },
             {
               n: "02",
-              title: "Render the part",
-              desc: "Pass the tool call part to the component. It handles loading, streaming, success, and error states automatically.",
+              title: "Pass the part to the component",
+              desc: "The AI SDK delivers a part object to your app. Pass it directly. Loading, streaming, success, and error states are handled automatically — no conditionals, no wiring.",
             },
             {
               n: "03",
-              title: "Ship with confidence",
-              desc: "Invalid data? Helpful error. Missing fields? Skeleton with shimmer. AI uncertain? Confidence badge. It just works.",
+              title: "Your interface, your rules",
+              desc: "Components live in your codebase. Customize layout, override any --taw-* token, extend behavior. Shared contracts from the taw-ui npm package stay versioned across your team.",
             },
           ].map(({ n, title, desc }) => (
             <div
@@ -294,14 +313,15 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </div>
       </section>
 
-      {/* Architecture — data flow */}
+      {/* Architecture */}
       <section>
         <h2 className="mb-2 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Where taw-ui Fits
+          The Architecture
         </h2>
         <p className="mb-5 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          Your LLM calls a tool and returns JSON. Your AI SDK delivers it to your app.
-          taw-ui renders it — with a hybrid model: you own the components, we maintain the contracts.
+          taw-ui sits between your AI SDK and your users. LLM providers and
+          runtimes change fast — taw-ui is designed to stay stable across them.
+          You own the components. We maintain the contracts.
         </p>
         <div className="flex flex-col">
           <ArchCard
@@ -324,14 +344,14 @@ function ToolOutput({ part }: { part: TawToolPart }) {
               <ArchCard
                 icon={<PixelIcon name="diamond" size={16} />}
                 label="Your Components"
-                description="Copied into your project via npx taw-ui add — full ownership, customize anything"
+                description="Copied into your project via CLI — full ownership, customize layout, styles, and behavior"
                 highlight
                 tag="cli"
               />
               <ArchCard
                 icon={<PixelIcon name="shield" size={16} />}
                 label="taw-ui"
-                description="Schemas, types, validation, actions — versioned npm package that guarantees contracts"
+                description="Schemas, types, validation, actions — versioned npm package that guarantees contracts survive your customizations"
                 tag="npm"
               />
             </div>
@@ -349,32 +369,32 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             {
               icon: "◎",
               title: "AI-native fields",
-              desc: "Every schema supports confidence (0–1) and source provenance. No other library surfaces AI uncertainty in the UI.",
+              desc: "Every schema includes confidence (0–1) and source provenance as first-class fields. No other UI library surfaces AI uncertainty in the interface.",
             },
             {
               icon: "↻",
               title: "Part-aware lifecycle",
-              desc: "Components handle 4 states — loading, streaming, output, error — from a single prop. No conditional rendering.",
+              desc: "One part prop. Four states handled automatically: loading skeleton, progressive streaming, animated success, helpful error. No conditional rendering.",
             },
             {
               icon: "⚡",
-              title: "Spring physics motion",
-              desc: "Numbers count up with springs. Skeletons shimmer with physics. Entrances are settled, not popped.",
+              title: "Spring-physics motion",
+              desc: "Numbers count up with spring dynamics. Skeletons shimmer with physics. Entrances are eased, not popped. Motion that feels earned.",
             },
             {
               icon: "✦",
               title: "Helpful errors, never null",
-              desc: "Parse failures render with field-level details and \"Did you mean?\" suggestions. Never silent null.",
+              desc: "Parse failures render inline with field-level details and \"Did you mean?\" suggestions. Every error is an opportunity to fix a prompt — not a silent mystery.",
             },
             {
               icon: "◆",
-              title: "SDK-agnostic",
-              desc: "Works with Vercel AI SDK, Anthropic SDK, OpenAI SDK, or raw JSON. No vendor lock-in.",
+              title: "Runtime-agnostic",
+              desc: "Works with Vercel AI SDK, Anthropic SDK, OpenAI SDK, or raw JSON. The TawToolPart shape matches what every major SDK already returns. No vendor lock-in.",
             },
             {
               icon: "△",
-              title: "Schema = source of truth",
-              desc: "One Zod schema defines tool output, validates on server, validates on client, infers types.",
+              title: "Schema as source of truth",
+              desc: "One Zod schema defines the tool output shape, validates server-side, validates client-side, and infers TypeScript types. No synchronization required.",
             },
           ].map(({ icon, title, desc }) => (
             <div key={title} className="rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) p-4 shadow-(--taw-shadow-sm) transition-all hover:border-(--taw-accent)/20 hover:shadow-(--taw-shadow-md)">
@@ -404,9 +424,41 @@ function ToolOutput({ part }: { part: TawToolPart }) {
           <code className="rounded-md border border-(--taw-border) bg-(--taw-surface) px-1.5 py-0.5 font-mono text-[12px] text-(--taw-accent)">
             {`{ title: "Revenue", amount: 142580 }`}
           </code>{" "}
-          instead of the expected schema, taw-ui doesn{"'"}t silently fail:
+          instead of the expected schema, taw-ui doesn{"'"}t silently fail.
+          It renders a helpful inline error with field-level details and
+          correction suggestions. Every error is a prompt iteration opportunity.
         </p>
         <KpiCard part={kpiCardFixtures["parse-error"]!} animate={false} />
+      </section>
+
+      {/* Closing CTA */}
+      <section className="grid gap-3 sm:grid-cols-2">
+        <a
+          href="/docs/quick-start"
+          className="group flex flex-col gap-1.5 rounded-(--taw-radius-lg) border-2 border-(--taw-accent)/30 bg-(--taw-accent-subtle) px-5 py-4 transition-all hover:border-(--taw-accent)/60 hover:shadow-(--taw-shadow-md)"
+        >
+          <span className="flex items-center gap-2 text-[13px] font-semibold text-(--taw-accent)">
+            <PixelIcon name="zap" size={12} />
+            Quick Start
+          </span>
+          <span className="text-[12px] leading-relaxed text-(--taw-text-secondary)">
+            One command. Your code. Full ownership. First component in under
+            10 minutes.
+          </span>
+        </a>
+        <a
+          href="/docs/principles"
+          className="group flex flex-col gap-1.5 rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-5 py-4 transition-all hover:border-(--taw-accent)/30 hover:shadow-(--taw-shadow-md)"
+        >
+          <span className="flex items-center gap-2 text-[13px] font-semibold text-(--taw-text-primary)">
+            <PixelIcon name="diamond" size={12} />
+            Principles
+          </span>
+          <span className="text-[12px] leading-relaxed text-(--taw-text-muted)">
+            The design thinking behind taw-ui — how we believe AI interfaces
+            should be built.
+          </span>
+        </a>
       </section>
     </div>
   )
