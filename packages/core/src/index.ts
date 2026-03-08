@@ -20,12 +20,17 @@ export * from "./schemas/memory-card"
 export * from "./schemas/insight-card"
 export * from "./schemas/alert-card"
 export * from "./schemas/issue-card"
+export * from "./schemas/event-card"
 
 // Domain surface adapters (pure transformations — no auth, no fetching)
 export { fromGithubIssue } from "./adapters/github-issue"
 export type { GithubIssue } from "./adapters/github-issue"
 export { fromLinearIssue } from "./adapters/linear-issue"
 export type { LinearIssue } from "./adapters/linear-issue"
+export { fromGoogleCalendarEvent } from "./adapters/google-calendar-event"
+export type { GoogleCalendarEvent } from "./adapters/google-calendar-event"
+export { fromOutlookEvent } from "./adapters/outlook-event"
+export type { OutlookEvent } from "./adapters/outlook-event"
 
 // Actions & Receipts
 export {

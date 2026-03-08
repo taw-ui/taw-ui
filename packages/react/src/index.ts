@@ -26,6 +26,9 @@ export type { AlertCardProps } from "./alert-card"
 export { IssueCard } from "./issue-card"
 export type { IssueCardProps } from "./issue-card"
 
+export { EventCard } from "./event-card"
+export type { EventCardProps } from "./event-card"
+
 // Renderer
 export { TawRenderer, createTawRegistry } from "./renderer"
 export type { TawRegistry, TawRendererProps } from "./renderer"

@@ -70,6 +70,13 @@ export const components: ComponentMeta[] = [
     category: "domain-surface",
     status: "ready",
   },
+  {
+    id: "event-card",
+    label: "EventCard",
+    description: "Canonical calendar event surface with provider adapters for Google Calendar, Outlook, and Cal.com.",
+    category: "domain-surface",
+    status: "ready",
+  },
 ]
 
 export const categories = {
