@@ -3,14 +3,13 @@ import type { ToolPart } from "@/components/taw/lib/types"
 export const postCardOptions = [
   { key: "media", label: "media", defaultOn: true },
   { key: "metrics", label: "metrics", defaultOn: true },
-  { key: "tags", label: "tags", defaultOn: true },
   { key: "verified", label: "verified", defaultOn: true },
   { key: "confidence", label: "confidence", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "source", label: "source", defaultOn: false },
 ]
 
-// ─── Example: X post (as returned by fromXPost) ─────────────────────────────
+// ─── Example: X (Twitter) post ──────────────────────────────────────────────
 
 export const xPostFixture: ToolPart = {
   toolCallId: "x-1",
@@ -18,17 +17,16 @@ export const xPostFixture: ToolPart = {
   input: { postId: "1893021847102938" },
   state: "output-available",
   output: {
-    id: "x:1893021847102938",
-    provider: "x",
+    id: "twitter:1893021847102938",
+    provider: "twitter",
     author: {
       name: "Guillermo Rauch",
-      handle: "@raaborern",
-      avatarUrl: "https://pbs.twimg.com/profile_images/1755951086809067520/hOkELmOJ_400x400.jpg",
-      url: "https://x.com/raaborern",
-      isVerified: true,
+      handle: "raaborern",
+      avatar: "https://pbs.twimg.com/profile_images/1755951086809067520/hOkELmOJ_400x400.jpg",
+      verified: true,
     },
-    body: "We just shipped Next.js 15.5.\n\nHighlights:\n→ Turbopack is now stable for dev and builds\n→ 50% faster cold starts\n→ React 19 support out of the box\n→ New Middleware APIs\n\nThis is the fastest Next.js has ever been.",
-    postedAt: "2026-03-07T18:30:00Z",
+    content: "We just shipped Next.js 15.5.\n\nHighlights:\n→ Turbopack is now stable for dev and builds\n→ 50% faster cold starts\n→ React 19 support out of the box\n→ New Middleware APIs\n\nThis is the fastest Next.js has ever been.",
+    publishedAt: "2026-03-07T18:30:00Z",
     media: [
       {
         type: "image",
@@ -40,17 +38,16 @@ export const xPostFixture: ToolPart = {
     ],
     metrics: {
       likes: 14200,
-      comments: 892,
+      replies: 892,
       reposts: 3400,
       views: 1200000,
     },
     url: "https://x.com/raaborern/status/1893021847102938",
-    tags: ["nextjs", "vercel", "webdev"],
     source: { label: "X", url: "https://x.com/raaborern/status/1893021847102938" },
   },
 }
 
-// ─── Example: Instagram post (as returned by fromInstagramPost) ──────────────
+// ─── Example: Instagram post ────────────────────────────────────────────────
 
 export const instagramPostFixture: ToolPart = {
   toolCallId: "ig-1",
@@ -62,13 +59,12 @@ export const instagramPostFixture: ToolPart = {
     provider: "instagram",
     author: {
       name: "National Geographic",
-      handle: "@natgeo",
-      avatarUrl: "https://instagram.com/natgeo/avatar.jpg",
-      url: "https://instagram.com/natgeo",
-      isVerified: true,
+      handle: "natgeo",
+      avatar: "https://instagram.com/natgeo/avatar.jpg",
+      verified: true,
     },
-    body: "A rare sighting of a snow leopard at 4,500 meters in the Himalayas. These elusive big cats are estimated at fewer than 7,000 in the wild. Conservation efforts are critical to their survival.\n\nPhotograph by @wildlifephotographer",
-    postedAt: "2026-03-06T14:00:00Z",
+    content: "A rare sighting of a snow leopard at 4,500 meters in the Himalayas. These elusive big cats are estimated at fewer than 7,000 in the wild. Conservation efforts are critical to their survival.\n\nPhotograph by @wildlifephotographer",
+    publishedAt: "2026-03-06T14:00:00Z",
     media: [
       {
         type: "image",
@@ -80,10 +76,9 @@ export const instagramPostFixture: ToolPart = {
     ],
     metrics: {
       likes: 284000,
-      comments: 1823,
+      replies: 1823,
     },
     url: "https://instagram.com/p/CxYz1234567",
-    tags: ["snowleopard", "wildlife", "conservation", "himalayas"],
     source: { label: "Instagram", url: "https://instagram.com/p/CxYz1234567" },
   },
 }
@@ -100,20 +95,18 @@ export const linkedinPostFixture: ToolPart = {
     provider: "linkedin",
     author: {
       name: "Satya Nadella",
-      handle: "@satyanadella",
-      avatarUrl: "https://media.licdn.com/satya-nadella.jpg",
-      url: "https://linkedin.com/in/satyanadella",
-      isVerified: true,
+      handle: "satyanadella",
+      avatar: "https://media.licdn.com/satya-nadella.jpg",
+      verified: true,
     },
-    body: "Excited to share that Microsoft has reached a new milestone in AI infrastructure. Our Azure AI platform now serves over 60,000 organizations worldwide.\n\nThe key insight: the companies seeing the most impact are those treating AI as a platform shift, not just a feature addition.\n\nWhat trends are you seeing in your organization's AI adoption?",
-    postedAt: "2026-03-05T16:00:00Z",
+    content: "Excited to share that Microsoft has reached a new milestone in AI infrastructure. Our Azure AI platform now serves over 60,000 organizations worldwide.\n\nThe key insight: the companies seeing the most impact are those treating AI as a platform shift, not just a feature addition.\n\nWhat trends are you seeing in your organization's AI adoption?",
+    publishedAt: "2026-03-05T16:00:00Z",
     metrics: {
       likes: 45200,
-      comments: 2100,
+      replies: 2100,
       reposts: 8900,
     },
     url: "https://linkedin.com/posts/satyanadella_ai-azure-7012345678901234567",
-    tags: ["AI", "Azure", "Leadership"],
     source: { label: "LinkedIn", url: "https://linkedin.com/posts/satyanadella_ai-azure-7012345678901234567" },
   },
 }
@@ -126,19 +119,18 @@ export const textOnlyPostFixture: ToolPart = {
   input: { postId: "1893099182734" },
   state: "output-available",
   output: {
-    id: "x:1893099182734",
-    provider: "x",
+    id: "twitter:1893099182734",
+    provider: "twitter",
     author: {
       name: "Dan Abramov",
-      handle: "@dan_abramov",
-      url: "https://x.com/dan_abramov",
-      isVerified: true,
+      handle: "dan_abramov",
+      verified: true,
     },
-    body: "Hot take: the best abstractions are the ones you don't notice.\n\nIf your framework requires developers to think about the framework itself more than the problem they're solving, you've lost the plot.",
-    postedAt: "2026-03-08T09:15:00Z",
+    content: "Hot take: the best abstractions are the ones you don't notice.\n\nIf your framework requires developers to think about the framework itself more than the problem they're solving, you've lost the plot.",
+    publishedAt: "2026-03-08T09:15:00Z",
     metrics: {
       likes: 8900,
-      comments: 423,
+      replies: 423,
       reposts: 1200,
       views: 890000,
     },
@@ -155,11 +147,11 @@ export const minimalPostFixture: ToolPart = {
   input: { postId: "abc" },
   state: "output-available",
   output: {
-    id: "other:abc",
-    provider: "other",
+    id: "mastodon:abc",
+    provider: "mastodon",
     author: { name: "Anonymous" },
-    body: "Just shipped a new feature! 🚀",
-    postedAt: "2026-03-08T12:00:00Z",
+    content: "Just shipped a new feature! 🚀",
+    publishedAt: "2026-03-08T12:00:00Z",
   },
 }
 
@@ -171,18 +163,17 @@ export const postWithCaveatFixture: ToolPart = {
   input: { postId: "1893044812345" },
   state: "output-available",
   output: {
-    id: "x:1893044812345",
-    provider: "x",
+    id: "twitter:1893044812345",
+    provider: "twitter",
     author: {
       name: "Tech News",
-      handle: "@technews",
-      url: "https://x.com/technews",
+      handle: "technews",
     },
-    body: "BREAKING: Major tech company reportedly planning to acquire AI startup for $2B+. Deal could close within weeks.\n\nSources say the acquisition would be the largest AI-focused deal this year.",
-    postedAt: "2026-03-07T22:00:00Z",
+    content: "BREAKING: Major tech company reportedly planning to acquire AI startup for $2B+. Deal could close within weeks.\n\nSources say the acquisition would be the largest AI-focused deal this year.",
+    publishedAt: "2026-03-07T22:00:00Z",
     metrics: {
       likes: 3200,
-      comments: 890,
+      replies: 890,
       reposts: 1500,
       views: 2400000,
     },
@@ -221,7 +212,6 @@ export const postCardFixtures: Record<string, ToolPart> = {
 
 /**
  * Example raw X API v2 response shape.
- * Pass this to `fromXPost()` to get canonical PostCardData.
  */
 export const rawXPostExample = {
   id: "1893021847102938",
@@ -264,7 +254,6 @@ export const rawXPostExample = {
 
 /**
  * Example raw Instagram Graph API response shape.
- * Pass this to `fromInstagramPost()` to get canonical PostCardData.
  */
 export const rawInstagramPostExample = {
   id: "CxYz1234567",

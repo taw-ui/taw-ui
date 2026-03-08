@@ -4,13 +4,13 @@ export const issueCardOptions = [
   { key: "description", label: "description", defaultOn: true },
   { key: "priority", label: "priority", defaultOn: true },
   { key: "labels", label: "labels", defaultOn: true },
-  { key: "assignee", label: "assignee", defaultOn: true },
+  { key: "assignees", label: "assignees", defaultOn: true },
   { key: "confidence", label: "confidence", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "source", label: "source", defaultOn: false },
 ]
 
-// ─── Example: GitHub issue (as returned by fromGithubIssue) ─────────────────
+// ─── Example: GitHub issue ───────────────────────────────────────────────────
 
 export const githubIssueFixture: ToolPart = {
   toolCallId: "gh-1",
@@ -20,16 +20,16 @@ export const githubIssueFixture: ToolPart = {
   output: {
     id: "github:vercel/next.js#58234",
     provider: "github",
+    identifier: "vercel/next.js#58234",
     title: "App Router: Dynamic routes fail to prerender with generateStaticParams",
-    number: 58234,
-    status: { label: "Open", color: "#3fb950" },
+    status: "open",
     priority: "high",
-    assignee: { name: "timneutkens", avatarUrl: "https://avatars.githubusercontent.com/u/6324199?v=4" },
+    assignees: [{ name: "timneutkens", avatar: "https://avatars.githubusercontent.com/u/6324199?v=4" }],
     labels: [
       { name: "bug", color: "#d73a4a" },
       { name: "app-router", color: "#0075ca" },
     ],
-    project: "vercel/next.js",
+    repository: "vercel/next.js",
     url: "https://github.com/vercel/next.js/issues/58234",
     createdAt: "2024-11-15T10:30:00Z",
     updatedAt: "2024-12-02T14:22:00Z",
@@ -38,7 +38,7 @@ export const githubIssueFixture: ToolPart = {
   },
 }
 
-// ─── Example: Linear issue (as returned by fromLinearIssue) ─────────────────
+// ─── Example: Linear issue ───────────────────────────────────────────────────
 
 export const linearIssueFixture: ToolPart = {
   toolCallId: "lin-1",
@@ -48,11 +48,11 @@ export const linearIssueFixture: ToolPart = {
   output: {
     id: "linear:ENG-423",
     provider: "linear",
+    identifier: "ENG-423",
     title: "Implement webhook retry logic with exponential backoff",
-    number: 423,
-    status: { label: "In Progress", color: "#f2c94c" },
+    status: "in_progress",
     priority: "medium",
-    assignee: { name: "Sarah Chen" },
+    assignees: [{ name: "Sarah Chen" }],
     labels: [
       { name: "backend", color: "#bb87fc" },
       { name: "reliability", color: "#4ea7fc" },
@@ -74,10 +74,11 @@ export const minimalIssueFixture: ToolPart = {
   input: { id: "TASK-99" },
   state: "output-available",
   output: {
-    id: "other:TASK-99",
-    provider: "other",
+    id: "jira:TASK-99",
+    provider: "jira",
+    identifier: "TASK-99",
     title: "Update onboarding flow copy",
-    status: { label: "Todo" },
+    status: "open",
   },
 }
 
@@ -91,14 +92,14 @@ export const issueWithCaveatFixture: ToolPart = {
   output: {
     id: "github:facebook/react#28140",
     provider: "github",
+    identifier: "facebook/react#28140",
     title: "useEffect cleanup runs twice in development mode",
-    number: 28140,
-    status: { label: "Done", color: "#a371f7" },
+    status: "done",
     priority: "low",
     labels: [
       { name: "Type: Discussion", color: "#fef2c0" },
     ],
-    project: "facebook/react",
+    repository: "facebook/react",
     url: "https://github.com/facebook/react/issues/28140",
     createdAt: "2024-01-20T08:00:00Z",
     description: "In React 18 strict mode, useEffect cleanup functions run twice during development. This is intentional behavior but confuses many developers.",
@@ -134,7 +135,6 @@ export const issueCardFixtures: Record<string, ToolPart> = {
 
 /**
  * Example raw GitHub REST API response shape.
- * Pass this to `fromGithubIssue()` to get canonical IssueCardData.
  */
 export const rawGithubIssueExample = {
   id: 2012345678,
@@ -157,7 +157,6 @@ export const rawGithubIssueExample = {
 
 /**
  * Example raw Linear GraphQL response shape.
- * Pass this to `fromLinearIssue()` to get canonical IssueCardData.
  */
 export const rawLinearIssueExample = {
   id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",

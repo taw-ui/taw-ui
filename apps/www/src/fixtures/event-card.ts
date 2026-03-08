@@ -3,15 +3,13 @@ import type { ToolPart } from "@/components/taw/lib/types"
 export const eventCardOptions = [
   { key: "description", label: "description", defaultOn: true },
   { key: "location", label: "location", defaultOn: true },
-  { key: "meetingUrl", label: "meeting URL", defaultOn: true },
   { key: "attendees", label: "attendees", defaultOn: true },
-  { key: "organizer", label: "organizer", defaultOn: true },
   { key: "confidence", label: "confidence", defaultOn: false },
   { key: "caveat", label: "caveat", defaultOn: false },
   { key: "source", label: "source", defaultOn: false },
 ]
 
-// ─── Example: Google Calendar event (as returned by fromGoogleCalendarEvent) ─
+// ─── Example: Google Calendar event ──────────────────────────────────────────
 
 export const googleEventFixture: ToolPart = {
   toolCallId: "gcal-1",
@@ -22,26 +20,25 @@ export const googleEventFixture: ToolPart = {
     id: "google:abc123def456",
     provider: "google",
     title: "Q1 Planning — Product & Engineering Sync",
-    startAt: "2026-03-10T10:00:00-08:00",
-    endAt: "2026-03-10T11:30:00-08:00",
+    startTime: "2026-03-10T10:00:00-08:00",
+    endTime: "2026-03-10T11:30:00-08:00",
     status: "confirmed",
     description: "Quarterly planning session to align on product roadmap priorities, engineering capacity, and key deliverables for Q1. Please review the pre-read doc before joining.",
-    location: "Conference Room 4B",
-    meetingUrl: "https://meet.google.com/abc-defg-hij",
-    organizer: { name: "Sarah Chen", email: "sarah@acme.com" },
+    location: { name: "Conference Room 4B", type: "physical" },
     attendees: [
-      { name: "James Wilson", email: "james@acme.com", responseStatus: "accepted" },
-      { name: "Priya Patel", email: "priya@acme.com", responseStatus: "accepted" },
-      { name: "Alex Kim", email: "alex@acme.com", responseStatus: "tentative" },
-      { name: "Maria Garcia", email: "maria@acme.com", responseStatus: "needsAction" },
+      { name: "Sarah Chen", email: "sarah@acme.com", organizer: true, status: "accepted" },
+      { name: "James Wilson", email: "james@acme.com", status: "accepted" },
+      { name: "Priya Patel", email: "priya@acme.com", status: "accepted" },
+      { name: "Alex Kim", email: "alex@acme.com", status: "tentative" },
+      { name: "Maria Garcia", email: "maria@acme.com", status: "pending" },
     ],
-    calendarName: "Work",
+    calendar: "Work",
     url: "https://calendar.google.com/calendar/event?eid=abc123",
     source: { label: "Google Calendar", url: "https://calendar.google.com/calendar/event?eid=abc123" },
   },
 }
 
-// ─── Example: Outlook event (as returned by fromOutlookEvent) ────────────────
+// ─── Example: Outlook event ──────────────────────────────────────────────────
 
 export const outlookEventFixture: ToolPart = {
   toolCallId: "outlook-1",
@@ -52,18 +49,18 @@ export const outlookEventFixture: ToolPart = {
     id: "outlook:AAMkAGI1AAA",
     provider: "outlook",
     title: "Design Review: New Dashboard Components",
-    startAt: "2026-03-11T14:00:00-05:00",
-    endAt: "2026-03-11T15:00:00-05:00",
+    startTime: "2026-03-11T14:00:00-05:00",
+    endTime: "2026-03-11T15:00:00-05:00",
     status: "confirmed",
     description: "Review the latest Figma mockups for the analytics dashboard redesign. Focus on the new chart components and data visualization patterns.",
-    meetingUrl: "https://teams.microsoft.com/l/meetup-join/abc123",
-    organizer: { name: "David Park", email: "david@contoso.com" },
+    location: { name: "Microsoft Teams", url: "https://teams.microsoft.com/l/meetup-join/abc123", type: "virtual" },
     attendees: [
-      { name: "Emma Thompson", responseStatus: "accepted" },
-      { name: "Raj Patel", responseStatus: "accepted" },
-      { name: "Lisa Wang", responseStatus: "declined" },
+      { name: "David Park", email: "david@contoso.com", organizer: true, status: "accepted" },
+      { name: "Emma Thompson", status: "accepted" },
+      { name: "Raj Patel", status: "accepted" },
+      { name: "Lisa Wang", status: "declined" },
     ],
-    calendarName: "Calendar",
+    calendar: "Calendar",
     url: "https://outlook.office365.com/calendar/item/AAMkAGI1AAA",
     source: { label: "Outlook Calendar", url: "https://outlook.office365.com/calendar/item/AAMkAGI1AAA" },
   },
@@ -80,14 +77,16 @@ export const allDayEventFixture: ToolPart = {
     id: "google:allday1",
     provider: "google",
     title: "Company Offsite — Mountain View",
-    startAt: "2026-03-16",
-    endAt: "2026-03-18",
-    isAllDay: true,
+    startTime: "2026-03-16",
+    endTime: "2026-03-18",
+    allDay: true,
     status: "confirmed",
-    location: "Googleplex, Mountain View, CA",
+    location: { name: "Googleplex, Mountain View, CA", type: "physical" },
     description: "Annual company offsite. Day 1: Strategy sessions. Day 2: Team building activities. Breakfast and lunch provided.",
-    organizer: { name: "HR Team" },
-    calendarName: "Company Events",
+    attendees: [
+      { name: "HR Team", organizer: true },
+    ],
+    calendar: "Company Events",
     source: { label: "Google Calendar" },
   },
 }
@@ -103,12 +102,14 @@ export const tentativeEventFixture: ToolPart = {
     id: "outlook:tent123",
     provider: "outlook",
     title: "1:1 with Manager",
-    startAt: "2026-03-12T09:00:00-05:00",
-    endAt: "2026-03-12T09:30:00-05:00",
+    startTime: "2026-03-12T09:00:00-05:00",
+    endTime: "2026-03-12T09:30:00-05:00",
     status: "tentative",
-    meetingUrl: "https://teams.microsoft.com/l/meetup-join/tent123",
-    organizer: { name: "Kate Rodriguez" },
-    calendarName: "Calendar",
+    location: { name: "Microsoft Teams", url: "https://teams.microsoft.com/l/meetup-join/tent123", type: "virtual" },
+    attendees: [
+      { name: "Kate Rodriguez", organizer: true },
+    ],
+    calendar: "Calendar",
   },
 }
 
@@ -123,11 +124,13 @@ export const cancelledEventFixture: ToolPart = {
     id: "google:canc1",
     provider: "google",
     title: "Sprint Retrospective",
-    startAt: "2026-03-13T16:00:00-08:00",
-    endAt: "2026-03-13T17:00:00-08:00",
+    startTime: "2026-03-13T16:00:00-08:00",
+    endTime: "2026-03-13T17:00:00-08:00",
     status: "cancelled",
-    organizer: { name: "Mike Johnson" },
-    calendarName: "Engineering",
+    attendees: [
+      { name: "Mike Johnson", organizer: true },
+    ],
+    calendar: "Engineering",
   },
 }
 
@@ -139,11 +142,11 @@ export const minimalEventFixture: ToolPart = {
   input: { eventId: "xyz" },
   state: "output-available",
   output: {
-    id: "other:xyz",
-    provider: "other",
+    id: "google:xyz",
+    provider: "google",
     title: "Lunch with Alex",
-    startAt: "2026-03-10T12:00:00Z",
-    endAt: "2026-03-10T13:00:00Z",
+    startTime: "2026-03-10T12:00:00Z",
+    endTime: "2026-03-10T13:00:00Z",
   },
 }
 
@@ -158,15 +161,14 @@ export const eventWithCaveatFixture: ToolPart = {
     id: "google:maybe1",
     provider: "google",
     title: "Vendor Demo — Observability Platform",
-    startAt: "2026-03-14T11:00:00-08:00",
-    endAt: "2026-03-14T12:00:00-08:00",
+    startTime: "2026-03-14T11:00:00-08:00",
+    endTime: "2026-03-14T12:00:00-08:00",
     status: "confirmed",
-    location: "Zoom",
-    meetingUrl: "https://zoom.us/j/123456789",
-    organizer: { name: "Procurement Team" },
+    location: { name: "Zoom", url: "https://zoom.us/j/123456789", type: "virtual" },
     attendees: [
-      { name: "You", responseStatus: "accepted" },
-      { name: "CTO", responseStatus: "tentative" },
+      { name: "Procurement Team", organizer: true },
+      { name: "You", status: "accepted" },
+      { name: "CTO", status: "tentative" },
     ],
     confidence: 0.68,
     caveat: "This event was inferred from an email thread — it may not be on your calendar yet.",
@@ -203,7 +205,6 @@ export const eventCardFixtures: Record<string, ToolPart> = {
 
 /**
  * Example raw Google Calendar API v3 response shape.
- * Pass this to `fromGoogleCalendarEvent()` to get canonical EventCardData.
  */
 export const rawGoogleCalendarEventExample = {
   id: "abc123def456",
@@ -239,7 +240,6 @@ export const rawGoogleCalendarEventExample = {
 
 /**
  * Example raw Microsoft Graph API response shape.
- * Pass this to `fromOutlookEvent()` to get canonical EventCardData.
  */
 export const rawOutlookEventExample = {
   id: "AAMkAGI1AAA",
