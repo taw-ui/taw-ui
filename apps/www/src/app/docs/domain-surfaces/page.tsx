@@ -1,10 +1,11 @@
 "use client"
 
-import { IssueCard, EventCard } from "@taw-ui/react"
+import { IssueCard, EventCard, PostCard } from "@taw-ui/react"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { githubIssueFixture } from "@/fixtures/issue-card"
 import { googleEventFixture } from "@/fixtures/event-card"
+import { xPostFixture } from "@/fixtures/post-card"
 
 export default function DomainSurfacesPage() {
   return (
@@ -51,8 +52,8 @@ export default function DomainSurfacesPage() {
               <span>Google Calendar, Outlook, Cal.com</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="w-24 shrink-0 font-mono font-medium text-(--taw-text-muted)/50">PostCard</span>
-              <span className="opacity-50">Blog posts, social media, RSS (coming soon)</span>
+              <span className="w-24 shrink-0 font-mono font-medium text-(--taw-accent)">PostCard</span>
+              <span>X, Instagram, LinkedIn, Threads</span>
             </div>
           </div>
         </div>
@@ -159,7 +160,7 @@ const issueData = fromGithubIssue(issue)
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Live Examples
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface-sunken) p-5 shadow-(--taw-shadow-sm)">
             <span className="mb-3 block font-mono text-[11px] text-(--taw-text-muted)">IssueCard</span>
             <IssueCard part={githubIssueFixture} />
@@ -167,6 +168,10 @@ const issueData = fromGithubIssue(issue)
           <div className="overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface-sunken) p-5 shadow-(--taw-shadow-sm)">
             <span className="mb-3 block font-mono text-[11px] text-(--taw-text-muted)">EventCard</span>
             <EventCard part={googleEventFixture} />
+          </div>
+          <div className="overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface-sunken) p-5 shadow-(--taw-shadow-sm)">
+            <span className="mb-3 block font-mono text-[11px] text-(--taw-text-muted)">PostCard</span>
+            <PostCard part={xPostFixture} />
           </div>
         </div>
       </section>
@@ -241,6 +246,20 @@ const issueData = fromGithubIssue(issue)
             <div>
               <span className="block text-[13px] font-medium text-(--taw-text-primary)">EventCard</span>
               <span className="text-[11px] text-(--taw-text-muted)">Calendar events — Google Calendar, Outlook, Cal.com adapters</span>
+            </div>
+          </a>
+          <a
+            href="/docs/components/post-card"
+            className="group flex items-center gap-3 rounded-(--taw-radius-lg) border border-(--taw-accent)/40 bg-(--taw-surface) px-4 py-3.5 shadow-(--taw-shadow-sm) transition-all hover:border-(--taw-accent) hover:shadow-(--taw-shadow-md)"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-(--taw-accent) text-white">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+              </svg>
+            </div>
+            <div>
+              <span className="block text-[13px] font-medium text-(--taw-text-primary)">PostCard</span>
+              <span className="text-[11px] text-(--taw-text-muted)">Social/content posts — X, Instagram, LinkedIn, Threads adapters</span>
             </div>
           </a>
         </div>
