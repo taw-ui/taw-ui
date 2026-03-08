@@ -39,6 +39,9 @@ export type {
 export { tawParse } from "./utils/parse"
 export type { ParseResult, TawParseError } from "./utils/parse"
 
+// Strict-mode utilities (OpenAI / OpenRouter structured outputs)
+export { strictify, coerceNulls, toStrictJSONSchema, StrictModeError } from "./utils/strict"
+
 // Theme tokens
 export {
   TAW_TOKENS,

@@ -1,6 +1,7 @@
-import { z } from "zod"
+import { z, type ZodTypeAny } from "zod"
 import { ConfidenceSchema, CaveatSchema, SourceSchema } from "./shared"
 import { defineTawContract } from "../contract"
+import { strictify } from "../utils/strict"
 
 const ColumnFormatSchema = z.object({
   locale: z.string().optional(),
@@ -70,4 +71,74 @@ export type ColumnData = z.output<typeof ColumnSchema>
 /** @deprecated Use DataTable.safeParse() instead */
 export function safeParseDataTable(data: unknown): DataTableData | null {
   return DataTable.safeParse(data)
+}
+
+// ─── Strict-mode helper for DataTable ───────────────────────────────────────
+// DataTable.strict throws because `rows` uses z.record() (dynamic keys).
+// Use this factory to generate a strict schema with known column definitions.
+
+export interface StrictColumnDef {
+  key: string
+  type?: "string" | "number" | "boolean"
+}
+
+/**
+ * Generate a strict-mode-compatible Zod schema for DataTable
+ * with concrete column definitions.
+ *
+ * DataTable normally uses `z.record()` for rows (dynamic keys per column),
+ * which is incompatible with strict-mode structured outputs. This factory
+ * builds a schema with a fixed row shape based on your column definitions.
+ *
+ * @example
+ * ```ts
+ * const schema = strictDataTableSchema({
+ *   columns: [
+ *     { key: "name", type: "string" },
+ *     { key: "revenue", type: "number" },
+ *     { key: "active", type: "boolean" },
+ *   ],
+ * })
+ *
+ * const { object } = await generateObject({
+ *   model: openai("gpt-4o"),
+ *   schema,
+ *   prompt: "Show top customers",
+ * })
+ * const result = DataTable.parse(object)
+ * ```
+ */
+export function strictDataTableSchema(opts: {
+  columns: StrictColumnDef[]
+}): ZodTypeAny {
+  const rowShape: z.ZodRawShape = {}
+  for (const col of opts.columns) {
+    const base: ZodTypeAny =
+      col.type === "number" ? z.number() :
+      col.type === "boolean" ? z.boolean() :
+      z.string()
+    rowShape[col.key] = base.nullable()
+  }
+
+  // Build a concrete DataTable schema with typed rows,
+  // then strictify everything else (columns, source, etc.)
+  const concrete = z.object({
+    id: z.string(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    columns: z.array(ColumnSchema),
+    rows: z.array(z.object(rowShape).strict()),
+    total: z.number().optional(),
+    defaultSort: z
+      .object({
+        key: z.string(),
+        direction: z.enum(["asc", "desc"]),
+      })
+      .optional(),
+    confidence: ConfidenceSchema,
+    caveat: CaveatSchema,
+    source: SourceSchema,
+  })
+
+  return strictify(concrete)
 }
