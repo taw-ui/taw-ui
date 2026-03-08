@@ -21,6 +21,7 @@ const navSections = [
       { label: "Concepts", href: "/docs/concepts" },
       { label: "Principles", href: "/docs/principles" },
       { label: "Theming", href: "/docs/theming" },
+      { label: "Domain Surfaces", href: "/docs/domain-surfaces" },
     ],
   },
   ...Object.entries(categories)
@@ -375,6 +376,8 @@ function Breadcrumbs({ pathname }: { pathname: string }) {
     "memory-card": "MemoryCard",
     "insight-card": "InsightCard",
     "alert-card": "AlertCard",
+    "issue-card": "IssueCard",
+    "domain-surfaces": "Domain Surfaces",
     chart: "Chart",
   }
 

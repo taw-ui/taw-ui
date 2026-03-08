@@ -91,6 +91,17 @@
         "alert-card/index.ts"
       ],
       "dependencies": []
+    },
+    "issue-card": {
+      "name": "IssueCard",
+      "description": "Canonical issue/ticket surface with provider adapters for GitHub, Linear, and Jira.",
+      "category": "domain-surface",
+      "files": [
+        "issue-card/issue-card.tsx",
+        "issue-card/schema.ts",
+        "issue-card/index.ts"
+      ],
+      "dependencies": []
     }
   }
 }

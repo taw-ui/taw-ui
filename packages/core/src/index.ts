@@ -19,6 +19,13 @@ export * from "./schemas/link-card"
 export * from "./schemas/memory-card"
 export * from "./schemas/insight-card"
 export * from "./schemas/alert-card"
+export * from "./schemas/issue-card"
+
+// Domain surface adapters (pure transformations — no auth, no fetching)
+export { fromGithubIssue } from "./adapters/github-issue"
+export type { GithubIssue } from "./adapters/github-issue"
+export { fromLinearIssue } from "./adapters/linear-issue"
+export type { LinearIssue } from "./adapters/linear-issue"
 
 // Actions & Receipts
 export {
