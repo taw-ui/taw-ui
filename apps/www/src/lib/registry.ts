@@ -2,7 +2,7 @@ export interface ComponentMeta {
   id: string
   label: string
   description: string
-  category: "display" | "interactive" | "data"
+  category: "display" | "interactive" | "data" | "domain-surface"
   status: "ready" | "coming-soon"
 }
 
@@ -63,10 +63,18 @@ export const components: ComponentMeta[] = [
     category: "data",
     status: "coming-soon",
   },
+  {
+    id: "issue-card",
+    label: "IssueCard",
+    description: "Canonical issue/ticket surface with provider adapters for GitHub, Linear, and Jira.",
+    category: "domain-surface",
+    status: "ready",
+  },
 ]
 
 export const categories = {
   display: { label: "Display", order: 1 },
   interactive: { label: "Interactive", order: 2 },
   data: { label: "Data", order: 3 },
+  "domain-surface": { label: "Domain Surfaces", order: 4 },
 } as const
