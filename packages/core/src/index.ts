@@ -21,6 +21,7 @@ export * from "./schemas/insight-card"
 export * from "./schemas/alert-card"
 export * from "./schemas/issue-card"
 export * from "./schemas/event-card"
+export * from "./schemas/post-card"
 
 // Domain surface adapters (pure transformations — no auth, no fetching)
 export { fromGithubIssue } from "./adapters/github-issue"
@@ -31,6 +32,10 @@ export { fromGoogleCalendarEvent } from "./adapters/google-calendar-event"
 export type { GoogleCalendarEvent } from "./adapters/google-calendar-event"
 export { fromOutlookEvent } from "./adapters/outlook-event"
 export type { OutlookEvent } from "./adapters/outlook-event"
+export { fromXPost } from "./adapters/x-post"
+export type { XPost } from "./adapters/x-post"
+export { fromInstagramPost } from "./adapters/instagram-post"
+export type { InstagramPost } from "./adapters/instagram-post"
 
 // Actions & Receipts
 export {

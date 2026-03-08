@@ -113,6 +113,17 @@
         "event-card/index.ts"
       ],
       "dependencies": []
+    },
+    "post-card": {
+      "name": "PostCard",
+      "description": "Canonical social/content post surface with provider adapters for X, Instagram, LinkedIn, and Threads.",
+      "category": "domain-surface",
+      "files": [
+        "post-card/post-card.tsx",
+        "post-card/schema.ts",
+        "post-card/index.ts"
+      ],
+      "dependencies": []
     }
   }
 }

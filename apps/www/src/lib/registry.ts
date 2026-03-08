@@ -77,6 +77,13 @@ export const components: ComponentMeta[] = [
     category: "domain-surface",
     status: "ready",
   },
+  {
+    id: "post-card",
+    label: "PostCard",
+    description: "Canonical social/content post surface with provider adapters for X, Instagram, LinkedIn, and Threads.",
+    category: "domain-surface",
+    status: "ready",
+  },
 ]
 
 export const categories = {
