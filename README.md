@@ -104,6 +104,9 @@ Components are copied into your project (like shadcn). Types, schemas, and valid
 | `InsightCard` | Display | Structured AI analysis with sentiment-coded recommendation |
 | `AlertCard` | Interactive | Severity-based alerts with inline metrics and actions |
 | `MemoryCard` | Interactive | AI memory viewer with per-item review verdicts |
+| `IssueCard` | Display | Issue/ticket surface with GitHub, Linear, Jira adapters |
+| `EventCard` | Display | Calendar event surface with Google Calendar, Outlook adapters |
+| `PostCard` | Display | Social post surface with X, Instagram, LinkedIn adapters |
 
 ## What makes taw-ui different
 
