@@ -356,7 +356,6 @@ aside::-webkit-scrollbar-thumb:hover {
   0%   { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
-
 .animate-color-shift {
   background-size: 200% 100%;
   animation: color-shift 6s linear infinite;

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect, useCallback } from "react"
+import React, { useState, useRef, useEffect, useCallback, useSyncExternalStore } from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, isToolUIPart } from "ai"
 import { motion, AnimatePresence } from "framer-motion"
@@ -16,6 +16,7 @@ import { IssueCard } from "@/components/taw/issue-card"
 import { EventCard } from "@/components/taw/event-card"
 import { PostCard } from "@/components/taw/post-card"
 import { cn } from "@/components/taw/lib/utils"
+import { MetallicPaint } from "@/components/metallic-paint"
 
 import { useStickToBottomContext } from "use-stick-to-bottom"
 import { Shimmer } from "@/components/ai-elements/shimmer"
@@ -28,6 +29,13 @@ import {
 import { promptChips } from "./hero-data"
 
 const ease = [0.16, 1, 0.3, 1] as [number, number, number, number]
+
+function subscribeToDark(cb: () => void) {
+  const observer = new MutationObserver(cb)
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+  return () => observer.disconnect()
+}
+function getIsDark() { return document.documentElement.classList.contains("dark") }
 
 const transport = new DefaultChatTransport({ api: "/api/chat" })
 
@@ -464,6 +472,36 @@ function ScrollBridge({ scrollRef }: { scrollRef: React.MutableRefObject<(() => 
   return null
 }
 
+// ─── Hero Logo (theme-aware metallic) ────────────────────────────────────────
+
+function HeroLogo() {
+  const dark = useSyncExternalStore(subscribeToDark, getIsDark, () => false)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8, y: 12 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.7, ease }}
+      className="relative mb-6 h-24 w-24 sm:h-28 sm:w-28"
+    >
+      <MetallicPaint
+        imageSrc="/taw-icon.svg"
+        tintColor={dark ? "#AD8DFD" : "#7E4ED7"}
+        lightColor={dark ? "#d4c4ff" : "#ffffff"}
+        darkColor={dark ? "#3a1d8e" : "#5b2da8"}
+        brightness={dark ? 1.8 : 2.2}
+        contrast={dark ? 0.6 : 0.45}
+        chromaticSpread={0.15}
+        speed={0.08}
+        scale={3}
+        liquid={0.25}
+        waveAmplitude={0.25}
+        noiseScale={0.15}
+      />
+    </motion.div>
+  )
+}
+
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 export function HeroPlayground() {
@@ -523,22 +561,7 @@ export function HeroPlayground() {
               transition={{ duration: 0.5, ease }}
               className="mb-8 flex flex-col items-center px-6 text-center sm:mb-10"
             >
-              <div className="mb-5 flex items-center gap-2.5">
-                <motion.span
-                  className="text-lg text-(--taw-accent)"
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                >
-                  ✦
-                </motion.span>
-                <span className="font-pixel text-[13px] tracking-[0.15em] text-(--taw-text-muted)">
-                  The interface layer for the HAI era
-                </span>
-              </div>
+              <HeroLogo />
 
               <h1 className="max-w-xl text-[clamp(2.25rem,6vw,3.75rem)] leading-[1.06] font-bold tracking-tight text-(--taw-text-primary)">
                 Build the UI your AI{" "}
@@ -546,7 +569,7 @@ export function HeroPlayground() {
                   className="animate-color-shift font-pixel bg-clip-text text-transparent"
                   style={{
                     backgroundImage:
-                      "linear-gradient(90deg, var(--taw-accent), var(--taw-pink), var(--taw-yellow), var(--taw-cyan), var(--taw-accent), var(--taw-pink))",
+                      "linear-gradient(90deg, var(--taw-accent), var(--taw-pink), var(--taw-accent), var(--taw-pink), var(--taw-accent))",
                   }}
                 >
                   should have returned
@@ -563,9 +586,14 @@ export function HeroPlayground() {
                 className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-(--taw-accent) px-5 py-2 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-(--taw-accent-hover) hover:shadow-md"
               >
                 Get Started
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="2" height="16" transform="matrix(4.37114e-08 1 1 -4.37114e-08 4 11)" fill="currentColor" />
+                  <rect width="2" height="2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 16 13)" fill="currentColor" />
+                  <rect width="2" height="2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 14 15)" fill="currentColor" />
+                  <rect width="2" height="2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 12 17)" fill="currentColor" />
+                  <rect x="16" y="11" width="2" height="2" transform="rotate(-90 16 11)" fill="currentColor" />
+                  <rect x="14" y="15" width="8" height="2" transform="rotate(-90 14 15)" fill="currentColor" />
+                  <rect x="12" y="17" width="12" height="2" transform="rotate(-90 12 17)" fill="currentColor" />
                 </svg>
               </a>
             </motion.div>
@@ -745,8 +773,8 @@ export function HeroPlayground() {
         {/* Quick-start chips — landing only, single row with edge fade */}
         {!hasInteracted && (
           <div className="relative mb-3">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-linear-to-r from-(--taw-surface-sunken) to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-linear-to-l from-(--taw-surface-sunken) to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-linear-to-r from-(--taw-surface-sunken) to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-linear-to-l from-(--taw-surface-sunken) to-transparent" />
             <div className="no-scrollbar flex gap-2 overflow-x-auto px-2">
               {promptChips.map((chip, i) => (
                 <motion.button

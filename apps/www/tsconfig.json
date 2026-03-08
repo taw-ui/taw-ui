@@ -15,7 +15,7 @@
     "incremental": true,
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@/components/taw/*": ["../../packages/registry/*"],
+      "@/components/taw/*": ["../../packages/registry/taw/*"],
       "@/*": ["./src/*"]
     }
   },

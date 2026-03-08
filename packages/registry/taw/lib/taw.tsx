@@ -24,14 +24,14 @@ export function TawSkeleton({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 rounded-xl border bg-card p-4",
+        "flex flex-col gap-3 rounded-xl border bg-card p-4",
         className,
       )}
     >
       {lines.map(([height, width], i) => (
         <div
           key={i}
-          className="animate-pulse rounded bg-muted"
+          className="animate-pulse rounded-md bg-primary/10"
           style={{ height, width }}
         />
       ))}

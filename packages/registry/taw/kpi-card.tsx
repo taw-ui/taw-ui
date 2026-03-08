@@ -144,7 +144,7 @@ function AnimatedValue({
     <span
       className={cn(
         "font-mono font-semibold tabular-nums tracking-tight text-foreground",
-        size === "hero" ? "text-4xl leading-none" : "text-2xl leading-none",
+        size === "hero" ? "text-3xl leading-none" : "text-2xl leading-none",
       )}
     >
       {isNumber && animate ? (
@@ -305,10 +305,10 @@ function HeroStat({
   return (
     <motion.div
       variants={enterVariants}
-      className="relative flex flex-col gap-3 overflow-hidden px-6 py-8"
+      className="group relative flex flex-col gap-2 overflow-hidden bg-card p-4 transition-colors hover:bg-muted/50"
     >
       {stat.sparkline && (
-        <div className="pointer-events-none absolute inset-0 opacity-60">
+        <div className="pointer-events-none absolute inset-0 opacity-60 transition-opacity duration-300 group-hover:opacity-100">
           <BgSparkline
             data={stat.sparkline.data}
             color={stat.sparkline.color}
@@ -317,19 +317,21 @@ function HeroStat({
         </div>
       )}
 
-      <span className="relative text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+      <span className="relative text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {stat.label}
       </span>
 
-      <div className="relative flex flex-col gap-2">
-        <AnimatedValue
-          value={stat.value}
-          format={stat.format}
-          animate={animate}
-          size="hero"
-          locale={locale}
-        />
-        {stat.diff && <DiffIndicator diff={stat.diff} />}
+      <div className="relative flex items-end justify-between gap-3">
+        <div className="flex flex-col gap-1.5">
+          <AnimatedValue
+            value={stat.value}
+            format={stat.format}
+            animate={animate}
+            size="hero"
+            locale={locale}
+          />
+          {stat.diff && <DiffIndicator diff={stat.diff} />}
+        </div>
       </div>
     </motion.div>
   )
