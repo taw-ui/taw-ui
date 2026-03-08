@@ -245,7 +245,7 @@ export default function OverviewPage() {
             {
               n: "03",
               title: "Your interface, your rules",
-              desc: "Components live in your codebase. Customize layout, override any --taw-* token, extend behavior. Shared contracts from the taw-ui npm package stay versioned across your team.",
+              desc: "Components live in your codebase. Customize layout, styles, behavior — everything. shadcn theming works out of the box. No external runtime, no version conflicts.",
             },
           ].map(({ n, title, desc }) => (
             <div
@@ -300,9 +300,9 @@ const getMetrics = tool({
   },
 })`}</CodeBlock>
           <CodeBlock label="chat.tsx — render component">{`import { KpiCard } from "@/components/taw/kpi-card"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-function ToolOutput({ part }: { part: TawToolPart }) {
+function ToolOutput({ part }: { part: ToolPart }) {
   switch (part.toolName) {
     case "getMetrics":
       return <KpiCard part={part} />
@@ -343,16 +343,9 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             <div className="flex flex-col gap-2">
               <ArchCard
                 icon={<PixelIcon name="diamond" size={16} />}
-                label="Your Components"
-                description="Copied into your project via CLI — full ownership, customize layout, styles, and behavior"
+                label="taw-ui Components"
+                description="Added via shadcn CLI — components, schemas, types, and utilities. Everything in your project, nothing external."
                 highlight
-                tag="cli"
-              />
-              <ArchCard
-                icon={<PixelIcon name="shield" size={16} />}
-                label="taw-ui"
-                description="Schemas, types, validation, actions — versioned npm package that guarantees contracts survive your customizations"
-                tag="npm"
               />
             </div>
           </div>
@@ -388,8 +381,8 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             },
             {
               icon: "◆",
-              title: "Runtime-agnostic",
-              desc: "Works with Vercel AI SDK, Anthropic SDK, OpenAI SDK, or raw JSON. The TawToolPart shape matches what every major SDK already returns. No vendor lock-in.",
+              title: "AI SDK native",
+              desc: "Built for the Vercel AI SDK. The ToolPart type is structurally compatible — pass AI SDK parts directly, no adapters needed. Works with any provider the SDK supports.",
             },
             {
               icon: "△",
@@ -442,8 +435,8 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             Quick Start
           </span>
           <span className="text-[12px] leading-relaxed text-(--taw-text-secondary)">
-            One command. Your code. Full ownership. First component in under
-            10 minutes.
+            One command. No runtime. Full ownership. First component in under
+            2 minutes.
           </span>
         </a>
         <a

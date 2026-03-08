@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const postCardOptions = [
   { key: "media", label: "media", defaultOn: true },
@@ -12,8 +12,8 @@ export const postCardOptions = [
 
 // ─── Example: X post (as returned by fromXPost) ─────────────────────────────
 
-export const xPostFixture: TawToolPart = {
-  id: "x-1",
+export const xPostFixture: ToolPart = {
+  toolCallId: "x-1",
   toolName: "getPost",
   input: { postId: "1893021847102938" },
   state: "output-available",
@@ -52,8 +52,8 @@ export const xPostFixture: TawToolPart = {
 
 // ─── Example: Instagram post (as returned by fromInstagramPost) ──────────────
 
-export const instagramPostFixture: TawToolPart = {
-  id: "ig-1",
+export const instagramPostFixture: ToolPart = {
+  toolCallId: "ig-1",
   toolName: "getPost",
   input: { postId: "CxYz1234567" },
   state: "output-available",
@@ -90,8 +90,8 @@ export const instagramPostFixture: TawToolPart = {
 
 // ─── LinkedIn post ──────────────────────────────────────────────────────────
 
-export const linkedinPostFixture: TawToolPart = {
-  id: "li-1",
+export const linkedinPostFixture: ToolPart = {
+  toolCallId: "li-1",
   toolName: "getPost",
   input: { postId: "urn:li:share:7012345678901234567" },
   state: "output-available",
@@ -120,8 +120,8 @@ export const linkedinPostFixture: TawToolPart = {
 
 // ─── Text-only post (no media) ──────────────────────────────────────────────
 
-export const textOnlyPostFixture: TawToolPart = {
-  id: "x-2",
+export const textOnlyPostFixture: ToolPart = {
+  toolCallId: "x-2",
   toolName: "getPost",
   input: { postId: "1893099182734" },
   state: "output-available",
@@ -149,8 +149,8 @@ export const textOnlyPostFixture: TawToolPart = {
 
 // ─── Minimal post ───────────────────────────────────────────────────────────
 
-export const minimalPostFixture: TawToolPart = {
-  id: "min-1",
+export const minimalPostFixture: ToolPart = {
+  toolCallId: "min-1",
   toolName: "getPost",
   input: { postId: "abc" },
   state: "output-available",
@@ -165,8 +165,8 @@ export const minimalPostFixture: TawToolPart = {
 
 // ─── Post with caveat / confidence ──────────────────────────────────────────
 
-export const postWithCaveatFixture: TawToolPart = {
-  id: "cav-1",
+export const postWithCaveatFixture: ToolPart = {
+  toolCallId: "cav-1",
   toolName: "getPost",
   input: { postId: "1893044812345" },
   state: "output-available",
@@ -195,7 +195,7 @@ export const postWithCaveatFixture: TawToolPart = {
 
 // ─── All fixtures for ComponentPreview ───────────────────────────────────────
 
-export const postCardFixtures: Record<string, TawToolPart> = {
+export const postCardFixtures: Record<string, ToolPart> = {
   ready: xPostFixture,
   instagram: instagramPostFixture,
   linkedin: linkedinPostFixture,
@@ -203,17 +203,17 @@ export const postCardFixtures: Record<string, TawToolPart> = {
   minimal: minimalPostFixture,
   caveat: postWithCaveatFixture,
   loading: {
-    id: "pc-load",
+    toolCallId: "pc-load",
     toolName: "getPost",
     input: { postId: "loading" },
     state: "input-available",
   },
   error: {
-    id: "pc-err",
+    toolCallId: "pc-err",
     toolName: "getPost",
     input: { postId: "999" },
     state: "output-error",
-    error: "Post not found or access denied",
+    errorText: "Post not found or access denied",
   },
 }
 

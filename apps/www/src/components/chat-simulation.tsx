@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import type { TawReceipt } from "taw-ui"
+import type { TawReceipt } from "@/components/taw/option-list.schema"
 import { cn } from "@/lib/cn"
 
 interface ChatMessage {

@@ -25,8 +25,8 @@ const navSections = [
     ],
   },
   ...Object.entries(categories)
-    .sort(([, a], [, b]) => a.order - b.order)
-    .map(([catId, cat]) => ({
+    .sort(([, a]: [string, { order: number }], [, b]: [string, { order: number }]) => a.order - b.order)
+    .map(([catId, cat]: [string, { label: string; order: number }]) => ({
       title: cat.label,
       items: components
         .filter((c) => c.category === catId)
@@ -134,7 +134,7 @@ function SidebarNav({
                   )}
                   <Link
                     href={item.href}
-                    onClick={onNavigate}
+                    {...(onNavigate ? { onClick: onNavigate } : {})}
                     className={cn(
                       "group relative flex items-center gap-2 rounded-lg px-2.5 py-[7px] text-[13px] transition-colors",
                       isActive
@@ -195,6 +195,7 @@ export function DocsLayout({ children }: { children: React.ReactNode }) {
         document.body.style.overflow = prev
       }
     }
+    return undefined
   }, [mobileNavOpen])
 
   useEffect(() => {

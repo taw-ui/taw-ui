@@ -8,7 +8,7 @@ import {
   FeatureGrid,
   RelatedComponents,
 } from "@/components/docs-components"
-import { issueCardFixtures, issueCardOptions, rawGithubIssueExample, rawLinearIssueExample } from "@/fixtures/issue-card"
+import { issueCardFixtures, issueCardOptions } from "@/fixtures/issue-card"
 import { ComponentNav } from "@/components/component-nav"
 import { generateComponentCode } from "@/lib/code-gen"
 
@@ -28,8 +28,8 @@ export default function IssueCardDocs() {
         </h1>
         <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-(--taw-text-secondary)">
           Canonical issue/ticket surface for GitHub, Linear, Jira, and any work-item
-          provider. One component, multiple adapters — your app authenticates and fetches,
-          taw-ui normalizes and renders.
+          provider. One component, any data source — your app authenticates, fetches,
+          and maps to the canonical schema.
         </p>
       </div>
 
@@ -57,59 +57,49 @@ export default function IssueCardDocs() {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Installation
         </h2>
-        <CodeBlock label="Terminal">{`npx taw-ui add issue-card`}</CodeBlock>
+        <CodeBlock label="Terminal">{`npx shadcn@latest add "https://taw-ui.com/r/issue-card.json"`}</CodeBlock>
         <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
           This copies the component source and schema into your project.
           You own the code — customize anything.
         </p>
       </section>
 
-      {/* ── Usage with adapters ──────────────────────────────────────────── */}
+      {/* ── Usage with Data Mapping ───────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Usage with Adapters
+          Usage with Data Mapping
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          The recommended pattern: your app fetches data from the provider,
-          taw-ui&apos;s adapter normalizes it, and the component renders it.
+          The recommended pattern: your app fetches data from the provider
+          and maps it to the IssueCard schema inline.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <CodeBlock label="GitHub adapter">{`import { fromGithubIssue } from "taw-ui"
-
-// Your app fetches (auth is yours)
-const { data } = await octokit.issues.get({
-  owner: "vercel",
-  repo: "next.js",
-  issue_number: 58234,
+          <CodeBlock label="GitHub mapping">{`// Your app fetches (auth is yours)
+const { data: issue } = await octokit.issues.get({
+  owner: "vercel", repo: "next.js", issue_number: 58234,
 })
 
-// taw-ui normalizes (pure transform)
-const issueData = fromGithubIssue(data)
-
-// Render
-<IssueCard part={{
-  id: "1",
-  toolName: "getIssue",
-  state: "output-available",
-  input: {},
-  output: issueData,
-}} />`}</CodeBlock>
-          <CodeBlock label="Linear adapter">{`import { fromLinearIssue } from "taw-ui"
-
-// Your app fetches (auth is yours)
+// Map to the IssueCard schema
+const issueData = {
+  id: \`github:\${issue.number}\`,
+  provider: "github",
+  title: issue.title,
+  number: issue.number,
+  status: { label: issue.state, color: issue.state === "open" ? "green" : "red" },
+  // ... map remaining fields
+}`}</CodeBlock>
+          <CodeBlock label="Linear mapping">{`// Your app fetches (auth is yours)
 const issue = await linearClient.issue("issue-id")
 
-// taw-ui normalizes (pure transform)
-const issueData = fromLinearIssue(issue)
-
-// Render
-<IssueCard part={{
-  id: "1",
-  toolName: "getIssue",
-  state: "output-available",
-  input: {},
-  output: issueData,
-}} />`}</CodeBlock>
+// Map to the IssueCard schema
+const issueData = {
+  id: \`linear:\${issue.identifier}\`,
+  provider: "linear",
+  title: issue.title,
+  status: { label: issue.state.name, color: issue.state.color },
+  priority: issue.priority === 1 ? "urgent" : "medium",
+  // ... map remaining fields
+}`}</CodeBlock>
         </div>
       </section>
 
@@ -136,13 +126,19 @@ export const getIssue = tool({
   outputSchema: IssueCardSchema,
   execute: async ({ owner, repo, number }) => {
     const issue = await fetchIssue(owner, repo, number)
-    return fromGithubIssue(issue)
+    return {
+      id: \\\`github:\\\${number}\\\`,
+      provider: "github",
+      title: issue.title,
+      status: { label: issue.state },
+      // ... map remaining fields
+    }
   },
 })`}</CodeBlock>
           <CodeBlock label="client — render">{`import { IssueCard } from "@/components/taw/issue-card"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-function ToolOutput({ part }: { part: TawToolPart }) {
+function ToolOutput({ part }: { part: ToolPart }) {
   // Handles loading, error, and success states
   return <IssueCard part={part} />
 }`}</CodeBlock>
@@ -176,7 +172,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </h2>
         <SchemaTable
           fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
+            { field: "part", type: "ToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
             { field: "animate", type: "boolean", desc: "Enable entrance animations (default: true)" },
             { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
           ]}
@@ -234,43 +230,38 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </div>
       </section>
 
-      {/* ── Adapters ─────────────────────────────────────────────────────── */}
+      {/* ── Data Mapping ──────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Adapters
+          Data Mapping
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          Adapters are pure transformation functions. They take raw provider data and
-          return canonical <InlineCode>IssueCardData</InlineCode>. No auth, no API calls,
-          no SDK imports.
+          Map your provider&apos;s API response to the <InlineCode>IssueCardSchema</InlineCode> inline.
+          No special adapters needed — just a plain object mapping.
         </p>
-        <SchemaTable
-          title="Available Adapters"
-          fields={[
-            { field: "fromGithubIssue(issue)", type: "IssueCardData", req: true, desc: "Maps GitHub REST API issue → canonical schema" },
-            { field: "fromLinearIssue(issue)", type: "IssueCardData", req: true, desc: "Maps Linear GraphQL issue → canonical schema" },
-          ]}
-        />
-        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
-          Both adapters accept loose input types — you don&apos;t need{" "}
-          <InlineCode>@octokit/types</InlineCode> or <InlineCode>@linear/sdk</InlineCode>.
-          Any object with matching fields works.
-        </p>
-      </section>
-
-      {/* ── Adapter examples ─────────────────────────────────────────────── */}
-      <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Adapter Examples
-        </h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <CodeBlock label="raw GitHub issue">{JSON.stringify(rawGithubIssueExample, null, 2)}</CodeBlock>
-          <CodeBlock label="raw Linear issue">{JSON.stringify(rawLinearIssueExample, null, 2)}</CodeBlock>
+          <CodeBlock label="GitHub → IssueCard">{`// Map GitHub REST API fields
+const issueData = {
+  id: \`github:\${issue.number}\`,
+  provider: "github",
+  title: issue.title,
+  number: issue.number,
+  status: { label: issue.state },
+  assignee: issue.assignee
+    ? { name: issue.assignee.login }
+    : undefined,
+}`}</CodeBlock>
+          <CodeBlock label="Linear → IssueCard">{`// Map Linear GraphQL fields
+const issueData = {
+  id: \`linear:\${issue.identifier}\`,
+  provider: "linear",
+  title: issue.title,
+  status: { label: issue.state.name,
+    color: issue.state.color },
+  priority: issue.priority === 1
+    ? "urgent" : "medium",
+}`}</CodeBlock>
         </div>
-        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
-          Pass either of these to the corresponding adapter function to get canonical{" "}
-          <InlineCode>IssueCardData</InlineCode> ready for rendering.
-        </p>
       </section>
 
       {/* ── Features ────────────────────────────────────────────────────── */}
@@ -285,7 +276,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             { icon: "shield", title: "Status + label badges", desc: "Color-coded status badge and label chips with provider colors" },
             { icon: "chat", title: "Rich metadata", desc: "Assignee avatar, relative timestamps, project name, issue number" },
             { icon: "alert", title: "Graceful degradation", desc: "Renders beautifully from minimal (4 fields) to fully populated data" },
-            { icon: "zap", title: "Pure adapters", desc: "fromGithubIssue() and fromLinearIssue() — no auth, no SDK, no side effects" },
+            { icon: "zap", title: "Inline data mapping", desc: "Map any provider's API response to the canonical schema — no adapters needed" },
           ]}
         />
       </section>
@@ -300,7 +291,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             <strong className="text-(--taw-text-primary)">taw-ui does not handle authentication.</strong>{" "}
             OAuth flows, access tokens, refresh tokens, API clients, and data fetching
             are the responsibility of your application. taw-ui provides schemas, components,
-            validation, and pure adapter functions — nothing more.
+            and validation — nothing more.
           </p>
           <p className="mt-2 text-[12px] text-(--taw-text-muted)">
             See <a href="/docs/domain-surfaces" className="text-(--taw-accent) underline decoration-dotted hover:decoration-solid">Domain Surfaces</a> for

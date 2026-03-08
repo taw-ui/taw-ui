@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, isToolUIPart } from "ai"
 import { motion, AnimatePresence } from "framer-motion"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 import { KpiCard } from "@/components/taw/kpi-card"
 import { DataTable } from "@/components/taw/data-table"
 import { OptionList } from "@/components/taw/option-list"
@@ -33,7 +33,7 @@ const transport = new DefaultChatTransport({ api: "/api/chat" })
 
 const componentMap: Record<
   string,
-  React.ComponentType<{ part: TawToolPart; animate?: boolean }>
+  React.ComponentType<{ part: ToolPart; animate?: boolean }>
 > = {
   getMetrics: KpiCard,
   showTable: DataTable,
@@ -183,7 +183,8 @@ function PromptInput({
       setSelectedIndex((i) => (i - 1 + filtered.length) % filtered.length)
     } else if (e.key === "Enter" && showMenu) {
       e.preventDefault()
-      handleSelect(filtered[selectedIndex].prompt)
+      const selected = filtered[selectedIndex]
+      if (selected) handleSelect(selected.prompt)
     } else if (e.key === "Escape") {
       setMenuOpen(false)
     }
@@ -204,7 +205,7 @@ function PromptInput({
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          if (isSlash && filtered.length > 0) {
+          if (isSlash && filtered.length > 0 && filtered[selectedIndex]) {
             handleSelect(filtered[selectedIndex].prompt)
           } else {
             onSubmit()
@@ -645,10 +646,10 @@ export function HeroPlayground() {
                               <div className="pointer-events-none opacity-60">
                                 <Component
                                   part={{
-                                    id: `loading-${part.toolCallId}`,
+                                    toolCallId: `loading-${part.toolCallId}`,
                                     toolName,
                                     input: part.input ?? {},
-                                    state: "streaming",
+                                    state: "input-streaming",
                                     output: undefined,
                                   }}
                                   animate={false}
@@ -672,7 +673,7 @@ export function HeroPlayground() {
                             >
                               <Component
                                 part={{
-                                  id: part.toolCallId,
+                                  toolCallId: part.toolCallId,
                                   toolName,
                                   input: part.input ?? {},
                                   state: "output-available",

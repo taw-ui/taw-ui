@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 const baseInput = { query: "what do you know about me" }
 
@@ -54,26 +54,26 @@ const fullOutput = {
   source: { label: "Memory Store", freshness: "updated 2h ago" },
 }
 
-export const memoryCardFixtures: Record<string, TawToolPart> = {
+export const memoryCardFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "demo-memory",
+    toolCallId: "demo-memory",
     toolName: "getMemories",
     input: baseInput,
     state: "output-available",
     output: fullOutput,
   },
   loading: {
-    id: "demo-memory-loading",
+    toolCallId: "demo-memory-loading",
     toolName: "getMemories",
     input: baseInput,
     state: "input-available",
   },
   error: {
-    id: "demo-memory-error",
+    toolCallId: "demo-memory-error",
     toolName: "getMemories",
     input: baseInput,
     state: "output-error",
-    error: "Memory store unavailable — could not retrieve stored context",
+    errorText: "Memory store unavailable — could not retrieve stored context",
   },
 }
 

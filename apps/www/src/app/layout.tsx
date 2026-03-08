@@ -11,7 +11,7 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 export const metadata: Metadata = {
   title: "taw-ui — AI Tool UI Components",
   description:
-    "Production-grade React components for rendering AI tool call outputs. Schema-first, motion-native, SDK-agnostic.",
+    "Production-grade React components for AI tool interfaces. Schema-validated, motion-native, built on shadcn.",
   icons: { icon: "/favicon.svg" },
 }
 

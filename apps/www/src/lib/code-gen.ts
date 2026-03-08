@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export function prettyPrint(obj: unknown, depth = 0): string {
   const indent = "  ".repeat(depth)
@@ -36,12 +36,12 @@ export function prettyPrint(obj: unknown, depth = 0): string {
 export function generateComponentCode(
   componentName: string,
   importPath: string,
-  part: TawToolPart,
+  part: ToolPart,
   extraProps?: string,
 ): string {
   const lines = [`import { ${componentName} } from "${importPath}"`, ""]
 
-  if (part.state === "input-available" || part.state === "streaming") {
+  if (part.state === "input-available" || part.state === "input-streaming") {
     lines.push(`// Loading state — no output yet`)
     lines.push(`<${componentName} part={part} />${extraProps ? ` // + ${extraProps}` : ""}`)
     return lines.join("\n")
@@ -49,7 +49,7 @@ export function generateComponentCode(
 
   if (part.state === "output-error") {
     lines.push(`// Error state`)
-    lines.push(`<${componentName} part={part} /> // error: "${part.error}"`)
+    lines.push(`<${componentName} part={part} /> // error: "${part.errorText}"`)
     return lines.join("\n")
   }
 

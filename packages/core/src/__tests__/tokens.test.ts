@@ -49,7 +49,7 @@ describe("tawVarRef", () => {
 // ─── CSS file coverage ─────────────────────────────────────────────────────
 
 describe("styles.css token coverage", () => {
-  const css = readCssFile("packages/react/styles.css")
+  const css = readCssFile("packages/core/styles.css")
 
   it.each(TAW_TOKENS.map((t) => [t]))("defines --taw-%s", (token) => {
     expect(css).toContain(`--taw-${token}:`)

@@ -1,34 +1,33 @@
 "use client"
 
 import { KpiCard } from "@/components/taw/kpi-card"
-import { OptionList } from "@/components/taw/option-list"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { PixelIcon } from "@/components/pixel-icon"
 
 // ─── Fixtures for lifecycle demos ─────────────────────────────────────────────
 
-const loadingPart: TawToolPart = {
-  id: "lifecycle-loading",
+const loadingPart: ToolPart = {
+  toolCallId: "lifecycle-loading",
   toolName: "getMetrics",
   input: { metric: "revenue" },
   state: "input-available",
 }
 
-const streamingPart: TawToolPart = {
-  id: "lifecycle-streaming",
+const streamingPart: ToolPart = {
+  toolCallId: "lifecycle-streaming",
   toolName: "getMetrics",
   input: { metric: "revenue" },
-  state: "streaming",
+  state: "input-streaming",
   output: {
     id: "revenue",
     label: "Revenue",
   },
 }
 
-const outputPart: TawToolPart = {
-  id: "lifecycle-output",
+const outputPart: ToolPart = {
+  toolCallId: "lifecycle-output",
   toolName: "getMetrics",
   input: { metric: "revenue" },
   state: "output-available",
@@ -44,12 +43,12 @@ const outputPart: TawToolPart = {
   },
 }
 
-const errorPart: TawToolPart = {
-  id: "lifecycle-error",
+const errorPart: ToolPart = {
+  toolCallId: "lifecycle-error",
   toolName: "getMetrics",
   input: { metric: "revenue" },
   state: "output-error",
-  error: new Error("Connection timeout after 30s"),
+  errorText: "Connection timeout after 30s",
 }
 
 function StateCard({
@@ -135,7 +134,7 @@ export default function ConceptsPage() {
         <div className="flex flex-wrap items-center gap-2 rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface) px-5 py-4">
           {[
             { label: "input-available", desc: "Called, waiting" },
-            { label: "streaming", desc: "Partial data arriving" },
+            { label: "input-streaming", desc: "Partial data arriving" },
             { label: "output-available", desc: "Complete result" },
           ].map((step, i) => (
             <div key={step.label} className="flex items-center gap-2">
@@ -198,7 +197,7 @@ export default function ConceptsPage() {
 
           <StateCard
             label="Streaming"
-            state="streaming"
+            state="input-streaming"
             description="Partial data is arriving. Component renders what it can, skeletons for the rest."
           >
             <KpiCard part={streamingPart} animate={false} />
@@ -223,7 +222,7 @@ export default function ConceptsPage() {
 
         <div className="mt-4">
           <CodeBlock>{`// Your component code stays clean
-function ToolResult({ part }: { part: TawToolPart }) {
+function ToolResult({ part }: { part: ToolPart }) {
   // No switch statements, no if/else chains
   // The component handles all 4 states internally
   return <KpiCard part={part} />
@@ -237,20 +236,20 @@ function ToolResult({ part }: { part: TawToolPart }) {
           The Part Object
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          <InlineCode>TawToolPart</InlineCode> is the universal shape for tool call data.
+          <InlineCode>ToolPart</InlineCode> is the universal shape for tool call data.
           It{"'"}s deliberately shaped to match what Vercel AI SDK, Anthropic SDK, and
           OpenAI SDK already return from their streaming hooks — so you can pass
           SDK parts directly without transformation.
         </p>
-        <CodeBlock>{`interface TawToolPart<TInput = unknown, TOutput = unknown> {
-  id: string           // Unique call ID
+        <CodeBlock>{`interface ToolPart {
+  toolCallId: string   // Unique call ID
   toolName: string     // Which tool was called
-  input: TInput        // Arguments sent to the tool
-  output?: TOutput     // Result data (when available)
-  error?: Error | string  // Error (when failed)
+  input?: unknown      // Arguments sent to the tool
+  output?: unknown     // Result data (when available)
+  errorText?: string   // Error message (when failed)
   state:               // Current lifecycle state
     | "input-available"   // Called, waiting
-    | "streaming"         // Partial data arriving
+    | "input-streaming"   // Partial data arriving
     | "output-available"  // Complete result
     | "output-error"      // Failed
 }`}</CodeBlock>
@@ -360,7 +359,7 @@ if (!result.ok) {
             <span className="mb-1.5 block font-mono text-[10px] font-medium text-(--taw-text-muted)">
               Lenient parse (streaming)
             </span>
-            <CodeBlock>{`// Used when state = "streaming"
+            <CodeBlock>{`// Used when state = "input-streaming"
 const partial = KpiCard.safeParse(output)
 
 // Returns typed data or null
@@ -395,7 +394,7 @@ const partial = KpiCard.safeParse(output)
             {[
               { n: "1", text: <>AI presents options via <InlineCode>OptionList</InlineCode></> },
               { n: "2", text: <>User selects and confirms — <InlineCode>onAction</InlineCode> fires with the decision</> },
-              { n: "3", text: <>You create a <InlineCode>TawReceipt</InlineCode> and pass it back as a prop</> },
+              { n: "3", text: <>You create a <InlineCode>TawReceipt</InlineCode> (from the action payload) and pass it back as a prop</> },
               { n: "4", text: <>Component collapses to a compact receipt — scroll back and it{"'"}s just one line</> },
             ].map(({ n, text }) => (
               <div key={n} className="flex items-center gap-3">
@@ -407,7 +406,7 @@ const partial = KpiCard.safeParse(output)
         </div>
         <div className="mt-4">
           <CodeBlock>{`import { OptionList } from "@/components/taw/option-list"
-import type { TawReceipt } from "taw-ui"
+import type { TawReceipt } from "@/components/taw/option-list.schema"
 
 const [receipt, setReceipt] = useState<TawReceipt>()
 
@@ -464,9 +463,9 @@ actions: [
         <CodeBlock>{`import { KpiCard } from "@/components/taw/kpi-card"
 import { DataTable } from "@/components/taw/data-table"
 import { OptionList } from "@/components/taw/option-list"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-function ToolOutput({ part }: { part: TawToolPart }) {
+function ToolOutput({ part }: { part: ToolPart }) {
   switch (part.toolName) {
     case "getMetrics":
       return <KpiCard part={part} />
@@ -486,30 +485,25 @@ function ToolOutput({ part }: { part: TawToolPart }) {
           Theming
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          taw-ui uses CSS custom properties for theming — no Tailwind theme
-          extension, no build-time config. Import the default theme, then override
-          any <InlineCode>--taw-*</InlineCode> token to match your design system.
+          taw-ui components use shadcn{"'"}s design tokens — the same CSS variables
+          your existing shadcn components use. No custom token system. No extra CSS
+          import. If your app already has shadcn configured, taw-ui components match
+          your theme automatically.
         </p>
-        <CodeBlock label="globals.css">{`@import "taw-ui/styles.css";`}</CodeBlock>
-        <p className="mt-3 mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          The default theme provides sensible defaults and automatically picks up
-          shadcn/ui v2 variables (<InlineCode>--primary</InlineCode>,{" "}
-          <InlineCode>--background</InlineCode>, <InlineCode>--border</InlineCode>,
-          etc.) when available. Override any token directly:
-        </p>
-        <CodeBlock>{`:root {
-  --taw-accent: oklch(0.55 0.2 260);   /* Primary interactive color */
-  --taw-surface: oklch(0.98 0 0);       /* Component background */
-  --taw-border: oklch(0.9 0 0);         /* Borders and dividers */
-  /* ... override any of the 22 tokens */
+        <CodeBlock label="globals.css">{`/* Your existing globals.css — taw-ui uses these automatically */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --primary: 222.2 47.4% 11.2%;
+  --muted-foreground: 215.4 16.3% 46.9%;
 }`}</CodeBlock>
         <p className="mt-3 text-[13px] text-(--taw-text-muted)">
-          Components use semantic tokens like{" "}
-          <InlineCode>bg-(--taw-surface)</InlineCode> and{" "}
-          <InlineCode>text-(--taw-text-primary)</InlineCode>. Dark mode
-          works automatically — the <InlineCode>.dark</InlineCode> class
-          on <InlineCode>{"<html>"}</InlineCode> swaps all token values.
-          A dedicated Theming page with the full token reference is coming soon.
+          Components use classes like <InlineCode>bg-card</InlineCode>,{" "}
+          <InlineCode>text-foreground</InlineCode>,{" "}
+          <InlineCode>text-muted-foreground</InlineCode>, and{" "}
+          <InlineCode>border</InlineCode>. These map to your shadcn theme.
+          Change your theme, and taw-ui components update with it.
         </p>
 
         <a
@@ -519,7 +513,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
           <PixelIcon name="zap" size={14} />
           <div>
             <span className="block text-[12px] font-medium text-(--taw-accent)">Theming →</span>
-            <span className="text-[11px] text-(--taw-text-muted)">Full token reference, shadcn v2 compatibility, override examples, and troubleshooting</span>
+            <span className="text-[11px] text-(--taw-text-muted)">How shadcn tokens flow through taw-ui components, customization, and troubleshooting</span>
           </div>
         </a>
       </section>

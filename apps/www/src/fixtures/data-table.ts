@@ -1,8 +1,8 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-export const dataTableFixtures: Record<string, TawToolPart> = {
+export const dataTableFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "dt-2",
+    toolCallId: "dt-2",
     toolName: "showTable",
     input: { query: "top customers" },
     state: "output-available",
@@ -31,17 +31,17 @@ export const dataTableFixtures: Record<string, TawToolPart> = {
     },
   },
   loading: {
-    id: "dt-1",
+    toolCallId: "dt-1",
     toolName: "showTable",
     input: { query: "top customers" },
     state: "input-available",
   },
   error: {
-    id: "dt-3",
+    toolCallId: "dt-3",
     toolName: "showTable",
     input: { query: "top customers" },
     state: "output-error",
-    error: "Query timed out after 30s",
+    errorText: "Query timed out after 30s",
   },
 }
 

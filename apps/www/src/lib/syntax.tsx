@@ -118,7 +118,10 @@ function tokenize(code: string): Token[] {
 
     // Refine "plain" tokens that are words
     if (type === "plain" && /^[a-zA-Z_$]/.test(value)) {
-      const prevNonWs = tokens.findLast((t) => t.value.trim() !== "")
+      let prevNonWs: Token | null = null
+      for (let j = tokens.length - 1; j >= 0; j--) {
+        if (tokens[j]!.value.trim() !== "") { prevNonWs = tokens[j]!; break }
+      }
       type = classifyWord(value, prevNonWs ?? null)
     }
 
@@ -155,7 +158,10 @@ function postProcess(tokens: Token[]): Token[] {
       next.value === ":" &&
       // Quick heuristic: if the previous meaningful token is { or , it's an object key
       (() => {
-        const prev = tokens.slice(0, i).findLast((t) => t.value.trim() !== "")
+        let prev: Token | undefined
+        for (let j = i - 1; j >= 0; j--) {
+          if (tokens[j]!.value.trim() !== "") { prev = tokens[j]!; break }
+        }
         return prev && (prev.value === "{" || prev.value === "," || prev.value === "\n")
       })()
     ) {

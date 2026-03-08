@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const alertCardOptions = [
   { key: "description", label: "description", defaultOn: true },
@@ -8,9 +8,9 @@ export const alertCardOptions = [
   { key: "source", label: "source", defaultOn: false },
 ]
 
-export const alertCardFixtures: Record<string, TawToolPart> = {
+export const alertCardFixtures: Record<string, ToolPart> = {
   warning: {
-    id: "ac-1",
+    toolCallId: "ac-1",
     toolName: "checkAlerts",
     input: {},
     state: "output-available",
@@ -34,7 +34,7 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
     },
   },
   critical: {
-    id: "ac-2",
+    toolCallId: "ac-2",
     toolName: "checkAlerts",
     input: {},
     state: "output-available",
@@ -58,7 +58,7 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
     },
   },
   info: {
-    id: "ac-3",
+    toolCallId: "ac-3",
     toolName: "checkAlerts",
     input: {},
     state: "output-available",
@@ -80,16 +80,16 @@ export const alertCardFixtures: Record<string, TawToolPart> = {
     },
   },
   loading: {
-    id: "ac-4",
+    toolCallId: "ac-4",
     toolName: "checkAlerts",
     input: {},
     state: "input-available",
   },
   error: {
-    id: "ac-5",
+    toolCallId: "ac-5",
     toolName: "checkAlerts",
     input: {},
     state: "output-error",
-    error: "Falha ao consultar alertas",
+    errorText: "Falha ao consultar alertas",
   },
 }

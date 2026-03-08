@@ -143,17 +143,23 @@ const { data: issue } = await octokit.issues.get({
   issue_number: 58234,
 })
 
-// 3. taw-ui normalizes it (pure transform, no side effects)
-import { fromGithubIssue } from "taw-ui"
-const issueData = fromGithubIssue(issue)
+// 3. Map API response to IssueCard schema
+const output = {
+  id: issue.number.toString(),
+  title: issue.title,
+  body: issue.body,
+  status: { label: issue.state },
+  author: { login: issue.user.login, avatar: issue.user.avatar_url },
+  labels: issue.labels.map(l => ({ name: l.name, color: l.color })),
+}
 
 // 4. taw-ui renders it
 <IssueCard part={{
-  id: "1",
+  toolCallId: "1",
   toolName: "getIssue",
   state: "output-available",
   input: {},
-  output: issueData,
+  output,
 }} />`}</CodeBlock>
       </section>
 
@@ -192,8 +198,8 @@ const issueData = fromGithubIssue(issue)
           </p>
           <p>
             <strong className="text-(--taw-text-primary)">Pure transformations.</strong>{" "}
-            Adapters like <InlineCode>fromGithubIssue()</InlineCode> are pure functions.
-            No network calls, no auth, no side effects. They take raw provider data in
+            Provider adapters are pure functions — inline data mappings with no
+            network calls, no auth, no side effects. They take raw provider data in
             and return canonical data out.
           </p>
           <p>

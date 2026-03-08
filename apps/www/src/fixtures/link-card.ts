@@ -1,8 +1,8 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-export const linkCardFixtures: Record<string, TawToolPart> = {
+export const linkCardFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "link-1",
+    toolCallId: "link-1",
     toolName: "showLink",
     input: { url: "https://react.dev/reference/rsc/server-components" },
     state: "output-available",
@@ -22,17 +22,17 @@ export const linkCardFixtures: Record<string, TawToolPart> = {
     },
   },
   loading: {
-    id: "link-4",
+    toolCallId: "link-4",
     toolName: "showLink",
     input: { url: "https://example.com" },
     state: "input-available",
   },
   error: {
-    id: "link-5",
+    toolCallId: "link-5",
     toolName: "showLink",
     input: { url: "https://example.com" },
     state: "output-error",
-    error: "Failed to fetch Open Graph metadata for this URL.",
+    errorText: "Failed to fetch Open Graph metadata for this URL.",
   },
 }
 

@@ -73,38 +73,64 @@
   --taw-shadow-sm: 0 1px 2px oklch(0.25 0.02 290 / 0.06), 0 1px 3px oklch(0.25 0.02 290 / 0.04);
   --taw-shadow-md: 0 2px 8px oklch(0.25 0.02 290 / 0.08), 0 1px 3px oklch(0.25 0.02 290 / 0.05);
   --taw-shadow-ring: 0 0 0 1px oklch(0.25 0.02 290 / 0.06);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
+  /* shadcn tokens — mapped to Alucard (light) brand */
+  --background: oklch(0.965 0.008 85);             /* taw-surface warm cream */
+  --foreground: oklch(0.22 0.04 290);              /* taw-text-primary deep purple-blue */
+  --card: oklch(0.985 0.006 85);                   /* taw-surface-raised */
+  --card-foreground: oklch(0.22 0.04 290);         /* taw-text-primary */
+  --popover: oklch(0.985 0.006 85);
+  --popover-foreground: oklch(0.22 0.04 290);
+  --primary: oklch(0.5091 0.188 287.15);           /* taw-accent Alucard Purple */
+  --primary-foreground: oklch(0.98 0.005 85);
+  --secondary: oklch(0.93 0.06 295);               /* taw-accent-subtle */
+  --secondary-foreground: oklch(0.22 0.04 290);
+  --muted: oklch(0.945 0.010 85);                  /* taw-surface-sunken */
+  --muted-foreground: oklch(0.52 0.04 290);        /* taw-text-muted */
+  --accent: oklch(0.93 0.06 295);                  /* taw-accent-subtle */
+  --accent-foreground: oklch(0.22 0.04 290);
+  --destructive: oklch(0.5632 0.184 30.08);        /* taw-error */
+  --border: oklch(0.88 0.015 85);                  /* taw-border warm */
+  --input: oklch(0.88 0.015 85);
+  --ring: oklch(0.5091 0.188 287.15);              /* taw-accent for focus rings */
+  --chart-1: oklch(0.5091 0.188 287.15);           /* Purple */
+  --chart-2: oklch(0.4784 0.155 141.90);           /* Green */
+  --chart-3: oklch(0.4961 0.106 236.17);           /* Cyan */
+  --chart-4: oklch(0.5205 0.131 48.46);            /* Orange */
+  --chart-5: oklch(0.4682 0.177 4.96);             /* Magenta */
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.985 0.006 85);
+  --sidebar-foreground: oklch(0.22 0.04 290);
+  --sidebar-primary: oklch(0.5091 0.188 287.15);
+  --sidebar-primary-foreground: oklch(0.98 0.005 85);
+  --sidebar-accent: oklch(0.93 0.06 295);
+  --sidebar-accent-foreground: oklch(0.22 0.04 290);
+  --sidebar-border: oklch(0.88 0.015 85);
+  --sidebar-ring: oklch(0.5091 0.188 287.15);
+
+  /* Tailwind color scale overrides — Alucard brand */
+  --color-emerald-300: oklch(0.72 0.12 142);
+  --color-emerald-400: oklch(0.62 0.14 142);
+  --color-emerald-500: oklch(0.53 0.155 142);
+  --color-emerald-600: oklch(0.4784 0.155 141.90);
+  --color-emerald-700: oklch(0.42 0.14 142);
+
+  --color-red-300: oklch(0.75 0.12 30);
+  --color-red-400: oklch(0.65 0.16 30);
+  --color-red-500: oklch(0.58 0.18 30);
+  --color-red-600: oklch(0.5632 0.184 30.08);
+  --color-red-700: oklch(0.48 0.16 30);
+
+  --color-amber-300: oklch(0.75 0.10 48);
+  --color-amber-400: oklch(0.65 0.12 48);
+  --color-amber-500: oklch(0.57 0.13 48);
+  --color-amber-600: oklch(0.5205 0.131 48.46);
+  --color-amber-700: oklch(0.46 0.12 48);
+
+  --color-blue-300: oklch(0.72 0.08 236);
+  --color-blue-400: oklch(0.60 0.10 236);
+  --color-blue-500: oklch(0.53 0.106 236);
+  --color-blue-600: oklch(0.4961 0.106 236.17);
+  --color-blue-700: oklch(0.43 0.10 236);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -159,37 +185,63 @@
   --taw-shadow-sm: 0 1px 3px oklch(0.10 0.03 280 / 0.4);
   --taw-shadow-md: 0 2px 10px oklch(0.10 0.03 280 / 0.5), 0 0 1px oklch(0.10 0.03 280 / 0.3);
   --taw-shadow-ring: 0 0 0 1px oklch(1 0 0 / 0.05);
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0.00 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.371 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* shadcn tokens — mapped to Dracula (dark) brand */
+  --background: oklch(0.22 0.025 280);             /* taw-surface deep blue-purple */
+  --foreground: oklch(0.9775 0.008 106.55);        /* taw-text-primary warm white */
+  --card: oklch(0.27 0.025 280);                   /* taw-surface-raised */
+  --card-foreground: oklch(0.9775 0.008 106.55);   /* taw-text-primary */
+  --popover: oklch(0.27 0.025 280);
+  --popover-foreground: oklch(0.9775 0.008 106.55);
+  --primary: oklch(0.72 0.16 295);                 /* taw-accent vivid Dracula Purple */
+  --primary-foreground: oklch(0.18 0.025 280);
+  --secondary: oklch(0.28 0.06 295);               /* taw-accent-subtle */
+  --secondary-foreground: oklch(0.9775 0.008 106.55);
+  --muted: oklch(0.28 0.025 280);                  /* slightly raised */
+  --muted-foreground: oklch(0.5764 0.087 290.65);  /* taw-text-muted (Dracula Comment) */
+  --accent: oklch(0.28 0.06 295);                  /* taw-accent-subtle */
+  --accent-foreground: oklch(0.9775 0.008 106.55);
+  --destructive: oklch(0.70 0.22 25);              /* taw-error vivid red */
+  --border: oklch(0.32 0.03 280);                  /* taw-border */
+  --input: oklch(0.32 0.03 280);
+  --ring: oklch(0.72 0.16 295);                    /* taw-accent for focus rings */
+  --chart-1: oklch(0.6775 0.181 288.17);           /* Purple */
+  --chart-2: oklch(0.9029 0.197 142.21);           /* Green */
+  --chart-3: oklch(0.9214 0.118 181.40);           /* Cyan */
+  --chart-4: oklch(0.82 0.14 65);                  /* Orange */
+  --chart-5: oklch(0.7616 0.168 350.80);           /* Magenta */
+  --sidebar: oklch(0.18 0.025 280);
+  --sidebar-foreground: oklch(0.9775 0.008 106.55);
+  --sidebar-primary: oklch(0.72 0.16 295);
+  --sidebar-primary-foreground: oklch(0.18 0.025 280);
+  --sidebar-accent: oklch(0.28 0.06 295);
+  --sidebar-accent-foreground: oklch(0.9775 0.008 106.55);
+  --sidebar-border: oklch(0.32 0.03 280);
+  --sidebar-ring: oklch(0.72 0.16 295);
+
+  /* Tailwind color scale overrides — Dracula brand */
+  --color-emerald-300: oklch(0.93 0.16 142);
+  --color-emerald-400: oklch(0.9029 0.197 142.21);
+  --color-emerald-500: oklch(0.80 0.19 142);
+  --color-emerald-600: oklch(0.72 0.18 142);
+  --color-emerald-700: oklch(0.62 0.16 142);
+
+  --color-red-300: oklch(0.82 0.15 25);
+  --color-red-400: oklch(0.70 0.22 25);
+  --color-red-500: oklch(0.62 0.20 25);
+  --color-red-600: oklch(0.55 0.18 25);
+  --color-red-700: oklch(0.48 0.15 25);
+
+  --color-amber-300: oklch(0.90 0.10 65);
+  --color-amber-400: oklch(0.82 0.14 65);
+  --color-amber-500: oklch(0.72 0.13 65);
+  --color-amber-600: oklch(0.65 0.12 65);
+  --color-amber-700: oklch(0.55 0.11 65);
+
+  --color-blue-300: oklch(0.93 0.10 181);
+  --color-blue-400: oklch(0.9214 0.118 181.40);
+  --color-blue-500: oklch(0.75 0.11 181);
+  --color-blue-600: oklch(0.65 0.10 181);
+  --color-blue-700: oklch(0.55 0.09 181);
 }
 
 /* ═══════════════════════════════════════════════════════════════ */

@@ -56,7 +56,7 @@ export default function KpiCardDocs() {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Installation
         </h2>
-        <CodeBlock label="Terminal">{`npx taw-ui add kpi-card`}</CodeBlock>
+        <CodeBlock label="Terminal">{`npx shadcn@latest add "https://taw-ui.com/r/kpi-card.json"`}</CodeBlock>
         <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
           This copies the component source and schema into your project.
           You own the code — customize anything.
@@ -93,9 +93,9 @@ export const getMetrics = tool({
   },
 })`}</CodeBlock>
           <CodeBlock label="client — render">{`import { KpiCard } from "@/components/taw/kpi-card"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-function ToolOutput({ part }: { part: TawToolPart }) {
+function ToolOutput({ part }: { part: ToolPart }) {
   // Handles loading, error, and success states
   return <KpiCard part={part} />
 }`}</CodeBlock>
@@ -135,7 +135,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </h2>
         <SchemaTable
           fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
+            { field: "part", type: "ToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
             { field: "animate", type: "boolean", desc: "Enable spring animations and sparkline draw-in (default: true)" },
             { field: "locale", type: "string", desc: "BCP 47 locale for number/currency formatting (e.g. \"en-US\")" },
             { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },

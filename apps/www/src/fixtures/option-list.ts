@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const optionListOptions = [
   { key: "description", label: "description", defaultOn: true },
@@ -7,9 +7,9 @@ export const optionListOptions = [
   { key: "source", label: "source", defaultOn: false },
 ]
 
-export const optionListFixtures: Record<string, TawToolPart> = {
+export const optionListFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "ol-2",
+    toolCallId: "ol-2",
     toolName: "chooseAction",
     input: { context: "deployment" },
     state: "output-available",
@@ -45,7 +45,7 @@ export const optionListFixtures: Record<string, TawToolPart> = {
     },
   },
   "multi-select": {
-    id: "ol-4",
+    toolCallId: "ol-4",
     toolName: "chooseAction",
     input: { context: "features" },
     state: "output-available",
@@ -87,16 +87,16 @@ export const optionListFixtures: Record<string, TawToolPart> = {
     },
   },
   loading: {
-    id: "ol-1",
+    toolCallId: "ol-1",
     toolName: "chooseAction",
     input: { context: "deployment" },
     state: "input-available",
   },
   error: {
-    id: "ol-3",
+    toolCallId: "ol-3",
     toolName: "chooseAction",
     input: { context: "deployment" },
     state: "output-error",
-    error: "Failed to generate deployment options",
+    errorText: "Failed to generate deployment options",
   },
 }

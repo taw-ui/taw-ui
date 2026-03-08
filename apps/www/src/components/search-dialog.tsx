@@ -41,7 +41,6 @@ function SearchContent({
   inputRef,
   listRef,
   onNavigate,
-  onClose,
   handleKeyDown,
 }: {
   query: string
@@ -52,7 +51,6 @@ function SearchContent({
   inputRef: React.RefObject<HTMLInputElement | null>
   listRef: React.RefObject<HTMLDivElement | null>
   onNavigate: (href: string) => void
-  onClose: () => void
   handleKeyDown: (e: React.KeyboardEvent) => void
 }) {
   return (
@@ -141,6 +139,7 @@ export function SearchDialog({ items, open, onClose }: SearchDialogProps) {
         document.body.style.overflow = prev
       }
     }
+    return undefined
   }, [open])
 
   // Reset on open

@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const issueCardOptions = [
   { key: "description", label: "description", defaultOn: true },
@@ -12,8 +12,8 @@ export const issueCardOptions = [
 
 // ─── Example: GitHub issue (as returned by fromGithubIssue) ─────────────────
 
-export const githubIssueFixture: TawToolPart = {
-  id: "gh-1",
+export const githubIssueFixture: ToolPart = {
+  toolCallId: "gh-1",
   toolName: "getIssue",
   input: { owner: "vercel", repo: "next.js", number: 58234 },
   state: "output-available",
@@ -40,8 +40,8 @@ export const githubIssueFixture: TawToolPart = {
 
 // ─── Example: Linear issue (as returned by fromLinearIssue) ─────────────────
 
-export const linearIssueFixture: TawToolPart = {
-  id: "lin-1",
+export const linearIssueFixture: ToolPart = {
+  toolCallId: "lin-1",
   toolName: "getIssue",
   input: { identifier: "ENG-423" },
   state: "output-available",
@@ -68,8 +68,8 @@ export const linearIssueFixture: TawToolPart = {
 
 // ─── Minimal issue (few optional fields) ────────────────────────────────────
 
-export const minimalIssueFixture: TawToolPart = {
-  id: "min-1",
+export const minimalIssueFixture: ToolPart = {
+  toolCallId: "min-1",
   toolName: "getIssue",
   input: { id: "TASK-99" },
   state: "output-available",
@@ -83,8 +83,8 @@ export const minimalIssueFixture: TawToolPart = {
 
 // ─── Issue with caveat / confidence ─────────────────────────────────────────
 
-export const issueWithCaveatFixture: TawToolPart = {
-  id: "cav-1",
+export const issueWithCaveatFixture: ToolPart = {
+  toolCallId: "cav-1",
   toolName: "getIssue",
   input: { owner: "facebook", repo: "react", number: 28140 },
   state: "output-available",
@@ -110,23 +110,23 @@ export const issueWithCaveatFixture: TawToolPart = {
 
 // ─── All fixtures for ComponentPreview ───────────────────────────────────────
 
-export const issueCardFixtures: Record<string, TawToolPart> = {
+export const issueCardFixtures: Record<string, ToolPart> = {
   ready: githubIssueFixture,
   linear: linearIssueFixture,
   minimal: minimalIssueFixture,
   caveat: issueWithCaveatFixture,
   loading: {
-    id: "ic-load",
+    toolCallId: "ic-load",
     toolName: "getIssue",
     input: { owner: "vercel", repo: "next.js", number: 123 },
     state: "input-available",
   },
   error: {
-    id: "ic-err",
+    toolCallId: "ic-err",
     toolName: "getIssue",
     input: { owner: "vercel", repo: "next.js", number: 999 },
     state: "output-error",
-    error: "Issue not found or access denied",
+    errorText: "Issue not found or access denied",
   },
 }
 

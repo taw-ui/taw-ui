@@ -8,7 +8,7 @@ import {
   FeatureGrid,
   RelatedComponents,
 } from "@/components/docs-components"
-import { eventCardFixtures, eventCardOptions, rawGoogleCalendarEventExample, rawOutlookEventExample } from "@/fixtures/event-card"
+import { eventCardFixtures, eventCardOptions } from "@/fixtures/event-card"
 import { ComponentNav } from "@/components/component-nav"
 import { generateComponentCode } from "@/lib/code-gen"
 
@@ -28,8 +28,8 @@ export default function EventCardDocs() {
         </h1>
         <p className="mt-2 max-w-lg text-[14px] leading-relaxed text-(--taw-text-secondary)">
           Canonical calendar event surface for Google Calendar, Outlook, Cal.com, and any
-          event provider. One component, multiple adapters — your app authenticates and fetches,
-          taw-ui normalizes and renders.
+          event provider. One component, any data source — your app authenticates, fetches,
+          and maps to the canonical schema.
         </p>
       </div>
 
@@ -57,60 +57,50 @@ export default function EventCardDocs() {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Installation
         </h2>
-        <CodeBlock label="Terminal">{`npx taw-ui add event-card`}</CodeBlock>
+        <CodeBlock label="Terminal">{`npx shadcn@latest add "https://taw-ui.com/r/event-card.json"`}</CodeBlock>
         <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
           This copies the component source and schema into your project.
           You own the code — customize anything.
         </p>
       </section>
 
-      {/* ── Usage with adapters ──────────────────────────────────────────── */}
+      {/* ── Usage with Data Mapping ───────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Usage with Adapters
+          Usage with Data Mapping
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          The recommended pattern: your app fetches data from the provider,
-          taw-ui&apos;s adapter normalizes it, and the component renders it.
+          The recommended pattern: your app fetches data from the provider
+          and maps it to the EventCard schema inline.
         </p>
         <div className="grid gap-4 md:grid-cols-2">
-          <CodeBlock label="Google Calendar adapter">{`import { fromGoogleCalendarEvent } from "taw-ui"
-
-// Your app fetches (auth is yours)
-const { data } = await calendar.events.get({
-  calendarId: "primary",
-  eventId: "abc123",
+          <CodeBlock label="Google Calendar mapping">{`// Your app fetches (auth is yours)
+const { data: event } = await calendar.events.get({
+  calendarId: "primary", eventId: "abc123",
 })
 
-// taw-ui normalizes (pure transform)
-const eventData = fromGoogleCalendarEvent(data)
-
-// Render
-<EventCard part={{
-  id: "1",
-  toolName: "getEvent",
-  state: "output-available",
-  input: {},
-  output: eventData,
-}} />`}</CodeBlock>
-          <CodeBlock label="Outlook adapter">{`import { fromOutlookEvent } from "taw-ui"
-
-// Your app fetches (auth is yours)
+// Map to the EventCard schema
+const eventData = {
+  id: \`google:\${event.id}\`,
+  provider: "google",
+  title: event.summary,
+  startAt: event.start.dateTime ?? event.start.date,
+  endAt: event.end.dateTime ?? event.end.date,
+  // ... map remaining fields
+}`}</CodeBlock>
+          <CodeBlock label="Outlook mapping">{`// Your app fetches (auth is yours)
 const event = await graphClient
-  .api("/me/events/AAMk...")
-  .get()
+  .api("/me/events/AAMk...").get()
 
-// taw-ui normalizes (pure transform)
-const eventData = fromOutlookEvent(event)
-
-// Render
-<EventCard part={{
-  id: "1",
-  toolName: "getEvent",
-  state: "output-available",
-  input: {},
-  output: eventData,
-}} />`}</CodeBlock>
+// Map to the EventCard schema
+const eventData = {
+  id: \`outlook:\${event.id}\`,
+  provider: "outlook",
+  title: event.subject,
+  startAt: event.start.dateTime,
+  endAt: event.end.dateTime,
+  // ... map remaining fields
+}`}</CodeBlock>
         </div>
       </section>
 
@@ -135,13 +125,20 @@ export const getEvent = tool({
   outputSchema: EventCardSchema,
   execute: async ({ query }) => {
     const event = await fetchNextEvent(query)
-    return fromGoogleCalendarEvent(event)
+    return {
+      id: \\\`google:\\\${event.id}\\\`,
+      provider: "google",
+      title: event.summary,
+      startAt: event.start.dateTime,
+      endAt: event.end.dateTime,
+      // ... map remaining fields
+    }
   },
 })`}</CodeBlock>
           <CodeBlock label="client — render">{`import { EventCard } from "@/components/taw/event-card"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-function ToolOutput({ part }: { part: TawToolPart }) {
+function ToolOutput({ part }: { part: ToolPart }) {
   // Handles loading, error, and success states
   return <EventCard part={part} />
 }`}</CodeBlock>
@@ -175,7 +172,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </h2>
         <SchemaTable
           fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
+            { field: "part", type: "ToolPart", req: true, desc: "Tool call lifecycle state — handles loading, error, and success" },
             { field: "animate", type: "boolean", desc: "Enable entrance animations (default: true)" },
             { field: "className", type: "string", desc: "Additional CSS classes on the wrapper" },
           ]}
@@ -230,43 +227,41 @@ function ToolOutput({ part }: { part: TawToolPart }) {
         </div>
       </section>
 
-      {/* ── Adapters ─────────────────────────────────────────────────────── */}
+      {/* ── Data Mapping ──────────────────────────────────────────────────── */}
       <section>
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Adapters
+          Data Mapping
         </h2>
         <p className="mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
-          Adapters are pure transformation functions. They take raw provider data and
-          return canonical <InlineCode>EventCardData</InlineCode>. No auth, no API calls,
-          no SDK imports.
+          Map your provider&apos;s API response to the <InlineCode>EventCardSchema</InlineCode> inline.
+          No special adapters needed — just a plain object mapping.
         </p>
-        <SchemaTable
-          title="Available Adapters"
-          fields={[
-            { field: "fromGoogleCalendarEvent(event)", type: "EventCardData", req: true, desc: "Maps Google Calendar API v3 event → canonical schema" },
-            { field: "fromOutlookEvent(event)", type: "EventCardData", req: true, desc: "Maps Microsoft Graph API event → canonical schema" },
-          ]}
-        />
-        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
-          Both adapters accept loose input types — you don&apos;t need{" "}
-          <InlineCode>googleapis</InlineCode> or <InlineCode>@microsoft/microsoft-graph-types</InlineCode>.
-          Any object with matching fields works.
-        </p>
-      </section>
-
-      {/* ── Adapter examples ─────────────────────────────────────────────── */}
-      <section>
-        <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
-          Adapter Examples
-        </h2>
         <div className="grid gap-4 md:grid-cols-2">
-          <CodeBlock label="raw Google Calendar event">{JSON.stringify(rawGoogleCalendarEventExample, null, 2)}</CodeBlock>
-          <CodeBlock label="raw Outlook event">{JSON.stringify(rawOutlookEventExample, null, 2)}</CodeBlock>
+          <CodeBlock label="Google Calendar → EventCard">{`// Map Google Calendar API v3 fields
+const eventData = {
+  id: \`google:\${event.id}\`,
+  provider: "google",
+  title: event.summary,
+  startAt: event.start.dateTime ?? event.start.date,
+  endAt: event.end.dateTime ?? event.end.date,
+  attendees: (event.attendees ?? []).map(a => ({
+    name: a.displayName ?? a.email,
+    email: a.email,
+  })),
+}`}</CodeBlock>
+          <CodeBlock label="Outlook → EventCard">{`// Map Microsoft Graph API fields
+const eventData = {
+  id: \`outlook:\${event.id}\`,
+  provider: "outlook",
+  title: event.subject,
+  startAt: event.start.dateTime,
+  endAt: event.end.dateTime,
+  location: event.location?.displayName,
+  organizer: event.organizer
+    ? { name: event.organizer.emailAddress.name }
+    : undefined,
+}`}</CodeBlock>
         </div>
-        <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
-          Pass either of these to the corresponding adapter function to get canonical{" "}
-          <InlineCode>EventCardData</InlineCode> ready for rendering.
-        </p>
       </section>
 
       {/* ── Features ────────────────────────────────────────────────────── */}
@@ -281,7 +276,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             { icon: "shield", title: "Smart time formatting", desc: "Locale-aware time display with duration badges and all-day event support" },
             { icon: "chat", title: "Attendee avatars", desc: "Stacked avatar display with RSVP response status indicators" },
             { icon: "alert", title: "Graceful degradation", desc: "Renders beautifully from minimal (5 fields) to fully populated data" },
-            { icon: "zap", title: "Pure adapters", desc: "fromGoogleCalendarEvent() and fromOutlookEvent() — no auth, no SDK, no side effects" },
+            { icon: "zap", title: "Inline data mapping", desc: "Map any provider's API response to the canonical schema — no adapters needed" },
           ]}
         />
       </section>
@@ -296,7 +291,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
             <strong className="text-(--taw-text-primary)">taw-ui does not handle authentication.</strong>{" "}
             OAuth flows, access tokens, refresh tokens, API clients, and data fetching
             are the responsibility of your application. taw-ui provides schemas, components,
-            validation, and pure adapter functions — nothing more.
+            and validation — nothing more.
           </p>
           <p className="mt-2 text-[12px] text-(--taw-text-muted)">
             See <a href="/docs/domain-surfaces" className="text-(--taw-accent) underline decoration-dotted hover:decoration-solid">Domain Surfaces</a> for

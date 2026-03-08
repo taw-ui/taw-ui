@@ -1,5 +1,5 @@
 import { convertToModelMessages, streamText, UIMessage } from "ai"
-import { heroTools, toolToComponent } from "@/lib/hero-tools"
+import { heroTools } from "@/lib/hero-tools"
 
 export const maxDuration = 30
 

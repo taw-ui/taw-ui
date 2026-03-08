@@ -47,7 +47,7 @@ export default function MemoryCardDocs() {
                 <MemoryCard
                   part={part}
                   onAction={onAction}
-                  receipt={receipt}
+                  receipt={receipt as any}
                   pending={pending}
                 />
               ),
@@ -67,7 +67,7 @@ export default function MemoryCardDocs() {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Installation
         </h2>
-        <CodeBlock label="Terminal">{`npx taw-ui add memory-card`}</CodeBlock>
+        <CodeBlock label="Terminal">{`npx shadcn@latest add "https://taw-ui.com/r/memory-card.json"`}</CodeBlock>
         <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
           This copies the component source and schema into your project.
           You own the code — customize anything.
@@ -106,7 +106,6 @@ export const getMemories = tool({
   },
 })`}</CodeBlock>
           <CodeBlock label="client — render">{`import { MemoryCard } from "@/components/taw/memory-card"
-import { createReceipt } from "taw-ui"
 
 function ToolOutput({ part }) {
   const [receipt, setReceipt] = useState()
@@ -161,7 +160,7 @@ function ToolOutput({ part }) {
         </h2>
         <SchemaTable
           fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state" },
+            { field: "part", type: "ToolPart", req: true, desc: "Tool call lifecycle state" },
             { field: "onAction", type: "(id, payload) => void", desc: "Callback with verdicts when user submits review" },
             { field: "receipt", type: "TawReceipt", desc: "Renders the receipt summary when provided" },
             { field: "pending", type: "boolean", desc: "Disables all interactions while processing" },

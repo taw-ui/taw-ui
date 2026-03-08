@@ -7,7 +7,7 @@ import { CopyPage } from "./copy-page"
 
 // Match sidebar order: categories sorted by order, components in array order within each
 const orderedComponents = Object.entries(categories)
-  .sort(([, a], [, b]) => a.order - b.order)
+  .sort(([, a]: [string, { order: number }], [, b]: [string, { order: number }]) => a.order - b.order)
   .flatMap(([catId]) =>
     components.filter((c) => c.category === catId && c.status === "ready")
   )

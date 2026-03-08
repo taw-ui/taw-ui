@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const insightCardOptions = [
   { key: "recommendation", label: "recommendation", defaultOn: true },
@@ -8,87 +8,94 @@ export const insightCardOptions = [
   { key: "source", label: "source", defaultOn: false },
 ]
 
-export const insightCardFixtures: Record<string, TawToolPart> = {
+export const insightCardFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "ic-1",
-    toolName: "analyzeOrderItem",
-    input: { orderNumber: 342 },
+    toolCallId: "ic-1",
+    toolName: "analyzeProduct",
+    input: { sku: "HOODIE-BLK-L" },
     state: "output-available",
     output: {
-      id: "analysis-342",
-      title: "Roundup Original 20L",
-      subtitle: "Porto Nacional · Pedido #342",
+      id: "analysis-hoodie",
+      title: "Oversized Logo Hoodie — Restock Analysis",
+      subtitle: "SKU HOODIE-BLK-L · Black / Large",
       metrics: [
-        { label: "Estoque Atual", value: 120, unit: "un", status: "warning" },
-        { label: "Venda Mensal", value: 85, unit: "un/mês" },
-        { label: "Cobertura", value: 1.4, unit: "meses", status: "critical" },
-        { label: "Tendência", value: "Alta", status: "good" },
+        { label: "Stock Left", value: 34, unit: "units", status: "warning" },
+        { label: "Weekly Sales", value: 89, unit: "units/wk", status: "good" },
+        { label: "Days of Stock", value: 2.7, unit: "days", status: "critical" },
+        { label: "Sell-Through", value: "94%", status: "good" },
       ],
-      recommendation: "Reduzir para 300 unidades (cobertura de ~5 meses considerando tendência de alta sazonal)",
-      sentiment: "caution",
-      reasoning: "Estoque atual cobre 1,4 meses. Com 500 unidades, cobrirá 7,3 meses — acima do ideal (3-4 meses). Sugestão: reduzir para 300 unidades.",
-      confidence: 0.87,
-      caveat: "Baseado em vendas dos últimos 12 meses. Não considera promoções planejadas.",
-      source: { label: "Siagri + Sales History", freshness: "live" },
+      recommendation:
+        "Reorder 500 units immediately — this SKU will sell out in under 3 days at current velocity. Black/Large is your #1 size and losing sales to stockouts.",
+      sentiment: "positive",
+      reasoning:
+        "This hoodie has a 94% sell-through rate since the last drop 3 weeks ago. Black/Large consistently outsells other variants by 2.3x. The last stockout in November cost an estimated $12K in missed revenue over 5 days.",
+      confidence: 0.92,
+      caveat:
+        "Sales velocity may slow after the initial hype period. Consider a smaller follow-up order if this is a limited edition.",
+      source: { label: "Shopify + Inventory API", freshness: "live" },
     },
   },
   positive: {
-    id: "ic-2",
-    toolName: "analyzeOrderItem",
-    input: { orderNumber: 501 },
+    toolCallId: "ic-2",
+    toolName: "analyzeProduct",
+    input: { sku: "TEE-COLLAB-M" },
     state: "output-available",
     output: {
-      id: "analysis-501",
-      title: "Fertilizante NPK 20-05-20",
-      subtitle: "Palmas · Pedido #501",
+      id: "analysis-collab-tee",
+      title: "Artist Collab Tee — Launch Performance",
+      subtitle: "Summer '25 Collection · 48h post-drop",
       metrics: [
-        { label: "Estoque Atual", value: 45, unit: "un", status: "critical" },
-        { label: "Venda Mensal", value: 180, unit: "un/mês" },
-        { label: "Cobertura", value: 0.25, unit: "meses", status: "critical" },
-        { label: "Tendência", value: "Estável" },
+        { label: "Units Sold", value: 1247, unit: "units", status: "good" },
+        { label: "Revenue", value: "$49.9K", status: "good" },
+        { label: "Conv. Rate", value: "8.4%", status: "good" },
+        { label: "Returns", value: "1.2%", status: "good" },
       ],
-      recommendation: "Aprovar — estoque crítico com menos de 1 semana de cobertura",
+      recommendation:
+        "Strong launch — outperforming your last 3 collabs by 40%. Consider extending the drop window by 48 hours to capture late demand.",
       sentiment: "positive",
-      reasoning: "Estoque atual cobre apenas 7 dias de vendas. Quantidade solicitada de 400 unidades fornece 2,5 meses de cobertura, dentro da faixa ideal.",
+      reasoning:
+        "The 8.4% conversion rate is 3x your store average. Social mentions peaked at 2.1K in the first 12 hours. Return rate of 1.2% suggests accurate sizing and satisfied customers.",
       confidence: 0.95,
-      caveat: "Preço do fornecedor pode variar — cotação válida até sexta-feira",
-      source: { label: "Siagri", freshness: "live" },
+      source: { label: "Shopify Analytics", freshness: "2 hours ago" },
     },
   },
   negative: {
-    id: "ic-3",
-    toolName: "analyzeOrderItem",
-    input: { orderNumber: 612 },
+    toolCallId: "ic-3",
+    toolName: "analyzeProduct",
+    input: { sku: "JOGGER-GRY-S" },
     state: "output-available",
     output: {
-      id: "analysis-612",
-      title: "Herbicida Glifosato 5L",
-      subtitle: "Gurupi · Pedido #612",
+      id: "analysis-jogger",
+      title: "Utility Jogger — Return Rate Alert",
+      subtitle: "SKU JOGGER-GRY-S · Grey / Small",
       metrics: [
-        { label: "Estoque Atual", value: 580, unit: "un", status: "good" },
-        { label: "Venda Mensal", value: 45, unit: "un/mês" },
-        { label: "Cobertura", value: 12.9, unit: "meses", status: "warning" },
-        { label: "Tendência", value: "Queda", status: "critical" },
+        { label: "Return Rate", value: "18.5%", status: "critical" },
+        { label: "Avg Return Rate", value: "4.2%", status: "good" },
+        { label: "Complaints", value: 23, unit: "tickets", status: "critical" },
+        { label: "NPS Impact", value: "-12", status: "warning" },
       ],
-      recommendation: "Rejeitar — estoque já cobre 12,9 meses com tendência de queda nas vendas",
+      recommendation:
+        "Pause advertising on this SKU and investigate sizing. Return rate is 4.4x your store average — most complaints mention the Small running too tight.",
       sentiment: "negative",
-      reasoning: "A loja Gurupi já tem excesso de estoque. Considere transferir 200 unidades para Porto Nacional onde há demanda.",
-      confidence: 0.91,
-      caveat: "Tendência de queda pode ser sazonal — verificar histórico do mesmo período no ano anterior",
-      source: { label: "Siagri + Sales History", freshness: "live" },
+      reasoning:
+        "23 support tickets in 2 weeks, 19 of which mention sizing issues specifically for Small. The Grey/Small variant has a 18.5% return rate vs 3.8% for Grey/Medium. This suggests a manufacturing defect in this size run, not a design issue.",
+      confidence: 0.89,
+      caveat:
+        "Returns are still within the 30-day window. Final return rate may be higher once all eligible returns are processed.",
+      source: { label: "Shopify + Zendesk", freshness: "live" },
     },
   },
   loading: {
-    id: "ic-4",
-    toolName: "analyzeOrderItem",
-    input: { orderNumber: 342 },
+    toolCallId: "ic-4",
+    toolName: "analyzeProduct",
+    input: { sku: "HOODIE-BLK-L" },
     state: "input-available",
   },
   error: {
-    id: "ic-5",
-    toolName: "analyzeOrderItem",
-    input: { orderNumber: 999 },
+    toolCallId: "ic-5",
+    toolName: "analyzeProduct",
+    input: { sku: "UNKNOWN-999" },
     state: "output-error",
-    error: "Pedido #999 não encontrado",
+    errorText: "Product SKU not found in catalog",
   },
 }

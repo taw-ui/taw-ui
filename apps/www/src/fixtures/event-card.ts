@@ -1,4 +1,4 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
 export const eventCardOptions = [
   { key: "description", label: "description", defaultOn: true },
@@ -13,8 +13,8 @@ export const eventCardOptions = [
 
 // ─── Example: Google Calendar event (as returned by fromGoogleCalendarEvent) ─
 
-export const googleEventFixture: TawToolPart = {
-  id: "gcal-1",
+export const googleEventFixture: ToolPart = {
+  toolCallId: "gcal-1",
   toolName: "getEvent",
   input: { calendarId: "primary", eventId: "abc123" },
   state: "output-available",
@@ -43,8 +43,8 @@ export const googleEventFixture: TawToolPart = {
 
 // ─── Example: Outlook event (as returned by fromOutlookEvent) ────────────────
 
-export const outlookEventFixture: TawToolPart = {
-  id: "outlook-1",
+export const outlookEventFixture: ToolPart = {
+  toolCallId: "outlook-1",
   toolName: "getEvent",
   input: { eventId: "AAMkAGI1..." },
   state: "output-available",
@@ -71,8 +71,8 @@ export const outlookEventFixture: TawToolPart = {
 
 // ─── All-day event ──────────────────────────────────────────────────────────
 
-export const allDayEventFixture: TawToolPart = {
-  id: "allday-1",
+export const allDayEventFixture: ToolPart = {
+  toolCallId: "allday-1",
   toolName: "getEvent",
   input: { calendarId: "primary", eventId: "allday1" },
   state: "output-available",
@@ -94,8 +94,8 @@ export const allDayEventFixture: TawToolPart = {
 
 // ─── Tentative event ────────────────────────────────────────────────────────
 
-export const tentativeEventFixture: TawToolPart = {
-  id: "tent-1",
+export const tentativeEventFixture: ToolPart = {
+  toolCallId: "tent-1",
   toolName: "getEvent",
   input: { eventId: "tent123" },
   state: "output-available",
@@ -114,8 +114,8 @@ export const tentativeEventFixture: TawToolPart = {
 
 // ─── Cancelled event ────────────────────────────────────────────────────────
 
-export const cancelledEventFixture: TawToolPart = {
-  id: "canc-1",
+export const cancelledEventFixture: ToolPart = {
+  toolCallId: "canc-1",
   toolName: "getEvent",
   input: { calendarId: "primary", eventId: "canc1" },
   state: "output-available",
@@ -133,8 +133,8 @@ export const cancelledEventFixture: TawToolPart = {
 
 // ─── Minimal event ──────────────────────────────────────────────────────────
 
-export const minimalEventFixture: TawToolPart = {
-  id: "min-1",
+export const minimalEventFixture: ToolPart = {
+  toolCallId: "min-1",
   toolName: "getEvent",
   input: { eventId: "xyz" },
   state: "output-available",
@@ -149,8 +149,8 @@ export const minimalEventFixture: TawToolPart = {
 
 // ─── Event with caveat / confidence ─────────────────────────────────────────
 
-export const eventWithCaveatFixture: TawToolPart = {
-  id: "cav-1",
+export const eventWithCaveatFixture: ToolPart = {
+  toolCallId: "cav-1",
   toolName: "getEvent",
   input: { calendarId: "primary", eventId: "maybe1" },
   state: "output-available",
@@ -176,7 +176,7 @@ export const eventWithCaveatFixture: TawToolPart = {
 
 // ─── All fixtures for ComponentPreview ───────────────────────────────────────
 
-export const eventCardFixtures: Record<string, TawToolPart> = {
+export const eventCardFixtures: Record<string, ToolPart> = {
   ready: googleEventFixture,
   outlook: outlookEventFixture,
   "all-day": allDayEventFixture,
@@ -185,17 +185,17 @@ export const eventCardFixtures: Record<string, TawToolPart> = {
   minimal: minimalEventFixture,
   caveat: eventWithCaveatFixture,
   loading: {
-    id: "ec-load",
+    toolCallId: "ec-load",
     toolName: "getEvent",
     input: { calendarId: "primary", eventId: "loading" },
     state: "input-available",
   },
   error: {
-    id: "ec-err",
+    toolCallId: "ec-err",
     toolName: "getEvent",
     input: { calendarId: "primary", eventId: "999" },
     state: "output-error",
-    error: "Event not found or access denied",
+    errorText: "Event not found or access denied",
   },
 }
 

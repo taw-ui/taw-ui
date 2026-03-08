@@ -1,1 +1,1 @@
-export { cn } from "@/components/taw/lib/utils"
+export { cn } from "@/lib/utils"

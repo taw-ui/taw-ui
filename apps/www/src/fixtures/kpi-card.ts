@@ -1,8 +1,8 @@
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 
-export const kpiCardFixtures: Record<string, TawToolPart> = {
+export const kpiCardFixtures: Record<string, ToolPart> = {
   ready: {
-    id: "kpi-1",
+    toolCallId: "kpi-1",
     toolName: "getMetrics",
     input: { metric: "revenue" },
     state: "output-available",
@@ -64,7 +64,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     },
   },
   "single": {
-    id: "kpi-single",
+    toolCallId: "kpi-single",
     toolName: "getMetrics",
     input: { metric: "revenue" },
     state: "output-available",
@@ -95,7 +95,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     },
   },
   "two-stats": {
-    id: "kpi-two",
+    toolCallId: "kpi-two",
     toolName: "getMetrics",
     input: { metric: "overview" },
     state: "output-available",
@@ -133,7 +133,7 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     },
   },
   "three-stats": {
-    id: "kpi-three",
+    toolCallId: "kpi-three",
     toolName: "getMetrics",
     input: { metric: "overview" },
     state: "output-available",
@@ -174,20 +174,20 @@ export const kpiCardFixtures: Record<string, TawToolPart> = {
     },
   },
   loading: {
-    id: "kpi-loading",
+    toolCallId: "kpi-loading",
     toolName: "getMetrics",
     input: { metric: "revenue" },
     state: "input-available",
   },
   error: {
-    id: "kpi-error",
+    toolCallId: "kpi-error",
     toolName: "getMetrics",
     input: { metric: "revenue" },
     state: "output-error",
-    error: "API rate limit exceeded. Retry after 30s.",
+    errorText: "API rate limit exceeded. Retry after 30s.",
   },
   "parse-error": {
-    id: "kpi-parse",
+    toolCallId: "kpi-parse",
     toolName: "getMetrics",
     input: { metric: "revenue" },
     state: "output-available",

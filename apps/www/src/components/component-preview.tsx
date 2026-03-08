@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useMemo, useCallback, useId, useRef, useEffect } from "react"
-import type { TawToolPart, TawReceipt } from "taw-ui"
+import { useState, useMemo, useCallback, useId, useRef, useEffect, useSyncExternalStore } from "react"
+import type { ToolPart } from "@/components/taw/lib/types"
+import type { TawReceipt } from "@/components/taw/option-list.schema"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/cn"
 import { highlightCode } from "@/lib/syntax"
 import { PixelIcon } from "./pixel-icon"
+import { THEME_PRESETS, type ThemePresetId } from "@/lib/theme-presets"
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -22,17 +24,17 @@ export interface ChatMessage {
 }
 
 interface ComponentPreviewProps {
-  fixtures: Record<string, TawToolPart>
+  fixtures: Record<string, ToolPart>
   options?: PreviewOption[]
-  children: (part: TawToolPart, key: string) => React.ReactNode
+  children: (part: ToolPart, key: string) => React.ReactNode
   chatMessages?: (opts: {
-    part: TawToolPart
+    part: ToolPart
     component: React.ReactNode
     onAction: (actionId: string, payload: unknown) => void
     receipt: TawReceipt | undefined
     pending: boolean
   }) => ChatMessage[]
-  code?: string | ((part: TawToolPart) => string)
+  code?: string | ((part: ToolPart) => string)
 }
 
 type ViewMode = "preview" | "chat" | "code"
@@ -41,26 +43,42 @@ type ViewMode = "preview" | "chat" | "code"
 
 function EyeIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-      <circle cx="12" cy="12" r="3" />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 20H8V18H16V20ZM8 18H4V16H8V18ZM20 18H16V16H20V18ZM4 16H2V14H4V16ZM14 10H12V12H14V10H16V14H14V16H10V14H8V10H10V8H14V10ZM22 16H20V14H22V16ZM2 14H0V10H2V14ZM24 14H22V10H24V14ZM4 10H2V8H4V10ZM22 10H20V8H22V10ZM8 8H4V6H8V8ZM20 8H16V6H20V8ZM16 6H8V4H16V6Z" fill="currentColor" />
     </svg>
   )
 }
 
 function ChatIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 2H20V4H4V2Z" fill="currentColor" />
+      <path d="M6 16H20V18H6V16Z" fill="currentColor" />
+      <path d="M20 4H22V16H20V4Z" fill="currentColor" />
+      <path d="M2 4H4V22H2V4Z" fill="currentColor" />
+      <path d="M4 18H6V20H4V18Z" fill="currentColor" />
+      <path d="M10 12H6V14H10V12Z" fill="currentColor" />
+      <path d="M14 8H6V10H14V8Z" fill="currentColor" />
     </svg>
   )
 }
 
 function CodeIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 7H5V9H7V7Z" fill="currentColor" />
+      <path d="M17 7H19V9H17V7Z" fill="currentColor" />
+      <path d="M13 6H15V10H13V6Z" fill="currentColor" />
+      <path d="M11 10H13V14H11V10Z" fill="currentColor" />
+      <path d="M9 14H11V18H9V14Z" fill="currentColor" />
+      <path d="M5 9H3V11H5V9Z" fill="currentColor" />
+      <path d="M19 9H21V11H19V9Z" fill="currentColor" />
+      <path d="M3 11H1V13H3V11Z" fill="currentColor" />
+      <path d="M21 11H23V13H21V11Z" fill="currentColor" />
+      <path d="M5 13H3V15H5V13Z" fill="currentColor" />
+      <path d="M19 13H21V15H19V13Z" fill="currentColor" />
+      <path d="M7 15H5V17H7V15Z" fill="currentColor" />
+      <path d="M17 15H19V17H17V15Z" fill="currentColor" />
     </svg>
   )
 }
@@ -89,6 +107,24 @@ function TuneIcon() {
   )
 }
 
+function PaletteIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M20 8H4V10H20V8Z" fill="currentColor" />
+      <path d="M20 20H4V22H20V20Z" fill="currentColor" />
+      <path d="M6 10H4V20H6V10Z" fill="currentColor" />
+      <path d="M20 10H18V20H20V10Z" fill="currentColor" />
+      <path d="M8 4H6V8H8V4Z" fill="currentColor" />
+      <path d="M16 2H8V4H16V2Z" fill="currentColor" />
+      <path d="M18 4H16V8H18V4Z" fill="currentColor" />
+      <path d="M10 10H8V16H10V10Z" fill="currentColor" />
+      <path d="M12 10H10V12H12V10Z" fill="currentColor" />
+      <path d="M16 10H14V12H16V10Z" fill="currentColor" />
+      <path d="M14 10H12V14H14V10Z" fill="currentColor" />
+    </svg>
+  )
+}
+
 // ─── State Dropdown ──────────────────────────────────────────────────────────
 
 function StateDropdown({
@@ -96,7 +132,7 @@ function StateDropdown({
   active,
   onSelect,
 }: {
-  entries: [string, TawToolPart][]
+  entries: [string, ToolPart][]
   active: string
   onSelect: (key: string) => void
 }) {
@@ -232,6 +268,93 @@ function DropdownItem({
   )
 }
 
+// ─── Theme dropdown (scoped shadcn theme switcher) ───────────────────────────
+
+function subscribeToDark(cb: () => void) {
+  if (typeof document === "undefined") return () => {}
+  const observer = new MutationObserver(cb)
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] })
+  return () => observer.disconnect()
+}
+
+function getIsDark() {
+  return typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+}
+
+function getDefaultThemeLabel(isDark: boolean) {
+  return isDark ? "Dracula" : "Alucard"
+}
+
+function ThemeDropdown({
+  active,
+  onSelect,
+  isDark,
+}: {
+  active: ThemePresetId
+  onSelect: (id: ThemePresetId) => void
+  isDark: boolean
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [open])
+
+  const activePreset = THEME_PRESETS.find((p) => p.id === active)
+  const displayLabel =
+    activePreset?.id === "default" ? getDefaultThemeLabel(isDark) : activePreset?.label ?? "Theme"
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className={cn(
+          "flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] transition-all",
+          open
+            ? "bg-(--taw-surface-raised) text-(--taw-text-primary) shadow-(--taw-shadow-sm)"
+            : "text-(--taw-text-muted) hover:text-(--taw-text-primary)",
+        )}
+      >
+        <PaletteIcon />
+        {displayLabel}
+        <ChevronDownIcon className={cn("transition-transform", open && "rotate-180")} />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -4, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.97 }}
+            transition={{ duration: 0.12, ease: "easeOut" }}
+            className="absolute right-0 top-full z-50 mt-1.5 min-w-[120px] overflow-hidden rounded-xl border border-(--taw-border) bg-(--taw-surface) p-1 shadow-(--taw-shadow-md)"
+          >
+            {THEME_PRESETS.map((preset) => (
+              <DropdownItem
+                key={preset.id}
+                label={preset.id === "default" ? getDefaultThemeLabel(isDark) : preset.label}
+                active={active === preset.id}
+                onClick={() => {
+                  onSelect(preset.id)
+                  setOpen(false)
+                }}
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
 // ─── Chat simulation ────────────────────────────────────────────────────────
 
 function MiniChat({ messages, onReset }: { messages: ChatMessage[]; onReset?: () => void }) {
@@ -343,6 +466,16 @@ export function ComponentPreview({
 
   const [showOptions, setShowOptions] = useState(false)
   const [codeExpanded, setCodeExpanded] = useState(false)
+  const [themePreset, setThemePreset] = useState<ThemePresetId>("default")
+
+  const isDark = useSyncExternalStore(subscribeToDark, getIsDark, () => false)
+  const themeVars = useMemo(() => {
+    if (themePreset === "default") return undefined
+    const preset = THEME_PRESETS.find((p) => p.id === themePreset)
+    if (!preset) return undefined
+    const vars = isDark ? preset.dark : preset.light
+    return Object.keys(vars).length > 0 ? (vars as React.CSSProperties) : undefined
+  }, [themePreset, isDark])
 
   // Chat state
   const [receipt, setReceipt] = useState<TawReceipt | undefined>()
@@ -441,15 +574,24 @@ export function ComponentPreview({
           )}
         </div>
 
-        {/* Right: state dropdown + copy */}
+        {/* Right: theme + state dropdown + copy */}
         <div className="flex items-center gap-2">
+          {isContentView && (
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-(--taw-text-muted)/50">
+                Theme
+              </span>
+              <ThemeDropdown active={themePreset} onSelect={setThemePreset} isDark={isDark} />
+            </div>
+          )}
+
           {isContentView && entries.length > 1 && (
             <div className="flex items-center gap-1.5">
               <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-(--taw-text-muted)/50">
                 State
               </span>
               <StateDropdown
-                entries={entries as [string, TawToolPart][]}
+                entries={entries as [string, ToolPart][]}
                 active={active}
                 onSelect={setActive}
               />
@@ -530,18 +672,26 @@ export function ComponentPreview({
                 backgroundSize: "20px 20px",
               }}
             />
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${active}-${JSON.stringify(toggles)}`}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
-                className="relative"
-              >
-                {renderedComponent}
-              </motion.div>
-            </AnimatePresence>
+            <div
+              className={cn(
+                "relative min-h-[80px] rounded-lg transition-colors duration-200",
+                themeVars && "bg-background",
+              )}
+              style={themeVars}
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${active}-${JSON.stringify(toggles)}`}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  className="relative"
+                >
+                  {renderedComponent}
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </motion.div>
         )}
 
@@ -553,10 +703,16 @@ export function ComponentPreview({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.12 }}
           >
-            <div className="bg-(--taw-surface-sunken) p-4">
+            <div
+              className={cn(
+                "p-4 transition-colors duration-200",
+                themeVars ? "bg-background" : "bg-(--taw-surface-sunken)",
+              )}
+              style={themeVars}
+            >
               <MiniChat
                 messages={resolvedChatMessages}
-                onReset={receipt ? () => setReceipt(undefined) : undefined}
+                {...(receipt ? { onReset: () => setReceipt(undefined) } : {})}
               />
             </div>
             <div className="flex items-center gap-2 overflow-hidden rounded-b-(--taw-radius-lg) border-t border-(--taw-border) bg-(--taw-surface) px-4 py-2.5">

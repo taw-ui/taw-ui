@@ -1,13 +1,13 @@
 "use client"
 
 import { KpiCard } from "@/components/taw/kpi-card"
-import type { TawToolPart } from "taw-ui"
+import type { ToolPart } from "@/components/taw/lib/types"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { PixelIcon } from "@/components/pixel-icon"
 
-const demoPart: TawToolPart = {
-  id: "demo",
+const demoPart: ToolPart = {
+  toolCallId: "demo",
   toolName: "getMetrics",
   input: { metric: "users" },
   state: "output-available",
@@ -22,7 +22,7 @@ const demoPart: TawToolPart = {
         diff: { value: 4.2 },
         sparkline: {
           data: [7200, 7400, 7600, 7800, 8000, 8100, 8200, 8300, 8421],
-          color: "var(--taw-accent)",
+          color: "hsl(var(--primary))",
         },
       },
     ],
@@ -72,27 +72,23 @@ export default function QuickStartPage() {
           One command. Your code. Full ownership.
         </p>
         <p className="mt-3 max-w-lg text-[14px] leading-relaxed text-(--taw-text-muted)">
-          taw-ui has two parts: a runtime package (<InlineCode>taw-ui</InlineCode>)
-          that ships schemas, types, and validation — and components that live
-          in your project. The CLI copies components into{" "}
-          <InlineCode>@/components/taw/</InlineCode> so you own them completely.
-          Let{"'"}s install both and render your first AI-native interface.
+          taw-ui uses the shadcn registry. One command copies a component into
+          your project — including its schema, types, and shared utilities. No
+          npm dependency. No runtime. Just your code. Let{"'"}s add a component
+          and render your first AI-native interface.
         </p>
       </div>
 
       {/* Step 1 — Install */}
       <section className="space-y-3">
         <StepLabel n="1">Install</StepLabel>
-        <CodeBlock label="terminal">{`npm i taw-ui
-npx taw-ui add kpi-card`}</CodeBlock>
+        <CodeBlock label="terminal">{`npx shadcn@latest add "https://taw-ui.com/r/kpi-card.json"`}</CodeBlock>
         <p className="text-[12.5px] leading-relaxed text-(--taw-text-muted)">
-          The first command installs the runtime (schemas, types, validation).
-          The second copies <InlineCode>kpi-card.tsx</InlineCode> into{" "}
-          <InlineCode>@/components/taw/</InlineCode>. That file is yours — edit
-          layout, styles, behavior, anything. The{" "}
-          <InlineCode>KpiCardSchema</InlineCode> it imports from{" "}
-          <InlineCode>taw-ui</InlineCode> stays versioned so contracts survive
-          your customizations.
+          This copies <InlineCode>kpi-card.tsx</InlineCode>, its schema, and
+          shared utilities into{" "}
+          <InlineCode>@/components/taw/</InlineCode>. Everything lives in your
+          project — edit layout, styles, behavior, anything. No external
+          dependency to manage or version.
         </p>
       </section>
 
@@ -177,7 +173,7 @@ const getMetrics = tool({
             <strong className="font-medium text-(--taw-text-primary)">Full ownership</strong>{" "}
             — the component lives in your project. Open{" "}
             <InlineCode>@/components/taw/kpi-card.tsx</InlineCode> and change
-            anything. The schema contract is the only thing that stays versioned.
+            anything. Everything lives in your project. Update the schema, the component, or both — it{"'"}s all yours.
           </GainRow>
         </div>
       </section>

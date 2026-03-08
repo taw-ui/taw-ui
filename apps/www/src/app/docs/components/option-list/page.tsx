@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { OptionList } from "@/components/taw/option-list"
-import type { TawReceipt } from "taw-ui"
+import type { TawReceipt } from "@/components/taw/option-list.schema"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -100,7 +100,7 @@ export default function OptionListDocs() {
         <h2 className="mb-4 text-lg font-semibold tracking-tight text-(--taw-text-primary)">
           Installation
         </h2>
-        <CodeBlock label="Terminal">{`npx taw-ui add option-list`}</CodeBlock>
+        <CodeBlock label="Terminal">{`npx shadcn@latest add "https://taw-ui.com/r/option-list.json"`}</CodeBlock>
         <p className="mt-3 text-[12px] leading-relaxed text-(--taw-text-muted)">
           This copies the component source and schema into your project.
           You own the code — customize anything.
@@ -137,7 +137,6 @@ export const chooseAction = tool({
   },
 })`}</CodeBlock>
           <CodeBlock label="client — render">{`import { OptionList } from "@/components/taw/option-list"
-import { createReceipt } from "taw-ui"
 
 function ToolOutput({ part }) {
   const [receipt, setReceipt] = useState()
@@ -177,7 +176,7 @@ function ToolOutput({ part }) {
         </h2>
         <SchemaTable
           fields={[
-            { field: "part", type: "TawToolPart", req: true, desc: "Tool call lifecycle state" },
+            { field: "part", type: "ToolPart", req: true, desc: "Tool call lifecycle state" },
             { field: "onAction", type: "(id, payload) => void", desc: "Callback for confirm/cancel actions" },
             { field: "receipt", type: "TawReceipt", desc: "Renders the receipt state when provided" },
             { field: "pending", type: "boolean", desc: "Disables all interactions while processing" },
