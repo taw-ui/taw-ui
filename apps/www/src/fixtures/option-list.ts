@@ -1,4 +1,4 @@
-import type { TawToolPart } from "@taw-ui/react"
+import type { TawToolPart } from "taw-ui"
 
 export const optionListOptions = [
   { key: "description", label: "description", defaultOn: true },

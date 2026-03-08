@@ -1,6 +1,6 @@
 "use client"
 
-import { LinkCard } from "@taw-ui/react"
+import { LinkCard } from "@/components/taw/link-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function LinkCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("LinkCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("LinkCard", "@/components/taw/link-card", part)}
         >
           {(part) => <LinkCard part={part} />}
         </ComponentPreview>

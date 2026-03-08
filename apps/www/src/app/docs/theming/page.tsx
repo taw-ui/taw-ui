@@ -204,7 +204,7 @@ export default function ThemingPage() {
 
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           {[
-            { icon: "◎", label: "One import", desc: "@taw-ui/react/styles.css" },
+            { icon: "◎", label: "One import", desc: "taw-ui/styles.css" },
             { icon: "↻", label: "shadcn v2 ready", desc: "Auto-inherits your theme" },
             { icon: "△", label: "22 semantic tokens", desc: "Override only what you need" },
           ].map(({ icon, label, desc }) => (
@@ -323,7 +323,7 @@ export default function ThemingPage() {
         </Prose>
 
         <div className="mt-4">
-          <CodeBlock label="globals.css">{`@import "@taw-ui/react/styles.css";`}</CodeBlock>
+          <CodeBlock label="globals.css">{`@import "taw-ui/styles.css";`}</CodeBlock>
         </div>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -447,7 +447,7 @@ export default function ThemingPage() {
             <span className="mb-2 block font-mono text-[11px] font-medium text-(--taw-text-muted)">
               Brand accent override — one token changes everything interactive
             </span>
-            <CodeBlock label="globals.css">{`@import "@taw-ui/react/styles.css";
+            <CodeBlock label="globals.css">{`@import "taw-ui/styles.css";
 
 :root {
   --taw-accent: #0066ff;  /* Your brand blue */
@@ -461,7 +461,7 @@ export default function ThemingPage() {
             <span className="mb-2 block font-mono text-[11px] font-medium text-(--taw-text-muted)">
               Full brand override — light and dark
             </span>
-            <CodeBlock label="globals.css">{`@import "@taw-ui/react/styles.css";
+            <CodeBlock label="globals.css">{`@import "taw-ui/styles.css";
 
 :root {
   --taw-surface: #ffffff;
@@ -659,7 +659,7 @@ export default function ThemingPage() {
         <p className="mt-4 text-[12.5px] leading-relaxed text-(--taw-text-muted)">
           The docs site itself uses a custom Alucard (light) / Dracula (dark)
           theme and does not use the default styles.css. Component consumers
-          use <InlineCode>@taw-ui/react/styles.css</InlineCode>.
+          use <InlineCode>taw-ui/styles.css</InlineCode>.
         </p>
       </section>
 
@@ -786,7 +786,7 @@ className="shadow-(--taw-shadow-sm) hover:shadow-(--taw-shadow-md)"`}</CodeBlock
             problem="Components look unstyled or use browser defaults"
             solution={
               <>
-                The <InlineCode>@import "@taw-ui/react/styles.css"</InlineCode>{" "}
+                The <InlineCode>@import "taw-ui/styles.css"</InlineCode>{" "}
                 line is missing or loading after your overrides. Ensure the
                 import appears before any custom <InlineCode>--taw-*</InlineCode>{" "}
                 declarations in your globals.css.
@@ -801,7 +801,7 @@ className="shadow-(--taw-shadow-sm) hover:shadow-(--taw-shadow-md)"`}</CodeBlock
                 Verify you{"'"}re on shadcn v2 (Tailwind v4). shadcn v1 uses raw
                 HSL channel values that are not valid CSS colors. Check that
                 your shadcn tokens are defined in <InlineCode>:root</InlineCode>{" "}
-                and loaded before <InlineCode>@taw-ui/react/styles.css</InlineCode>.
+                and loaded before <InlineCode>taw-ui/styles.css</InlineCode>.
               </>
             }
           />

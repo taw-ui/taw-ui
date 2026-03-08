@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react"
 import { usePathname } from "next/navigation"
-import { cn } from "@taw-ui/react"
+import { cn } from "@/lib/cn"
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 

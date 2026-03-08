@@ -1,6 +1,6 @@
 "use client"
 
-import { DataTable } from "@taw-ui/react"
+import { DataTable } from "@/components/taw/data-table"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function DataTableDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("DataTable", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("DataTable", "@/components/taw/data-table", part)}
         >
           {(part) => <DataTable part={part} />}
         </ComponentPreview>

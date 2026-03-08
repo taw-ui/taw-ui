@@ -1,6 +1,6 @@
 "use client"
 
-import { IssueCard } from "@taw-ui/react"
+import { IssueCard } from "@/components/taw/issue-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function IssueCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("IssueCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("IssueCard", "@/components/taw/issue-card", part)}
         >
           {(part) => <IssueCard part={part} />}
         </ComponentPreview>

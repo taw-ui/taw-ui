@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { AlertCard } from "@taw-ui/react"
-import type { TawReceipt } from "@taw-ui/react"
+import { AlertCard } from "@/components/taw/alert-card"
+import type { TawReceipt } from "taw-ui"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import {
@@ -84,7 +84,7 @@ export default function AlertCardDocs() {
               ),
             },
           ]}
-          code={(part) => generateComponentCode("AlertCard", "@taw-ui/react", part, `onAction={handleAction} receipt={receipt}`)}
+          code={(part) => generateComponentCode("AlertCard", "@/components/taw/alert-card", part, `onAction={handleAction} receipt={receipt}`)}
         >
           {(part) => <AlertCard part={part} />}
         </ComponentPreview>

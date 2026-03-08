@@ -4,16 +4,20 @@ import React, { useState, useRef, useEffect, useCallback } from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, isToolUIPart } from "ai"
 import { motion, AnimatePresence } from "framer-motion"
-import {
-  KpiCard,
-  DataTable,
-  OptionList,
-  InsightCard,
-  AlertCard,
-  cn,
-  type TawToolPart,
-} from "@taw-ui/react"
+import type { TawToolPart } from "taw-ui"
+import { KpiCard } from "@/components/taw/kpi-card"
+import { DataTable } from "@/components/taw/data-table"
+import { OptionList } from "@/components/taw/option-list"
+import { InsightCard } from "@/components/taw/insight-card"
+import { AlertCard } from "@/components/taw/alert-card"
+import { LinkCard } from "@/components/taw/link-card"
+import { MemoryCard } from "@/components/taw/memory-card"
+import { IssueCard } from "@/components/taw/issue-card"
+import { EventCard } from "@/components/taw/event-card"
+import { PostCard } from "@/components/taw/post-card"
+import { cn } from "@/components/taw/lib/utils"
 
+import { useStickToBottomContext } from "use-stick-to-bottom"
 import { Shimmer } from "@/components/ai-elements/shimmer"
 import {
   Conversation,
@@ -36,6 +40,11 @@ const componentMap: Record<
   chooseAction: OptionList,
   analyzeData: InsightCard,
   checkAlerts: AlertCard,
+  showLink: LinkCard,
+  recallMemory: MemoryCard,
+  showIssue: IssueCard,
+  showEvent: EventCard,
+  showPost: PostCard,
 }
 
 const toolLabels: Record<string, { icon: string; component: string }> = {
@@ -44,6 +53,11 @@ const toolLabels: Record<string, { icon: string; component: string }> = {
   chooseAction: { icon: "☰", component: "OptionList" },
   analyzeData: { icon: "◆", component: "InsightCard" },
   checkAlerts: { icon: "△", component: "AlertCard" },
+  showLink: { icon: "🔗", component: "LinkCard" },
+  recallMemory: { icon: "🧠", component: "MemoryCard" },
+  showIssue: { icon: "⚑", component: "IssueCard" },
+  showEvent: { icon: "◷", component: "EventCard" },
+  showPost: { icon: "✦", component: "PostCard" },
 }
 
 // ─── Slash commands ─────────────────────────────────────────────────────────
@@ -54,6 +68,11 @@ const slashCommands = [
   { command: "/option-list", label: "Option List", description: "Suggest next steps", prompt: "Recommend what we should focus on next" },
   { command: "/insight-card", label: "Insight Card", description: "Summarize analysis", prompt: "Summarize the analysis and key findings" },
   { command: "/alert-card", label: "Alert Card", description: "Show urgent alerts", prompt: "Show me any urgent issues or alerts" },
+  { command: "/link-card", label: "Link Card", description: "Preview a URL", prompt: "Preview the taw-ui documentation site" },
+  { command: "/memory-card", label: "Memory Card", description: "What you remember", prompt: "What do you remember about me?" },
+  { command: "/issue-card", label: "Issue Card", description: "Bugs & tickets", prompt: "Show me the latest high-priority bug" },
+  { command: "/event-card", label: "Event Card", description: "Calendar events", prompt: "What's my next meeting?" },
+  { command: "/post-card", label: "Post Card", description: "Social media posts", prompt: "Show me our latest post on X" },
 ] as const
 
 // ─── Command Menu ───────────────────────────────────────────────────────────
@@ -367,12 +386,88 @@ const chipIcons: Record<string, React.ReactNode> = {
       <rect width="2" height="6" transform="matrix(1 0 0 -1 11 13)" fill="currentColor" />
     </svg>
   ),
+  "Preview a link": (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M10 6H4V8H10V6Z" fill="currentColor" />
+      <path d="M4 8H2V16H4V8Z" fill="currentColor" />
+      <path d="M10 16H4V18H10V18Z" fill="currentColor" />
+      <path d="M12 8H10V16H12V8Z" fill="currentColor" />
+      <path d="M14 6H20V8H14V6Z" fill="currentColor" />
+      <path d="M20 8H22V16H20V8Z" fill="currentColor" />
+      <path d="M14 16H20V18H14V18Z" fill="currentColor" />
+      <path d="M12 8H14V16H12V8Z" fill="currentColor" />
+    </svg>
+  ),
+  "What do you remember?": (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M8 2H16V4H8V2Z" fill="currentColor" />
+      <path d="M6 4H8V6H6V4Z" fill="currentColor" />
+      <path d="M4 6H6V14H4V6Z" fill="currentColor" />
+      <path d="M16 4H18V6H16V4Z" fill="currentColor" />
+      <path d="M18 6H20V14H18V6Z" fill="currentColor" />
+      <path d="M6 14H8V16H6V14Z" fill="currentColor" />
+      <path d="M16 14H18V16H16V14Z" fill="currentColor" />
+      <path d="M8 16H10V18H8V16Z" fill="currentColor" />
+      <path d="M14 16H16V18H14V16Z" fill="currentColor" />
+      <path d="M10 18H14V20H10V18Z" fill="currentColor" />
+      <path d="M10 8H14V12H10V8Z" fill="currentColor" />
+    </svg>
+  ),
+  "Show an issue": (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M8 2H16V4H8V2Z" fill="currentColor" />
+      <path d="M6 4H8V6H6V4Z" fill="currentColor" />
+      <path d="M4 6H6V18H4V6Z" fill="currentColor" />
+      <path d="M16 4H18V6H16V4Z" fill="currentColor" />
+      <path d="M18 6H20V18H18V6Z" fill="currentColor" />
+      <path d="M6 18H8V20H6V18Z" fill="currentColor" />
+      <path d="M16 18H18V20H16V18Z" fill="currentColor" />
+      <path d="M8 20H16V22H8V20Z" fill="currentColor" />
+      <path d="M11 8H13V14H11V8Z" fill="currentColor" />
+      <path d="M11 16H13V18H11V16Z" fill="currentColor" />
+    </svg>
+  ),
+  "Next meeting": (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M4 4H20V6H4V4Z" fill="currentColor" />
+      <path d="M2 6H4V20H2V6Z" fill="currentColor" />
+      <path d="M20 6H22V20H20V6Z" fill="currentColor" />
+      <path d="M4 20H20V22H4V20Z" fill="currentColor" />
+      <path d="M7 2H9V6H7V2Z" fill="currentColor" />
+      <path d="M15 2H17V6H15V2Z" fill="currentColor" />
+      <path d="M4 8H20V10H4V8Z" fill="currentColor" />
+      <path d="M6 12H10V14H6V12Z" fill="currentColor" />
+      <path d="M6 16H10V18H6V16Z" fill="currentColor" />
+    </svg>
+  ),
+  "Latest post": (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M4 4H20V6H4V4Z" fill="currentColor" />
+      <path d="M2 6H4V18H2V6Z" fill="currentColor" />
+      <path d="M20 6H22V18H20V6Z" fill="currentColor" />
+      <path d="M4 18H20V20H4V18Z" fill="currentColor" />
+      <path d="M6 8H12V10H6V8Z" fill="currentColor" />
+      <path d="M6 12H18V14H6V12Z" fill="currentColor" />
+      <path d="M6 16H14V18H6V16Z" fill="currentColor" />
+    </svg>
+  ),
+}
+
+// ─── Scroll bridge ──────────────────────────────────────────────────────────
+
+function ScrollBridge({ scrollRef }: { scrollRef: React.MutableRefObject<(() => void) | null> }) {
+  const { scrollToBottom } = useStickToBottomContext()
+  useEffect(() => {
+    scrollRef.current = scrollToBottom
+  }, [scrollToBottom, scrollRef])
+  return null
 }
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 export function HeroPlayground() {
   const [inputValue, setInputValue] = useState("")
+  const scrollToBottomRef = useRef<(() => void) | null>(null)
 
   const { messages, sendMessage, status } = useChat({ transport })
 
@@ -384,12 +479,14 @@ export function HeroPlayground() {
     if (!text || isLoading) return
     sendMessage({ text })
     setInputValue("")
+    scrollToBottomRef.current?.()
   }
 
   const handleCommandSelect = useCallback(
     (prompt: string) => {
       if (isLoading) return
       sendMessage({ text: prompt })
+      scrollToBottomRef.current?.()
     },
     [isLoading, sendMessage],
   )
@@ -397,6 +494,7 @@ export function HeroPlayground() {
   const handleChipClick = (prompt: string) => {
     if (isLoading) return
     sendMessage({ text: prompt })
+    scrollToBottomRef.current?.()
   }
 
   const showThinking = (() => {
@@ -458,6 +556,17 @@ export function HeroPlayground() {
                 Schema-first components that turn structured AI outputs into
                 beautiful, actionable interfaces.
               </p>
+
+              <a
+                href="/docs/quick-start"
+                className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-(--taw-accent) px-5 py-2 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-(--taw-accent-hover) hover:shadow-md"
+              >
+                Get Started
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </a>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -465,8 +574,8 @@ export function HeroPlayground() {
 
       {/* Conversation — scrolls internally, fills available space */}
       {hasInteracted && (
-        <Conversation className="w-full max-w-[768px] min-h-0 flex-1 px-5 pt-8 sm:px-8">
-          <ConversationContent className="gap-6 p-0 pb-4">
+        <Conversation className="w-full min-h-0 flex-1">
+          <ConversationContent className="mx-auto max-w-[768px] gap-6 p-0 px-5 pb-4 pt-8 sm:px-8">
             {messages.map((message) => {
               if (message.role === "user") {
                 return (
@@ -556,19 +665,10 @@ export function HeroPlayground() {
                             key={part.toolCallId}
                             className="flex flex-col gap-2"
                           >
-                            {label && (
-                              <span className="font-mono text-[10px] text-(--taw-text-muted)">
-                                <span className="text-(--taw-accent)">
-                                  {label.icon}
-                                </span>{" "}
-                                rendered with {label.component}
-                              </span>
-                            )}
                             <motion.div
                               initial={{ opacity: 0, y: 6 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ duration: 0.35, delay: 0.1, ease }}
-                              className="pointer-events-none"
                             >
                               <Component
                                 part={{
@@ -578,9 +678,17 @@ export function HeroPlayground() {
                                   state: "output-available",
                                   output: part.output,
                                 }}
-                                animate={false}
+                                animate
                               />
                             </motion.div>
+                            {label && (
+                              <span className="font-mono text-[10px] text-(--taw-text-muted)">
+                                <span className="text-(--taw-accent)">
+                                  {label.icon}
+                                </span>{" "}
+                                rendered with {label.component}
+                              </span>
+                            )}
                           </div>
                         )
                       }
@@ -623,6 +731,7 @@ export function HeroPlayground() {
             )}
           </ConversationContent>
           <ConversationScrollButton />
+          <ScrollBridge scrollRef={scrollToBottomRef} />
         </Conversation>
       )}
 
@@ -635,8 +744,8 @@ export function HeroPlayground() {
         {/* Quick-start chips — landing only, single row with edge fade */}
         {!hasInteracted && (
           <div className="relative mb-3">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-(--taw-surface-sunken) to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-(--taw-surface-sunken) to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-linear-to-r from-(--taw-surface-sunken) to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-linear-to-l from-(--taw-surface-sunken) to-transparent" />
             <div className="no-scrollbar flex gap-2 overflow-x-auto px-2">
               {promptChips.map((chip, i) => (
                 <motion.button

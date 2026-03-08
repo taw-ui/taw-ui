@@ -1,21 +1,17 @@
-import { fetchRegistry, log } from "../utils"
+import * as p from "@clack/prompts"
 import pc from "picocolors"
+import { fetchRegistry } from "../utils"
 
 export async function list() {
   const registry = await fetchRegistry()
   const components = Object.entries(registry.components)
 
-  console.log()
-  log.info(`${components.length} components available:`)
-  console.log()
+  p.intro(`${components.length} components available`)
 
   for (const [slug, component] of components) {
     const category = component.category === "interactive" ? pc.yellow("interactive") : pc.blue("display")
-    console.log(`  ${pc.bold(slug.padEnd(16))} ${pc.dim(component.description)}  ${category}`)
+    p.log.message(`${pc.bold(slug.padEnd(16))} ${pc.dim(component.description)}  ${category}`)
   }
 
-  console.log()
-  log.dim("  npx taw-ui add <component>")
-  log.dim("  npx taw-ui add --all")
-  console.log()
+  p.outro("npx taw-ui add <component>")
 }

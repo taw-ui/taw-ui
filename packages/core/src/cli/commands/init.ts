@@ -1,7 +1,7 @@
 import path from "path"
 import fs from "fs-extra"
-import prompts from "prompts"
-import { fetchRegistry, fetchFile, log, detectPackageManager } from "../utils"
+import * as p from "@clack/prompts"
+import { fetchRegistry, fetchFile, detectPackageManager } from "../utils"
 
 interface InitOptions {
   dir: string
@@ -10,7 +10,7 @@ interface InitOptions {
 
 // ─── CSS import injection ───────────────────────────────────────────────────
 
-const TAW_STYLES_IMPORT = '@import "@taw-ui/react/styles.css";'
+const TAW_STYLES_IMPORT = '@import "taw-ui/styles.css";'
 
 const GLOBALS_CANDIDATES = [
   "src/app/globals.css",
@@ -32,8 +32,8 @@ function findGlobalsCss(cwd: string): string | null {
 function injectStylesImport(filePath: string): "injected" | "already-present" | "skipped" {
   const content = fs.readFileSync(filePath, "utf-8")
 
-  // Already imported — skip
-  if (content.includes("@taw-ui/react/styles.css")) {
+  // Already imported — skip (check both old and new paths)
+  if (content.includes("taw-ui/styles.css")) {
     return "already-present"
   }
 
@@ -61,21 +61,17 @@ export async function init(options: InitOptions) {
   const targetDir = path.resolve(cwd, options.dir)
   const libDir = path.join(targetDir, "lib")
 
-  console.log()
-  log.info(`Initializing taw-ui in ${path.relative(cwd, targetDir)}`)
-  console.log()
+  p.intro("taw-ui init")
 
   // Check if already initialized
   if (await fs.pathExists(libDir)) {
     if (!options.yes) {
-      const { overwrite } = await prompts({
-        type: "confirm",
-        name: "overwrite",
+      const overwrite = await p.confirm({
         message: `${path.relative(cwd, libDir)} already exists. Overwrite?`,
-        initial: false,
+        initialValue: false,
       })
-      if (!overwrite) {
-        log.dim("Aborted.")
+      if (p.isCancel(overwrite) || !overwrite) {
+        p.cancel("Aborted.")
         return
       }
     }
@@ -88,15 +84,13 @@ export async function init(options: InitOptions) {
   if (globalsPath) {
     const result = injectStylesImport(globalsPath)
     if (result === "injected") {
-      log.success(`Added ${TAW_STYLES_IMPORT} to ${path.relative(cwd, globalsPath)}`)
+      p.log.success(`Added ${TAW_STYLES_IMPORT} to ${path.relative(cwd, globalsPath)}`)
     } else if (result === "already-present") {
-      log.dim(`Theme import already present in ${path.relative(cwd, globalsPath)}`)
+      p.log.info(`Theme import already present in ${path.relative(cwd, globalsPath)}`)
     }
   } else {
-    console.log()
-    log.warn("Could not find a global CSS file. Add this to your CSS manually:")
-    log.dim(`  ${TAW_STYLES_IMPORT}`)
-    console.log()
+    p.log.warn("Could not find a global CSS file. Add this to your CSS manually:")
+    p.log.message(`  ${TAW_STYLES_IMPORT}`)
   }
 
   // ─── Copy lib files ─────────────────────────────────────────────────────
@@ -108,33 +102,34 @@ export async function init(options: InitOptions) {
     const dest = path.join(targetDir, filePath)
     await fs.ensureDir(path.dirname(dest))
     await fs.writeFile(dest, content, "utf-8")
-    log.success(`Created ${path.relative(cwd, dest)}`)
+    p.log.success(`Created ${path.relative(cwd, dest)}`)
   }
 
   // ─── Install dependencies ──────────────────────────────────────────────
 
   const pm = detectPackageManager(cwd)
   const deps = registry.lib.dependencies
-  console.log()
-  log.info("Installing dependencies...")
-  log.dim(`  ${pm.install} ${deps.join(" ")}`)
+
+  const s = p.spinner()
+  s.start(`Installing dependencies via ${pm.name}`)
 
   const { execSync } = await import("child_process")
   try {
     execSync(`${pm.install} ${deps.join(" ")}`, {
       cwd,
-      stdio: "inherit",
+      stdio: "pipe",
     })
+    s.stop("Dependencies installed")
   } catch {
-    console.log()
-    log.warn("Auto-install failed. Install manually:")
-    log.dim(`  ${pm.install} ${deps.join(" ")}`)
+    s.stop("Auto-install failed")
+    p.log.warn("Install manually:")
+    p.log.message(`  ${pm.install} ${deps.join(" ")}`)
   }
 
+  p.outro("taw-ui initialized! Now add components:")
   console.log()
-  log.success("taw-ui initialized! Now add components:")
-  log.dim("  npx taw-ui add kpi-card")
-  log.dim("  npx taw-ui add option-list data-table")
-  log.dim("  npx taw-ui add --all")
+  console.log("  npx taw-ui add kpi-card")
+  console.log("  npx taw-ui add option-list data-table")
+  console.log("  npx taw-ui add --all")
   console.log()
 }

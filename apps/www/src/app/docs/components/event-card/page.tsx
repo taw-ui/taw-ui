@@ -1,6 +1,6 @@
 "use client"
 
-import { EventCard } from "@taw-ui/react"
+import { EventCard } from "@/components/taw/event-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function EventCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("EventCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("EventCard", "@/components/taw/event-card", part)}
         >
           {(part) => <EventCard part={part} />}
         </ComponentPreview>

@@ -1,6 +1,8 @@
 "use client"
 
-import { IssueCard, EventCard, PostCard } from "@taw-ui/react"
+import { IssueCard } from "@/components/taw/issue-card"
+import { EventCard } from "@/components/taw/event-card"
+import { PostCard } from "@/components/taw/post-card"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { githubIssueFixture } from "@/fixtures/issue-card"

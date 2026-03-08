@@ -1,7 +1,8 @@
 "use client"
 
-import { KpiCard, OptionList } from "@taw-ui/react"
-import type { TawToolPart } from "@taw-ui/react"
+import { KpiCard } from "@/components/taw/kpi-card"
+import { OptionList } from "@/components/taw/option-list"
+import type { TawToolPart } from "taw-ui"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { PixelIcon } from "@/components/pixel-icon"
@@ -489,7 +490,7 @@ function ToolOutput({ part }: { part: TawToolPart }) {
           extension, no build-time config. Import the default theme, then override
           any <InlineCode>--taw-*</InlineCode> token to match your design system.
         </p>
-        <CodeBlock label="globals.css">{`@import "@taw-ui/react/styles.css";`}</CodeBlock>
+        <CodeBlock label="globals.css">{`@import "taw-ui/styles.css";`}</CodeBlock>
         <p className="mt-3 mb-4 text-[13px] leading-relaxed text-(--taw-text-muted)">
           The default theme provides sensible defaults and automatically picks up
           shadcn/ui v2 variables (<InlineCode>--primary</InlineCode>,{" "}

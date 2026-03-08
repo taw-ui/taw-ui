@@ -1,7 +1,7 @@
 "use client"
 
-import { KpiCard } from "@taw-ui/react"
-import type { TawToolPart } from "@taw-ui/react"
+import { KpiCard } from "@/components/taw/kpi-card"
+import type { TawToolPart } from "taw-ui"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"
 import { PixelIcon } from "@/components/pixel-icon"

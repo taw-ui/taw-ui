@@ -1,3 +1,5 @@
+import { cn } from "@/lib/cn"
+
 // ─── Pixel Icon Library ─────────────────────────────────────────────────────
 // 24x24 viewBox, 2x2 pixel units, crispEdges rendering.
 // Each path is a series of M..H..V..Z subpaths — one per pixel block.
@@ -59,7 +61,7 @@ export function PixelIcon({
       height={size}
       viewBox="0 0 24 24"
       fill="currentColor"
-      className={className}
+      className={cn("shrink-0", className)}
       style={{ shapeRendering: "crispEdges" }}
     >
       <path d={icons[name]} />

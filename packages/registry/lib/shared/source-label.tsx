@@ -1,6 +1,6 @@
 "use client"
 
-import type { SourceData } from "../schemas"
+import type { SourceData } from "taw-ui"
 
 type Source = NonNullable<SourceData>
 

@@ -35,7 +35,7 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="flex h-7 w-7 items-center justify-center rounded-lg text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-(--taw-border) bg-(--taw-surface-raised) text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
       aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
     >
       <AnimatePresence mode="wait" initial={false}>
@@ -47,7 +47,13 @@ function ThemeToggle() {
           transition={{ duration: 0.15 }}
           className="flex items-center justify-center"
         >
-          <PixelIcon name={dark ? "sun" : "moon"} size={18} />
+          {dark ? (
+            <PixelIcon name="sun" size={18} />
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+              <path d="M18 22H8V20H18V22ZM8 20H6V18H8V20ZM20 20H18V18H20V20ZM6 18H4V16H6V18ZM22 18H20V14H18V12H20V10H22V18ZM4 16H2V6H4V16ZM18 16H12V14H18V16ZM12 14H10V12H12V14ZM10 12H8V6H10V12ZM6 6H4V4H6V6ZM14 4H12V6H10V4H6V2H14V4Z" fill="currentColor" />
+            </svg>
+          )}
         </motion.span>
       </AnimatePresence>
     </button>
@@ -99,7 +105,7 @@ function HomeHeader() {
           href="https://github.com/taw-ui/taw-ui"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-7 w-7 items-center justify-center rounded-lg text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
+          className="flex h-7 w-7 items-center justify-center rounded-full border border-(--taw-border) bg-(--taw-surface-raised) text-(--taw-text-muted) transition-colors hover:text-(--taw-text-primary)"
           aria-label="GitHub"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -117,16 +123,6 @@ function HomeHeader() {
           </svg>
         </a>
         <ThemeToggle />
-        <Link
-          href="/docs/quick-start"
-          className="hidden items-center gap-1.5 rounded-full bg-(--taw-accent) px-4 py-1.5 text-[12px] font-semibold text-white shadow-sm transition-all hover:bg-(--taw-accent-hover) hover:shadow-md sm:inline-flex"
-        >
-          Get Started
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12" />
-            <polyline points="12 5 19 12 12 19" />
-          </svg>
-        </Link>
       </nav>
     </header>
   )

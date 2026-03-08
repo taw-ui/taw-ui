@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import type { TawParseError } from "../parse"
+import type { TawParseError } from "taw-ui"
 import { cn } from "../utils"
 import { getEnterProps, enterVariants, staggerParent } from "../motion"
 

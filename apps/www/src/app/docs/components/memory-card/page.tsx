@@ -1,6 +1,6 @@
 "use client"
 
-import { MemoryCard } from "@taw-ui/react"
+import { MemoryCard } from "@/components/taw/memory-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -56,7 +56,7 @@ export default function MemoryCardDocs() {
               ? [{ role: "assistant" as const, content: "Got it! I\u2019ve updated my memory based on your review." }]
               : []),
           ]}
-          code={(part) => generateComponentCode("MemoryCard", "@taw-ui/react", part, `onAction={handleAction} receipt={receipt}`)}
+          code={(part) => generateComponentCode("MemoryCard", "@/components/taw/memory-card", part, `onAction={handleAction} receipt={receipt}`)}
         >
           {(part) => <MemoryCard part={part} onAction={(id, payload) => console.log(id, payload)} />}
         </ComponentPreview>

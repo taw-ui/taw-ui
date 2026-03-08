@@ -1,6 +1,6 @@
 "use client"
 
-import { KpiCard } from "@taw-ui/react"
+import { KpiCard } from "@/components/taw/kpi-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock } from "@/components/code-block"
 import {
@@ -45,7 +45,7 @@ export default function KpiCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("KpiCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("KpiCard", "@/components/taw/kpi-card", part)}
         >
           {(part) => <KpiCard part={part} />}
         </ComponentPreview>

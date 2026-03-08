@@ -1,6 +1,6 @@
 "use client"
 
-import { InsightCard } from "@taw-ui/react"
+import { InsightCard } from "@/components/taw/insight-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function InsightCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("InsightCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("InsightCard", "@/components/taw/insight-card", part)}
         >
           {(part) => <InsightCard part={part} />}
         </ComponentPreview>

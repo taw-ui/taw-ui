@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { OptionList } from "@taw-ui/react"
-import type { TawReceipt } from "@taw-ui/react"
+import { OptionList } from "@/components/taw/option-list"
+import type { TawReceipt } from "taw-ui"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -89,7 +89,7 @@ export default function OptionListDocs() {
               ? [{ role: "assistant" as const, content: "Deploying now \u2014 I\u2019ll notify you when it\u2019s done." }]
               : []),
           ]}
-          code={(part) => generateComponentCode("OptionList", "@taw-ui/react", part, `onAction={handleAction} receipt={receipt}`)}
+          code={(part) => generateComponentCode("OptionList", "@/components/taw/option-list", part, `onAction={handleAction} receipt={receipt}`)}
         >
           {(part) => <OptionList part={part} />}
         </ComponentPreview>

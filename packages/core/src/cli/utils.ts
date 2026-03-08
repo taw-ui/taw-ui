@@ -1,4 +1,3 @@
-import pc from "picocolors"
 import path from "path"
 import { fileURLToPath } from "url"
 import fs from "fs-extra"
@@ -64,12 +63,4 @@ export function detectPackageManager(cwd: string): { name: string; install: stri
     return { name: "yarn", install: "yarn add" }
   }
   return { name: "npm", install: "npm install" }
-}
-
-export const log = {
-  info: (msg: string) => console.log(pc.cyan("ℹ"), msg),
-  success: (msg: string) => console.log(pc.green("✓"), msg),
-  warn: (msg: string) => console.log(pc.yellow("⚠"), msg),
-  error: (msg: string) => console.log(pc.red("✗"), msg),
-  dim: (msg: string) => console.log(pc.dim(msg)),
 }

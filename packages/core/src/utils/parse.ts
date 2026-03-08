@@ -1,4 +1,4 @@
-import { ZodSchema, ZodError } from "zod"
+import { type ZodType, type ZodTypeDef, ZodError } from "zod"
 
 export interface ParseResult<T> {
   data: T | null
@@ -21,11 +21,11 @@ export interface TawParseError {
  * Safely parse data with taw-ui's helpful error format.
  * Returns structured errors with field suggestions for mismatches.
  */
-export function tawParse<T>(
-  schema: ZodSchema<T>,
+export function tawParse<O, D extends ZodTypeDef = ZodTypeDef, I = unknown>(
+  schema: ZodType<O, D, I>,
   data: unknown,
   componentName: string,
-): ParseResult<T> {
+): ParseResult<O> {
   const result = schema.safeParse(data)
 
   if (result.success) {

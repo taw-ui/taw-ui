@@ -1,4 +1,4 @@
-import type { TawToolPart } from "@taw-ui/react"
+import type { TawToolPart } from "taw-ui"
 
 export const insightCardOptions = [
   { key: "recommendation", label: "recommendation", defaultOn: true },

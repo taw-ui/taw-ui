@@ -109,7 +109,6 @@ export const heroTools = {
           badge: "Long-term",
         },
       ],
-      reasoning: "Onboarding has the highest ROI — low effort with immediate impact on activation and retention.",
       confirmLabel: "Start",
     }),
   }),
@@ -132,15 +131,13 @@ export const heroTools = {
       ],
       recommendation: "Expansion revenue is driving growth, but rising churn in the SMB segment needs attention before Q1.",
       sentiment: "positive",
-      reasoning: "Enterprise accounts grew 23% while SMB contracted 4%. Shifting support resources could stabilize SMB retention.",
-      confidence: 0.91,
       source: { label: "Revenue Analytics", freshness: "today" },
     }),
   }),
 
   checkAlerts: tool({
     description:
-      "Show alerts, warnings, or urgent issues. Use when the user asks about issues, risks, alerts, incidents, or problems.",
+      "Show alerts, warnings, or urgent issues. Use when the user asks about alerts, incidents, or system problems.",
     inputSchema: z.object({
       scope: z.string().optional().describe("Scope of alerts to check"),
     }),
@@ -158,8 +155,150 @@ export const heroTools = {
         { id: "investigate", label: "Investigate", primary: true },
         { id: "acknowledge", label: "Acknowledge" },
       ],
-      reasoning: "Spike correlates with recent deploy v2.4.1. Consider rollback if latency doesn't recover in 10 minutes.",
       source: { label: "Infrastructure Monitor", freshness: "live" },
+    }),
+  }),
+
+  showLink: tool({
+    description:
+      "Show a link preview card with OG metadata. Use when the user asks to preview a URL, share a link, or show a resource.",
+    inputSchema: z.object({
+      url: z.string().describe("The URL to preview"),
+    }),
+    execute: async () => ({
+      id: "hero-link",
+      url: "https://taw-ui.dev/docs/overview",
+      title: "taw-ui — The interface layer for the HAI era",
+      description: "Schema-first components that turn structured AI outputs into beautiful, actionable interfaces. Build the UI your AI should have returned.",
+      image: "https://taw-ui.dev/og.png",
+      favicon: "https://taw-ui.dev/favicon.ico",
+      domain: "taw-ui.dev",
+      source: { label: "Web", freshness: "cached" },
+    }),
+  }),
+
+  recallMemory: tool({
+    description:
+      "Show stored memories or context about the user. Use when the user asks what you remember, know about them, or their preferences.",
+    inputSchema: z.object({
+      topic: z.string().describe("What to recall"),
+    }),
+    execute: async () => ({
+      id: "hero-memory",
+      title: "What I know about you",
+      description: "Memories stored from our previous conversations.",
+      memories: [
+        {
+          id: "m1",
+          content: "Prefers dark mode across all tools and interfaces",
+          category: "preference",
+          learnedFrom: "Settings discussion on Jan 12",
+          confidence: 0.98,
+        },
+        {
+          id: "m2",
+          content: "Works on a SaaS product in the developer tools space",
+          category: "context",
+          learnedFrom: "Product review session",
+          confidence: 0.92,
+        },
+        {
+          id: "m3",
+          content: "Team uses Linear for issue tracking and GitHub for code",
+          category: "fact",
+          learnedFrom: "Workflow discussion",
+          confidence: 0.95,
+        },
+        {
+          id: "m4",
+          content: "Likely interested in AI-powered features based on recent queries",
+          category: "assumption",
+          learnedFrom: "Inferred from conversation patterns",
+          confidence: 0.72,
+        },
+      ],
+      source: { label: "Memory Store", freshness: "up to date" },
+    }),
+  }),
+
+  showIssue: tool({
+    description:
+      "Show an issue or ticket from a tracker like GitHub or Linear. Use when the user asks about bugs, tickets, issues, PRs, or tasks.",
+    inputSchema: z.object({
+      issue: z.string().describe("The issue to display"),
+    }),
+    execute: async () => ({
+      id: "hero-issue",
+      provider: "github",
+      title: "Auth tokens expire silently when clock skew exceeds 30s",
+      number: 1847,
+      status: { label: "Open", color: "#22c55e" },
+      priority: "high",
+      assignee: { name: "Sarah Chen" },
+      labels: [
+        { name: "bug", color: "#dc2626" },
+        { name: "auth", color: "#7c3aed" },
+      ],
+      project: "taw-ui",
+      createdAt: "2026-03-05T10:30:00Z",
+      updatedAt: "2026-03-07T16:45:00Z",
+      description: "Users with system clocks ahead by >30s get logged out without warning. Need to add clock drift tolerance to token validation.",
+      source: { label: "GitHub", freshness: "2 hours ago" },
+    }),
+  }),
+
+  showEvent: tool({
+    description:
+      "Show a calendar event or meeting. Use when the user asks about their schedule, meetings, calendar, or upcoming events.",
+    inputSchema: z.object({
+      query: z.string().describe("What event to show"),
+    }),
+    execute: async () => ({
+      id: "hero-event",
+      provider: "google",
+      title: "Q1 Planning — Product & Engineering",
+      startAt: "2026-03-10T14:00:00Z",
+      endAt: "2026-03-10T15:30:00Z",
+      description: "Review Q4 outcomes, align on Q1 OKRs, and finalize the roadmap for the next sprint cycle.",
+      location: "Conference Room A / Zoom",
+      meetingUrl: "https://zoom.us/j/123456789",
+      status: "confirmed",
+      organizer: { name: "Alex Rivera", email: "alex@company.com" },
+      attendees: [
+        { name: "Alex Rivera", responseStatus: "accepted" },
+        { name: "Sarah Chen", responseStatus: "accepted" },
+        { name: "Jordan Kim", responseStatus: "tentative" },
+        { name: "Maya Patel", responseStatus: "needsAction" },
+      ],
+      calendarName: "Work",
+      source: { label: "Google Calendar", freshness: "synced" },
+    }),
+  }),
+
+  showPost: tool({
+    description:
+      "Show a social media post from X, Instagram, or LinkedIn. Use when the user asks about posts, tweets, social media, or mentions.",
+    inputSchema: z.object({
+      query: z.string().describe("What post to show"),
+    }),
+    execute: async () => ({
+      id: "hero-post",
+      provider: "x",
+      author: {
+        name: "taw-ui",
+        handle: "@taw_ui",
+        isVerified: true,
+      },
+      body: "Just shipped v2.0 — 11 schema-first components, dark mode theming, and a CLI that feels like magic. ✦\n\nBuild the UI your AI should have returned.\n\nnpx taw-ui init",
+      postedAt: "2026-03-07T18:30:00Z",
+      metrics: {
+        likes: 1247,
+        reposts: 389,
+        comments: 94,
+        views: 48200,
+      },
+      tags: ["taw-ui", "AI", "devtools", "opensource"],
+      source: { label: "X API", freshness: "3 hours ago" },
     }),
   }),
 }
@@ -170,4 +309,9 @@ export const toolToComponent: Record<string, string> = {
   chooseAction: "OptionList",
   analyzeData: "InsightCard",
   checkAlerts: "AlertCard",
+  showLink: "LinkCard",
+  recallMemory: "MemoryCard",
+  showIssue: "IssueCard",
+  showEvent: "EventCard",
+  showPost: "PostCard",
 }

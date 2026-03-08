@@ -1,4 +1,5 @@
 import { z, type ZodTypeAny } from "zod"
+import type { zodToJsonSchema as ZodToJsonSchemaFn } from "zod-to-json-schema"
 
 // ─── strictify ──────────────────────────────────────────────────────────────
 // Transforms a Zod schema into a strict-mode-compatible variant:
@@ -210,7 +211,7 @@ export function toStrictJSONSchema(strictSchema: ZodTypeAny): Record<string, unk
   // for users who never call jsonSchema(). Tree-shaking can't eliminate
   // top-level imports, so this keeps the base bundle lean.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { zodToJsonSchema } = require("zod-to-json-schema") as typeof import("zod-to-json-schema")
+  const { zodToJsonSchema } = require("zod-to-json-schema") as { zodToJsonSchema: typeof ZodToJsonSchemaFn }
 
   const raw = zodToJsonSchema(strictSchema, { $refStrategy: "none" })
   const { $schema: _, ...schema } = raw as Record<string, unknown>

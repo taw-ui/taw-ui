@@ -1,6 +1,6 @@
 "use client"
 
-import { KpiCard } from "@taw-ui/react"
+import { KpiCard } from "@/components/taw/kpi-card"
 import { kpiCardFixtures } from "@/fixtures/kpi-card"
 import { CodeBlock } from "@/components/code-block"
 import { CopyPage } from "@/components/copy-page"

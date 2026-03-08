@@ -1,4 +1,4 @@
-import type { TawToolPart } from "@taw-ui/react"
+import type { TawToolPart } from "taw-ui"
 
 export function prettyPrint(obj: unknown, depth = 0): string {
   const indent = "  ".repeat(depth)

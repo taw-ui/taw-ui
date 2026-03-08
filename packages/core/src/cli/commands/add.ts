@@ -1,8 +1,8 @@
 import path from "path"
 import fs from "fs-extra"
-import prompts from "prompts"
+import * as p from "@clack/prompts"
 import pc from "picocolors"
-import { fetchRegistry, fetchFile, log, detectPackageManager } from "../utils"
+import { fetchRegistry, fetchFile, detectPackageManager } from "../utils"
 
 interface AddOptions {
   dir: string
@@ -17,7 +17,7 @@ export async function add(components: string[], options: AddOptions) {
 
   // Check if initialized
   if (!(await fs.pathExists(libDir))) {
-    log.error("taw-ui not initialized. Run `npx taw-ui init` first.")
+    p.cancel("taw-ui not initialized. Run `npx taw-ui init` first.")
     process.exit(1)
   }
 
@@ -30,32 +30,29 @@ export async function add(components: string[], options: AddOptions) {
   if (options.all) {
     toAdd = available
   } else if (components.length === 0) {
-    const { selected } = await prompts({
-      type: "multiselect",
-      name: "selected",
+    const selected = await p.multiselect({
       message: "Which components do you want to add?",
-      choices: available.map((key) => ({
-        title: `${registry.components[key]!.name} ${pc.dim(`— ${registry.components[key]!.description}`)}`,
+      options: available.map((key) => ({
+        label: `${registry.components[key]!.name} ${pc.dim(`— ${registry.components[key]!.description}`)}`,
         value: key,
       })),
-      min: 1,
+      required: true,
     })
-    if (!selected || selected.length === 0) {
-      log.dim("No components selected.")
+    if (p.isCancel(selected)) {
+      p.cancel("Aborted.")
       return
     }
     toAdd = selected
   } else {
     const invalid = components.filter((c) => !available.includes(c))
     if (invalid.length > 0) {
-      log.error(`Unknown component(s): ${invalid.join(", ")}`)
-      log.dim(`Available: ${available.join(", ")}`)
+      p.cancel(`Unknown component(s): ${invalid.join(", ")}\nAvailable: ${available.join(", ")}`)
       process.exit(1)
     }
     toAdd = components
   }
 
-  console.log()
+  p.intro(`Adding ${toAdd.length} component${toAdd.length > 1 ? "s" : ""}`)
 
   const extraDeps = new Set<string>()
 
@@ -66,14 +63,12 @@ export async function add(components: string[], options: AddOptions) {
     // Check if already exists
     if (await fs.pathExists(componentDir)) {
       if (!options.yes) {
-        const { overwrite } = await prompts({
-          type: "confirm",
-          name: "overwrite",
+        const overwrite = await p.confirm({
           message: `${name} already exists. Overwrite?`,
-          initial: false,
+          initialValue: false,
         })
-        if (!overwrite) {
-          log.dim(`  Skipped ${name}`)
+        if (p.isCancel(overwrite) || !overwrite) {
+          p.log.info(`Skipped ${name}`)
           continue
         }
       }
@@ -91,34 +86,36 @@ export async function add(components: string[], options: AddOptions) {
       extraDeps.add(dep)
     }
 
-    log.success(`Added ${component.name} → ${path.relative(cwd, componentDir)}/`)
+    p.log.success(`Added ${component.name} → ${path.relative(cwd, componentDir)}/`)
   }
 
   // Install extra deps if any
   if (extraDeps.size > 0) {
     const pm = detectPackageManager(cwd)
     const deps = [...extraDeps]
-    console.log()
-    log.info("Installing component dependencies...")
-    log.dim(`  ${pm.install} ${deps.join(" ")}`)
+
+    const s = p.spinner()
+    s.start(`Installing dependencies via ${pm.name}`)
 
     const { execSync } = await import("child_process")
     try {
       execSync(`${pm.install} ${deps.join(" ")}`, {
         cwd,
-        stdio: "inherit",
+        stdio: "pipe",
       })
+      s.stop("Dependencies installed")
     } catch {
-      log.warn("Auto-install failed. Install manually:")
-      log.dim(`  ${pm.install} ${deps.join(" ")}`)
+      s.stop("Auto-install failed")
+      p.log.warn("Install manually:")
+      p.log.message(`  ${pm.install} ${deps.join(" ")}`)
     }
   }
 
+  p.outro("Done! Import from your project:")
   console.log()
-  log.success("Done! Import from your project:")
   for (const name of toAdd) {
     const component = registry.components[name]!
-    log.dim(`  import { ${component.name} } from "@/components/taw/${name}"`)
+    console.log(`  import { ${component.name} } from "@/components/taw/${name}"`)
   }
   console.log()
 }

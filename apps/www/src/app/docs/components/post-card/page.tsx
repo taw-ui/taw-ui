@@ -1,6 +1,6 @@
 "use client"
 
-import { PostCard } from "@taw-ui/react"
+import { PostCard } from "@/components/taw/post-card"
 import { ComponentPreview } from "@/components/component-preview"
 import { CodeBlock, InlineCode } from "@/components/code-block"
 import {
@@ -46,7 +46,7 @@ export default function PostCardDocs() {
               tool: component,
             },
           ]}
-          code={(part) => generateComponentCode("PostCard", "@taw-ui/react", part)}
+          code={(part) => generateComponentCode("PostCard", "@/components/taw/post-card", part)}
         >
           {(part) => <PostCard part={part} />}
         </ComponentPreview>

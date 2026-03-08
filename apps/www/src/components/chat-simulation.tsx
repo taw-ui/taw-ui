@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import type { TawReceipt } from "@taw-ui/react"
-import { cn } from "@taw-ui/react"
+import type { TawReceipt } from "taw-ui"
+import { cn } from "@/lib/cn"
 
 interface ChatMessage {
   role: "user" | "assistant"

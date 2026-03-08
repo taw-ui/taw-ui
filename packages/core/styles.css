@@ -2,7 +2,7 @@
    taw-ui — default theme
 
    Usage:
-     @import "@taw-ui/react/styles.css";
+     @import "taw-ui/styles.css";
 
    Works out of the box with or without shadcn/ui.
 

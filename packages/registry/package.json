@@ -1,0 +1,21 @@
+{
+  "name": "@taw-ui/registry",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Source-of-truth component files for the taw-ui CLI",
+  "dependencies": {
+    "taw-ui": "workspace:*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.0",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19",
+    "zod": "^3.25.0"
+  }
+}
