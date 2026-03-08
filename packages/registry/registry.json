@@ -102,6 +102,17 @@
         "issue-card/index.ts"
       ],
       "dependencies": []
+    },
+    "event-card": {
+      "name": "EventCard",
+      "description": "Canonical calendar event surface with provider adapters for Google Calendar, Outlook, and Cal.com.",
+      "category": "domain-surface",
+      "files": [
+        "event-card/event-card.tsx",
+        "event-card/schema.ts",
+        "event-card/index.ts"
+      ],
+      "dependencies": []
     }
   }
 }
