@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp, TrendingDown, AlertTriangle, CircleHelp } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { cn } from "./lib/utils"
 import type { ToolPart } from "./lib/types"

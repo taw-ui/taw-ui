@@ -1,7 +1,11 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { BadgeCheck, Repeat2, Play, MessageCircle, Heart, Bookmark, Eye } from "lucide-react"
+import {
+  motion,
+  useMotionValue,
+} from "motion/react"
+import { AnimateNumber } from "motion-plus/react"
+import { BadgeCheck, Repeat2, Play } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { cn } from "./lib/utils"
 import type { ToolPart } from "./lib/types"
@@ -90,12 +94,12 @@ function ProviderIcon({
   }
 }
 
-// ─── Compact number ──────────────────────────────────────────────────────────
+// ─── Compact number format ───────────────────────────────────────────────────
 
-function compactNumber(n: number): string {
-  if (n < 1000) return String(n)
-  if (n < 1_000_000) return `${(n / 1000).toFixed(n < 10_000 ? 1 : 0)}K`
-  return `${(n / 1_000_000).toFixed(1)}M`
+const compactFormat = {
+  notation: "compact" as const,
+  compactDisplay: "short" as const,
+  maximumFractionDigits: 1,
 }
 
 // ─── Relative time ───────────────────────────────────────────────────────────
@@ -157,7 +161,7 @@ function AuthorHeader({
         )}
         {/* Provider badge on avatar */}
         <span className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-card bg-card">
-          <ProviderIcon provider={provider} className="!h-2.5 !w-2.5 text-muted-foreground" />
+          <ProviderIcon provider={provider} className="h-2.5! w-2.5! text-muted-foreground" />
         </span>
       </span>
 
@@ -301,46 +305,182 @@ function LinkPreviewCard({ preview }: { preview: PostLinkPreview }) {
   )
 }
 
+// ─── Engagement metric icons (animated SVG) ──────────────────────────────────
+
+function ReplyIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
+function RepostIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m2 9 3-3 3 3" />
+      <path d="M13 18H7a2 2 0 0 1-2-2V6" />
+      <path d="m22 15-3 3-3-3" />
+      <path d="M11 6h6a2 2 0 0 1 2 2v10" />
+    </svg>
+  )
+}
+
+function HeartIcon({ filled }: { filled: boolean }) {
+  const pathLength = useMotionValue(filled ? 1 : 0)
+
+  return (
+    <motion.svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      animate={filled ? { scale: [1, 1.25, 1] } : { scale: 1 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      <motion.path
+        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+        animate={{
+          fill: filled ? "currentColor" : "transparent",
+          pathLength: filled ? 1 : 0.85,
+        }}
+        style={{ pathLength }}
+        transition={{
+          fill: { duration: 0.2 },
+          pathLength: { type: "spring", bounce: 0, duration: 0.3 },
+        }}
+      />
+    </motion.svg>
+  )
+}
+
+function BookmarkIcon({ filled }: { filled: boolean }) {
+  const pathLength = useMotionValue(filled ? 1 : 0)
+
+  return (
+    <motion.svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      animate={filled ? { scale: [1, 1.2, 1] } : { scale: 1 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+    >
+      <motion.path
+        d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"
+        animate={{
+          fill: filled ? "currentColor" : "transparent",
+          pathLength: filled ? 1 : 0.85,
+        }}
+        style={{ pathLength }}
+        transition={{
+          fill: { duration: 0.2 },
+          pathLength: { type: "spring", bounce: 0, duration: 0.3 },
+        }}
+      />
+    </motion.svg>
+  )
+}
+
+function ViewsIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" x2="18" y1="20" y2="10" />
+      <line x1="12" x2="12" y1="20" y2="4" />
+      <line x1="6" x2="6" y1="20" y2="14" />
+    </svg>
+  )
+}
+
+// ─── Engagement metric button ────────────────────────────────────────────────
+
+function MetricButton({
+  icon,
+  value,
+  label,
+  hoverColor,
+}: {
+  icon: React.ReactNode
+  value: number
+  label: string
+  hoverColor?: string | undefined
+}) {
+  return (
+    <motion.span
+      className={cn(
+        "flex items-center gap-1.5 text-muted-foreground transition-colors",
+        hoverColor ?? "hover:text-foreground",
+      )}
+      title={`${value.toLocaleString()} ${label}`}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.92 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    >
+      {icon}
+      <span className="text-[11px] tabular-nums">
+        <AnimateNumber format={compactFormat}>{value}</AnimateNumber>
+      </span>
+    </motion.span>
+  )
+}
+
 // ─── Engagement metrics ──────────────────────────────────────────────────────
 
 function EngagementMetrics({ metrics }: { metrics: PostMetrics }) {
-  const items: { icon: React.ReactNode; value: number; label: string }[] = []
+  const items: {
+    icon: React.ReactNode
+    value: number
+    label: string
+    hoverColor?: string | undefined
+  }[] = []
 
   if (metrics.replies !== undefined) {
     items.push({
-      icon: <MessageCircle size={14} />,
+      icon: <ReplyIcon />,
       value: metrics.replies,
       label: "replies",
+      hoverColor: "hover:text-blue-500",
     })
   }
 
   if (metrics.reposts !== undefined) {
     items.push({
-      icon: <Repeat2 size={14} />,
+      icon: <RepostIcon />,
       value: metrics.reposts,
       label: "reposts",
+      hoverColor: "hover:text-emerald-500",
     })
   }
 
   if (metrics.likes !== undefined) {
     items.push({
-      icon: <Heart size={14} />,
+      icon: <HeartIcon filled={false} />,
       value: metrics.likes,
       label: "likes",
+      hoverColor: "hover:text-rose-500",
     })
   }
 
   if (metrics.bookmarks !== undefined) {
     items.push({
-      icon: <Bookmark size={14} />,
+      icon: <BookmarkIcon filled={false} />,
       value: metrics.bookmarks,
       label: "bookmarks",
+      hoverColor: "hover:text-blue-500",
     })
   }
 
   if (metrics.views !== undefined) {
     items.push({
-      icon: <Eye size={14} />,
+      icon: <ViewsIcon />,
       value: metrics.views,
       label: "views",
     })
@@ -349,18 +489,15 @@ function EngagementMetrics({ metrics }: { metrics: PostMetrics }) {
   if (items.length === 0) return null
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center justify-between">
       {items.map((item) => (
-        <span
+        <MetricButton
           key={item.label}
-          className="flex items-center gap-1 text-muted-foreground transition-colors hover:text-foreground"
-          title={`${item.value.toLocaleString()} ${item.label}`}
-        >
-          {item.icon}
-          <span className="text-[11px] tabular-nums">
-            {compactNumber(item.value)}
-          </span>
-        </span>
+          icon={item.icon}
+          value={item.value}
+          label={item.label}
+          hoverColor={item.hoverColor}
+        />
       ))}
     </div>
   )
@@ -489,7 +626,7 @@ export function PostCard({
 
         {/* Engagement metrics */}
         {data.metrics && (
-          <motion.div variants={enterVariants} className="border-t px-4 py-2 pl-[66px]">
+          <motion.div variants={enterVariants} className="border-t px-4 py-2.5 pl-[66px]">
             <EngagementMetrics metrics={data.metrics} />
           </motion.div>
         )}

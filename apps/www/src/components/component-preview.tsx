@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useId, useRef, useEffect, useSyncExternalStore } from "react"
 import type { ToolPart } from "@/components/taw/lib/types"
 import type { TawReceipt } from "@/components/taw/option-list.schema"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { cn } from "@/lib/cn"
 import { highlightCode } from "@/lib/syntax"
 import { PixelIcon } from "./pixel-icon"

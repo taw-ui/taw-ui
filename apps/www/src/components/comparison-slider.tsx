@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useRef, useEffect } from "react"
-import { motion, useMotionValue, useSpring, useTransform, animate } from "framer-motion"
+import { motion, useMotionValue, useSpring, useTransform, animate } from "motion/react"
 
 interface ComparisonSliderProps {
   before: React.ReactNode

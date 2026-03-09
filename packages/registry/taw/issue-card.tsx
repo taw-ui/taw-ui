@@ -1,7 +1,7 @@
 "use client"
 
 import { CircleCheck, CircleX, Circle, MessageSquare } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "./lib/utils"

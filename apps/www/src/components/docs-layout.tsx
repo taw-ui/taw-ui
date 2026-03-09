@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useCallback, useSyncExternalStore } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Drawer } from "vaul"
 import { cn } from "@/lib/cn"
 import { components, categories } from "@/lib/registry"

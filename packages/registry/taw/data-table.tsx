@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Check, X, ArrowUpDown } from "lucide-react"
 import { useState, useMemo, useCallback } from "react"
 import { Card } from "@/components/ui/card"

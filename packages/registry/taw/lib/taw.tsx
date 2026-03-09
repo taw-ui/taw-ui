@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { useState, useEffect } from "react"
 import { cn } from "./utils"
 import { getEnterProps, enterVariants, staggerParent } from "./motion"

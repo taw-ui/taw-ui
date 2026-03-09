@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback, useSyncExternalStore } from "react"
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, isToolUIPart } from "ai"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import type { ToolPart } from "@/components/taw/lib/types"
 import { KpiCard } from "@/components/taw/kpi-card"
 import { DataTable } from "@/components/taw/data-table"

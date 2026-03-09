@@ -1,7 +1,12 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { Check, Loader2 } from "lucide-react"
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+} from "motion/react"
+import { Loader2 } from "lucide-react"
 import {
   useState,
   useCallback,
@@ -16,7 +21,6 @@ import {
   getEnterProps,
   staggerParent,
   enterVariants,
-  transitions,
 } from "./lib/motion"
 import {
   TawSkeleton,
@@ -50,6 +54,96 @@ function createReceipt(
     ...(options?.selectedIds && { selectedIds: options.selectedIds }),
     ...(options?.meta && { meta: options.meta }),
   }
+}
+
+// ─── Animated Checkbox ───────────────────────────────────────────────────────
+
+function AnimatedCheckbox({ checked }: { checked: boolean }) {
+  const pathLength = useMotionValue(checked ? 1 : 0)
+  const strokeLinecap = useTransform((): "round" | "butt" =>
+    pathLength.get() === 0 ? "butt" : "round",
+  )
+
+  return (
+    <motion.div
+      className={cn(
+        "flex h-[18px] w-[18px] items-center justify-center rounded-[5px] border transition-colors duration-150",
+        checked
+          ? "border-primary bg-primary"
+          : "border-muted-foreground/25 bg-background group-hover:border-muted-foreground/40",
+      )}
+      animate={checked ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        className="text-primary-foreground"
+      >
+        <motion.path
+          d="M4 12L10 18L20 6"
+          stroke="currentColor"
+          strokeWidth="3.5"
+          animate={{ pathLength: checked ? 1 : 0 }}
+          transition={{
+            type: "spring",
+            bounce: 0,
+            duration: checked ? 0.35 : 0.15,
+          }}
+          style={{ pathLength, strokeLinecap }}
+        />
+      </svg>
+    </motion.div>
+  )
+}
+
+// ─── Animated Radio ──────────────────────────────────────────────────────────
+
+function AnimatedRadio({ checked }: { checked: boolean }) {
+  const scale = useMotionValue(1)
+  const borderWidth = useTransform(scale, [0.95, 1.05], [2.5, 1.5])
+
+  return (
+    <motion.div
+      className={cn(
+        "relative flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors duration-150",
+        checked
+          ? "border-primary"
+          : "border-muted-foreground/25 bg-background group-hover:border-muted-foreground/40",
+      )}
+      style={{ scale }}
+    >
+      <AnimatePresence>
+        {checked && (
+          <>
+            {/* Animated border ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full border-solid border-primary"
+              style={{ borderWidth }}
+              initial={false}
+              animate={{ borderColor: "var(--color-primary)", scale: 1 }}
+              exit={{ borderColor: "transparent", scale: 0.9 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            />
+            {/* Dot */}
+            <motion.div
+              className="h-[8px] w-[8px] rounded-full bg-primary"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 420,
+                damping: 22,
+              }}
+            />
+          </>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
 }
 
 // ─── OptionItem ──────────────────────────────────────────────────────────────
@@ -93,50 +187,36 @@ function OptionItem({
           onSelect()
         }
       }}
+      whileHover={isDisabled ? {} : { scale: 1.008 }}
+      whileTap={isDisabled ? {} : { scale: 0.985 }}
       className={cn(
-        "group relative flex cursor-pointer items-start gap-3 rounded-lg px-3 py-3 text-left outline-none transition-colors",
-        "hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring",
-        selected && "bg-primary/5",
-        isDisabled && "pointer-events-none opacity-40",
+        "group relative flex cursor-pointer items-start gap-3 rounded-lg border px-3.5 py-3 text-left outline-none transition-all duration-150",
+        selected
+          ? "border-primary/30 bg-primary/4"
+          : "border-transparent hover:border-border hover:bg-muted/40",
+        focused && !selected && "border-border bg-muted/40",
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+        isDisabled && "pointer-events-none opacity-35",
       )}
     >
-      {/* Radio / Checkbox indicator */}
-      <span
-        className={cn(
-          "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center border transition-colors",
-          isMulti ? "rounded" : "rounded-full",
-          selected
-            ? "border-primary bg-primary text-primary-foreground"
-            : "border-muted-foreground/30 bg-background",
+      {/* Indicator */}
+      <div className="mt-0.5 shrink-0">
+        {isMulti ? (
+          <AnimatedCheckbox checked={selected} />
+        ) : (
+          <AnimatedRadio checked={selected} />
         )}
-      >
-        {selected && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={transitions.snappy}
-            className="flex items-center justify-center"
-          >
-            {isMulti ? (
-              <Check size={10} />
-            ) : (
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <circle cx="5" cy="5" r="2.5" fill="currentColor" />
-              </svg>
-            )}
-          </motion.span>
-        )}
-      </span>
+      </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-medium text-foreground">
+          <span className="text-[13px] font-medium leading-snug text-foreground">
             {option.label}
           </span>
           {option.badge && (
             <span
               className={cn(
-                "rounded-full px-1.5 py-0.5 text-[10px] font-medium leading-none",
+                "rounded-full px-2 py-0.5 text-[10px] font-semibold leading-none tracking-wide",
                 option.recommended
                   ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                   : "bg-muted text-muted-foreground",
@@ -146,7 +226,7 @@ function OptionItem({
             </span>
           )}
           {!option.badge && option.recommended && (
-            <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-medium leading-none text-emerald-600 dark:text-emerald-400">
+            <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold leading-none tracking-wide text-emerald-600 dark:text-emerald-400">
               Recommended
             </span>
           )}
@@ -190,7 +270,7 @@ function ReceiptView({
         className={cn("gap-0 overflow-hidden py-0")}
         data-taw="option-list-receipt"
       >
-        <div className="flex items-center gap-2 border-b px-4 py-2.5">
+        <div className="flex items-center gap-2.5 border-b px-4 py-3">
           <span
             className={cn(
               "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold leading-none",
@@ -214,7 +294,7 @@ function ReceiptView({
             {selectedOptions.map((opt) => (
               <span
                 key={opt.id}
-                className="rounded-md bg-primary/5 px-2 py-1 text-[11px] font-medium text-primary"
+                className="rounded-md bg-primary/8 px-2.5 py-1 text-[11px] font-medium text-primary"
               >
                 {opt.label}
               </span>
@@ -412,7 +492,6 @@ function InteractiveOptionList({
 
       setFocusIndex(nextIndex)
 
-      // Focus the element
       const items = listRef.current?.querySelectorAll("[role='option']:not([aria-disabled='true'])")
       if (items && items[nextIndex]) {
         ;(items[nextIndex] as HTMLElement).focus()
@@ -463,13 +542,13 @@ function InteractiveOptionList({
         {/* Header */}
         <motion.div
           variants={enterVariants}
-          className="border-b px-4 py-3"
+          className="px-4 pt-4 pb-1"
         >
           <h3 className="text-[13px] font-semibold text-foreground">
             {data.question}
           </h3>
           {data.description && (
-            <p className="mt-0.5 text-[11px] text-muted-foreground">
+            <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">
               {data.description}
             </p>
           )}
@@ -479,7 +558,7 @@ function InteractiveOptionList({
         {data.reasoning && (
           <motion.div
             variants={enterVariants}
-            className="mx-4 mt-3 flex gap-2 rounded-lg bg-primary/5 px-3 py-2"
+            className="mx-4 mt-2 flex gap-2 rounded-lg bg-primary/5 px-3 py-2"
           >
             <span className="mt-0.5 shrink-0 text-[10px] text-primary">
               {"\u2192"}
@@ -499,7 +578,7 @@ function InteractiveOptionList({
           aria-multiselectable={isMulti || undefined}
           aria-label={data.question}
           onKeyDown={handleKeyDown}
-          className="flex flex-col gap-0.5 p-2"
+          className="flex flex-col gap-1 p-2"
         >
           {data.options.map((option) => {
             const enabledIndex = enabledOptions.findIndex(
@@ -532,7 +611,7 @@ function InteractiveOptionList({
             variants={enterVariants}
             className="px-4 pb-1"
           >
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-[10px] tabular-nums text-muted-foreground">
               {selected.size}
               {data.maxSelections ? ` / ${data.maxSelections}` : ""} selected
               {data.minSelections && data.minSelections > 0 && !meetsMin && (
@@ -571,10 +650,12 @@ function InteractiveOptionList({
           </div>
           <div className="flex items-center gap-2">
             {!data.required && (
-              <button
+              <motion.button
                 type="button"
                 onClick={handleCancel}
                 disabled={pending}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
                 className={cn(
                   "rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors",
                   "text-muted-foreground hover:bg-muted hover:text-foreground",
@@ -583,16 +664,18 @@ function InteractiveOptionList({
                 )}
               >
                 {data.cancelLabel}
-              </button>
+              </motion.button>
             )}
-            <button
+            <motion.button
               type="button"
               onClick={handleConfirm}
               disabled={!meetsMin || pending}
+              whileHover={meetsMin && !pending ? { scale: 1.03 } : {}}
+              whileTap={meetsMin && !pending ? { scale: 0.96 } : {}}
               className={cn(
                 "rounded-lg px-4 py-1.5 text-[12px] font-medium transition-colors",
                 "bg-primary text-primary-foreground hover:bg-primary/90",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                 "disabled:pointer-events-none disabled:opacity-50",
               )}
             >
@@ -604,7 +687,7 @@ function InteractiveOptionList({
               ) : (
                 data.confirmLabel
               )}
-            </button>
+            </motion.button>
           </div>
         </motion.div>
       </Card>

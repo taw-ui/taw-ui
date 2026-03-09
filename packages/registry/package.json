@@ -5,8 +5,9 @@
   "description": "Source-of-truth component files for the taw-ui shadcn registry",
   "dependencies": {
     "clsx": "^2.1.1",
-    "framer-motion": "^12.0.0",
     "lucide-react": "^0.577.0",
+    "motion": "^12.35.1",
+    "motion-plus": "^1.5.1",
     "tailwind-merge": "^2.6.0",
     "zod": "^3.24.0"
   },

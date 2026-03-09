@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Drawer } from "vaul"
 import { cn } from "@/lib/cn"
 import { PixelIcon } from "./pixel-icon"

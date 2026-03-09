@@ -1,7 +1,7 @@
 "use client"
 
 import { AlertTriangle, AlertCircle, Info, CircleCheck, CircleX, Loader2 } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "./lib/utils"

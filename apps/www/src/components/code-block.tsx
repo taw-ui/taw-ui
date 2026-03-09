@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { cn } from "@/lib/cn"
 import { highlightCode } from "@/lib/syntax"
 import { PixelIcon } from "./pixel-icon"
