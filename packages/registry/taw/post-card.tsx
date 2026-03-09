@@ -133,66 +133,61 @@ function VerifiedBadge() {
 
 // ─── Author header ───────────────────────────────────────────────────────────
 
-function AuthorHeader({
+function Avatar({ author }: { author: PostAuthor }) {
+  return (
+    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
+      {author.avatar ? (
+        <img
+          src={author.avatar}
+          alt={author.name}
+          className="h-full w-full rounded-full object-cover"
+        />
+      ) : (
+        author.name.charAt(0).toUpperCase()
+      )}
+    </span>
+  )
+}
+
+function AuthorMeta({
   author,
-  provider,
   publishedAt,
   isReply,
   parentAuthor,
 }: {
   author: PostAuthor
-  provider: PostProvider
   publishedAt?: string | undefined
   isReply?: boolean | undefined
   parentAuthor?: string | undefined
 }) {
   return (
-    <div className="flex items-start gap-2.5">
-      {/* Avatar */}
-      <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
-        {author.avatar ? (
-          <img
-            src={author.avatar}
-            alt={author.name}
-            className="h-full w-full rounded-full object-cover"
-          />
-        ) : (
-          author.name.charAt(0).toUpperCase()
-        )}
-        {/* Provider badge on avatar */}
-        <span className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-card bg-card">
-          <ProviderIcon provider={provider} className="h-2.5! w-2.5! text-muted-foreground" />
+    <div className="flex min-w-0 flex-col">
+      <div className="flex items-center gap-1">
+        <span className="truncate text-[13px] font-semibold text-foreground">
+          {author.name}
         </span>
-      </span>
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center gap-1">
-          <span className="truncate text-[13px] font-semibold text-foreground">
-            {author.name}
+        {author.verified && <VerifiedBadge />}
+      </div>
+      <div className="flex items-center gap-1.5">
+        {author.handle && (
+          <span className="text-[11px] text-muted-foreground">
+            @{author.handle}
           </span>
-          {author.verified && <VerifiedBadge />}
-        </div>
-        <div className="flex items-center gap-1.5">
-          {author.handle && (
+        )}
+        {publishedAt && (
+          <>
+            <span className="text-[10px] text-muted-foreground/50">&middot;</span>
             <span className="text-[11px] text-muted-foreground">
-              @{author.handle}
+              {relativeTime(publishedAt)}
             </span>
-          )}
-          {publishedAt && (
-            <>
-              <span className="text-[10px] text-muted-foreground/50">&middot;</span>
-              <span className="text-[11px] text-muted-foreground">
-                {relativeTime(publishedAt)}
-              </span>
-            </>
-          )}
-        </div>
-        {isReply && parentAuthor && (
-          <span className="mt-0.5 text-[10px] text-muted-foreground">
-            Replying to <span className="text-primary">@{parentAuthor}</span>
-          </span>
+          </>
         )}
       </div>
+      {isReply && parentAuthor && (
+        <span className="mt-0.5 text-[10px] text-muted-foreground">
+          Replying to <span className="text-primary">@{parentAuthor}</span>
+        </span>
+      )}
     </div>
   )
 }
@@ -581,18 +576,24 @@ export function PostCard({
           </motion.div>
         )}
 
-        {/* Author + content */}
-        <motion.div variants={enterVariants} className="flex flex-col gap-2.5 px-4 py-3">
-          <AuthorHeader
-            author={data.author}
-            provider={data.provider}
-            publishedAt={data.publishedAt}
-            isReply={data.isReply}
-            parentAuthor={data.parentAuthor}
-          />
+        {/* Provider icon — top right */}
+        <span className="absolute top-3 right-3 z-10 text-muted-foreground">
+          <ProviderIcon provider={data.provider} />
+        </span>
 
-          {/* Post content */}
-          <div className="pl-[50px]">
+        {/* Main layout: avatar + content column */}
+        <motion.div variants={enterVariants} className="flex gap-2.5 px-4 py-3">
+          <Avatar author={data.author} />
+
+          <div className="flex min-w-0 flex-1 flex-col gap-2.5">
+            <AuthorMeta
+              author={data.author}
+              publishedAt={data.publishedAt}
+              isReply={data.isReply}
+              parentAuthor={data.parentAuthor}
+            />
+
+            {/* Post content */}
             <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-foreground">
               {data.url ? (
                 <a
@@ -607,22 +608,19 @@ export function PostCard({
                 data.content
               )}
             </p>
+
+            {/* Media */}
+            {data.media && data.media.length > 0 && (
+              <MediaGrid media={data.media} />
+            )}
+
+            {/* Link preview */}
+            {data.linkPreview && (
+              <LinkPreviewCard preview={data.linkPreview} />
+            )}
+
           </div>
         </motion.div>
-
-        {/* Media */}
-        {data.media && data.media.length > 0 && (
-          <motion.div variants={enterVariants} className="px-4 pb-2 pl-[66px]">
-            <MediaGrid media={data.media} />
-          </motion.div>
-        )}
-
-        {/* Link preview */}
-        {data.linkPreview && (
-          <motion.div variants={enterVariants} className="px-4 pb-2 pl-[66px]">
-            <LinkPreviewCard preview={data.linkPreview} />
-          </motion.div>
-        )}
 
         {/* Engagement metrics */}
         {data.metrics && (

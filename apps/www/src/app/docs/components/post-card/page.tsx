@@ -155,10 +155,10 @@ function ToolOutput({ part }: { part: ToolPart }) {
           Switch between fixtures to see PostCard rendering data from different providers.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          {(["ready", "instagram"] as const).map((key) => (
+          {(["x", "instagram"] as const).map((key) => (
             <div key={key} className="overflow-hidden rounded-(--taw-radius-lg) border border-(--taw-border) bg-(--taw-surface-sunken) p-4">
               <span className="mb-2 block font-mono text-[11px] text-(--taw-text-muted)">
-                {key === "ready" ? "X" : "Instagram"}
+                {key === "x" ? "X" : "Instagram"}
               </span>
               <PostCard part={postCardFixtures[key]!} animate={false} />
             </div>

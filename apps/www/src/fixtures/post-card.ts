@@ -21,8 +21,8 @@ export const xPostFixture: ToolPart = {
     provider: "twitter",
     author: {
       name: "Guillermo Rauch",
-      handle: "raaborern",
-      avatar: "https://pbs.twimg.com/profile_images/1755951086809067520/hOkELmOJ_400x400.jpg",
+      handle: "rauchg",
+      avatar: "https://avatars.githubusercontent.com/u/13041?s=400",
       verified: true,
     },
     content: "We just shipped Next.js 15.5.\n\nHighlights:\n→ Turbopack is now stable for dev and builds\n→ 50% faster cold starts\n→ React 19 support out of the box\n→ New Middleware APIs\n\nThis is the fastest Next.js has ever been.",
@@ -30,7 +30,7 @@ export const xPostFixture: ToolPart = {
     media: [
       {
         type: "image",
-        url: "https://pbs.twimg.com/media/nextjs-15-5-banner.jpg",
+        url: "https://picsum.photos/id/0/1200/675",
         alt: "Next.js 15.5 release banner showing performance improvements",
         width: 1200,
         height: 675,
@@ -42,8 +42,8 @@ export const xPostFixture: ToolPart = {
       reposts: 3400,
       views: 1200000,
     },
-    url: "https://x.com/raaborern/status/1893021847102938",
-    source: { label: "X", url: "https://x.com/raaborern/status/1893021847102938" },
+    url: "https://x.com/rauchg/status/1893021847102938",
+    source: { label: "X", url: "https://x.com/rauchg/status/1893021847102938" },
   },
 }
 
@@ -60,16 +60,23 @@ export const instagramPostFixture: ToolPart = {
     author: {
       name: "National Geographic",
       handle: "natgeo",
-      avatar: "https://instagram.com/natgeo/avatar.jpg",
+      avatar: "https://avatars.githubusercontent.com/u/3011986?s=400",
       verified: true,
     },
-    content: "A rare sighting of a snow leopard at 4,500 meters in the Himalayas. These elusive big cats are estimated at fewer than 7,000 in the wild. Conservation efforts are critical to their survival.\n\nPhotograph by @wildlifephotographer",
+    content: "A rare sighting of a snow leopard at 4,500 meters in the Himalayas. These elusive cats are estimated at fewer than 7,000 in the wild 🐆\n\n📸 by @wildlifephotographer\n\n#snowleopard #wildlife #himalayas #conservation #natgeo",
     publishedAt: "2026-03-06T14:00:00Z",
     media: [
       {
         type: "image",
-        url: "https://instagram.com/p/CxYz1234567/media.jpg",
+        url: "https://picsum.photos/id/219/1080/1080",
         alt: "Snow leopard on a rocky Himalayan cliff face",
+        width: 1080,
+        height: 1080,
+      },
+      {
+        type: "image",
+        url: "https://picsum.photos/id/1024/1080/1080",
+        alt: "Close-up of a snow leopard's face",
         width: 1080,
         height: 1080,
       },
@@ -77,6 +84,7 @@ export const instagramPostFixture: ToolPart = {
     metrics: {
       likes: 284000,
       replies: 1823,
+      bookmarks: 12400,
     },
     url: "https://instagram.com/p/CxYz1234567",
     source: { label: "Instagram", url: "https://instagram.com/p/CxYz1234567" },
@@ -96,7 +104,7 @@ export const linkedinPostFixture: ToolPart = {
     author: {
       name: "Satya Nadella",
       handle: "satyanadella",
-      avatar: "https://media.licdn.com/satya-nadella.jpg",
+      avatar: "https://avatars.githubusercontent.com/u/51815682?s=400",
       verified: true,
     },
     content: "Excited to share that Microsoft has reached a new milestone in AI infrastructure. Our Azure AI platform now serves over 60,000 organizations worldwide.\n\nThe key insight: the companies seeing the most impact are those treating AI as a platform shift, not just a feature addition.\n\nWhat trends are you seeing in your organization's AI adoption?",
@@ -124,6 +132,7 @@ export const textOnlyPostFixture: ToolPart = {
     author: {
       name: "Dan Abramov",
       handle: "dan_abramov",
+      avatar: "https://avatars.githubusercontent.com/u/810438?s=400",
       verified: true,
     },
     content: "Hot take: the best abstractions are the ones you don't notice.\n\nIf your framework requires developers to think about the framework itself more than the problem they're solving, you've lost the plot.",
@@ -168,6 +177,7 @@ export const postWithCaveatFixture: ToolPart = {
     author: {
       name: "Tech News",
       handle: "technews",
+      avatar: "https://avatars.githubusercontent.com/u/9919?s=400",
     },
     content: "BREAKING: Major tech company reportedly planning to acquire AI startup for $2B+. Deal could close within weeks.\n\nSources say the acquisition would be the largest AI-focused deal this year.",
     publishedAt: "2026-03-07T22:00:00Z",
@@ -187,7 +197,7 @@ export const postWithCaveatFixture: ToolPart = {
 // ─── All fixtures for ComponentPreview ───────────────────────────────────────
 
 export const postCardFixtures: Record<string, ToolPart> = {
-  ready: xPostFixture,
+  x: xPostFixture,
   instagram: instagramPostFixture,
   linkedin: linkedinPostFixture,
   "text-only": textOnlyPostFixture,
@@ -221,8 +231,8 @@ export const rawXPostExample = {
   author: {
     id: "12345678",
     name: "Guillermo Rauch",
-    username: "raaborern",
-    profile_image_url: "https://pbs.twimg.com/profile_images/1755951086809067520/hOkELmOJ_400x400.jpg",
+    username: "rauchg",
+    profile_image_url: "https://avatars.githubusercontent.com/u/13041?s=400",
     verified: true,
   },
   public_metrics: {
@@ -236,7 +246,7 @@ export const rawXPostExample = {
     media: [
       {
         type: "photo",
-        url: "https://pbs.twimg.com/media/nextjs-15-5-banner.jpg",
+        url: "https://picsum.photos/id/0/1200/675",
         alt_text: "Next.js 15.5 release banner showing performance improvements",
         width: 1200,
         height: 675,
@@ -261,13 +271,13 @@ export const rawInstagramPostExample = {
   timestamp: "2026-03-06T14:00:00+0000",
   permalink: "https://instagram.com/p/CxYz1234567",
   media_type: "IMAGE",
-  media_url: "https://instagram.com/p/CxYz1234567/media.jpg",
+  media_url: "https://picsum.photos/id/219/1080/1080",
   username: "natgeo",
   owner: {
     id: "987654321",
     username: "natgeo",
     name: "National Geographic",
-    profile_picture_url: "https://instagram.com/natgeo/avatar.jpg",
+    profile_picture_url: "https://avatars.githubusercontent.com/u/3011986?s=400",
   },
   like_count: 284000,
   comments_count: 1823,
