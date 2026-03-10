@@ -41,10 +41,10 @@ function ThemeToggle() {
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={dark ? "sun" : "moon"}
-          initial={{ scale: 0, rotate: -90, opacity: 0 }}
-          animate={{ scale: 1, rotate: 0, opacity: 1 }}
-          exit={{ scale: 0, rotate: 90, opacity: 0 }}
-          transition={{ duration: 0.15 }}
+          initial={{ scale: 0, rotate: -90, opacity: 0, filter: "blur(4px)" }}
+          animate={{ scale: 1, rotate: 0, opacity: 1, filter: "blur(0px)" }}
+          exit={{ scale: 0, rotate: 90, opacity: 0, filter: "blur(4px)" }}
+          transition={{ type: "spring", duration: 0.3, bounce: 0.3 }}
           className="flex items-center justify-center"
         >
           {dark ? (
@@ -64,12 +64,16 @@ function ThemeToggle() {
 
 function HomeHeader() {
   return (
-    <header className="z-30 flex h-14 shrink-0 items-center justify-between border-b border-(--taw-border)/50 bg-(--taw-surface-sunken)/80 px-6 backdrop-blur-xl sm:px-8">
+    <motion.header
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+      className="z-30 flex h-14 shrink-0 items-center justify-between border-b border-(--taw-border)/50 bg-(--taw-surface-sunken)/80 px-6 backdrop-blur-xl sm:px-8">
       <div className="flex items-center gap-3">
         <Link href="/" className="group flex items-center gap-2.5">
           <motion.div
-            whileHover={{ rotate: [0, -4, 4, -2, 0] }}
-            transition={{ duration: 0.35 }}
+            whileHover={{ rotate: [0, -6, 5, -3, 1, 0], scale: [1, 1.05, 1.02, 1] }}
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
           >
             <img
               src="/taw-logo-light.svg"
@@ -124,7 +128,7 @@ function HomeHeader() {
         </a>
         <ThemeToggle />
       </nav>
-    </header>
+    </motion.header>
   )
 }
 

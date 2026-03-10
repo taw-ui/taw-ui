@@ -28,7 +28,19 @@ import {
 
 import { promptChips } from "./hero-data"
 
-const ease = [0.16, 1, 0.3, 1] as [number, number, number, number]
+// ─── Spring presets (physical motion > duration-based) ──────────────────────
+const spring = {
+  /** Hero-level entrances: grand, slightly bouncy */
+  hero: { type: "spring" as const, duration: 0.7, bounce: 0.15 },
+  /** Content appearing: smooth, no bounce */
+  content: { type: "spring" as const, duration: 0.5, bounce: 0 },
+  /** UI elements: snappy, responsive */
+  snappy: { type: "spring" as const, duration: 0.35, bounce: 0.1 },
+  /** Micro-interactions: instant feel */
+  micro: { type: "spring" as const, duration: 0.25, bounce: 0 },
+  /** Layout shifts: smooth and deliberate */
+  layout: { type: "spring" as const, duration: 0.6, bounce: 0.05 },
+}
 
 function subscribeToDark(cb: () => void) {
   const observer = new MutationObserver(cb)
@@ -104,16 +116,19 @@ function CommandMenu({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 4 }}
-      transition={{ duration: 0.15 }}
+      initial={{ opacity: 0, y: 6, scale: 0.98, filter: "blur(4px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      exit={{ opacity: 0, y: 6, scale: 0.98, filter: "blur(4px)" }}
+      transition={spring.snappy}
       className="absolute bottom-full left-0 mb-2 w-full overflow-hidden rounded-xl border border-(--taw-border)/40 bg-(--taw-surface-raised) shadow-(--taw-shadow-md)"
     >
       {filtered.map((cmd, i) => (
-        <button
+        <motion.button
           key={cmd.command}
           type="button"
+          initial={{ opacity: 0, x: -8 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ ...spring.micro, delay: i * 0.03 }}
           onMouseDown={(e) => {
             e.preventDefault()
             onSelect(cmd.prompt)
@@ -132,7 +147,7 @@ function CommandMenu({
           <span className="ml-auto text-[11px] text-(--taw-text-muted)">
             {cmd.description}
           </span>
-        </button>
+        </motion.button>
       ))}
     </motion.div>
   )
@@ -221,7 +236,7 @@ function PromptInput({
         }}
         className={cn(
           "flex flex-col gap-2 rounded-2xl bg-(--taw-surface-raised) px-4 pb-3 pt-3 shadow-(--taw-shadow-md)",
-          "ring-1 ring-(--taw-border)/30 transition-all",
+          "ring-1 ring-(--taw-border)/30 transition-shadow duration-200 focus-within:ring-2 focus-within:ring-(--taw-accent)/40 focus-within:shadow-(--taw-shadow-lg)",
           disabled && "opacity-50",
         )}
       >
@@ -284,11 +299,14 @@ function PromptInput({
             </svg>
             <span className="hidden sm:inline">Tools</span>
           </button>
-          <button
+          <motion.button
             type="submit"
             disabled={disabled || !value.trim()}
+            whileHover={value.trim() && !disabled ? { scale: 1.1 } : {}}
+            whileTap={value.trim() && !disabled ? { scale: 0.9 } : {}}
+            transition={spring.micro}
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-xl border transition-all",
+              "flex h-8 w-8 items-center justify-center rounded-xl border transition-[background-color,border-color]",
               value.trim() && !disabled
                 ? "border-transparent bg-(--taw-accent) text-white hover:bg-(--taw-accent-hover)"
                 : "border-(--taw-border)/50 text-(--taw-text-disabled)",
@@ -308,7 +326,7 @@ function PromptInput({
               <path d="M7 10L15 10V8H7V10Z" />
               <path d="M5 12L17 12V10L5 10V12Z" />
             </svg>
-          </button>
+          </motion.button>
         </div>
       </form>
     </div>
@@ -479,9 +497,15 @@ function HeroLogo() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 12 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.7, ease }}
+      variants={{
+        hidden: { opacity: 0, scale: 0.7, filter: "blur(8px)" },
+        show: {
+          opacity: 1,
+          scale: 1,
+          filter: "blur(0px)",
+          transition: spring.hero,
+        },
+      }}
       className="relative mb-6 h-24 w-24 sm:h-28 sm:w-28"
     >
       <MetallicPaint
@@ -555,15 +579,39 @@ export function HeroPlayground() {
           <AnimatePresence>
             <motion.div
               key="hero-heading"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16, transition: { duration: 0.25, ease } }}
-              transition={{ duration: 0.5, ease }}
+              initial="hidden"
+              animate="show"
+              exit={{
+                opacity: 0,
+                scale: 0.97,
+                filter: "blur(10px)",
+                transition: spring.content,
+              }}
+              variants={{
+                hidden: {},
+                show: {
+                  transition: {
+                    staggerChildren: 0.2,
+                    delayChildren: 0.1,
+                  },
+                },
+              }}
               className="mb-8 flex flex-col items-center px-6 text-center sm:mb-10"
             >
               <HeroLogo />
 
-              <h1 className="max-w-xl text-[clamp(2.25rem,6vw,3.75rem)] leading-[1.06] font-bold tracking-tight text-(--taw-text-primary)">
+              <motion.h1
+                variants={{
+                  hidden: { opacity: 0, scale: 1.06, filter: "blur(10px)" },
+                  show: {
+                    opacity: 1,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    transition: { type: "spring", duration: 0.7, bounce: 0 },
+                  },
+                }}
+                className="max-w-xl origin-center text-[clamp(2.25rem,6vw,3.75rem)] leading-[1.06] font-bold tracking-tight text-(--taw-text-primary)"
+              >
                 Build the UI your AI{" "}
                 <span
                   className="animate-color-shift font-pixel bg-clip-text text-transparent"
@@ -574,19 +622,41 @@ export function HeroPlayground() {
                 >
                   should have returned
                 </span>
-              </h1>
+              </motion.h1>
 
-              <p className="mt-4 max-w-xs text-[14px] leading-relaxed text-(--taw-text-secondary)">
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, scale: 1.06, filter: "blur(8px)" },
+                  show: {
+                    opacity: 1,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    transition: { type: "spring", duration: 0.5, bounce: 0 },
+                  },
+                }}
+                className="mt-4 max-w-xs origin-center text-[14px] leading-relaxed text-(--taw-text-secondary)"
+              >
                 Schema-first components that turn structured AI outputs into
                 beautiful, actionable interfaces.
-              </p>
+              </motion.p>
 
-              <a
+              <motion.a
                 href="/docs/quick-start"
-                className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-(--taw-accent) px-5 py-2 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-(--taw-accent-hover) hover:shadow-md"
+                variants={{
+                  hidden: { opacity: 0, scale: 1.12, filter: "blur(8px)" },
+                  show: {
+                    opacity: 1,
+                    scale: 1,
+                    filter: "blur(0px)",
+                    transition: { type: "spring", duration: 0.5, bounce: 0.1 },
+                  },
+                }}
+                whileHover={{ scale: 1.04, y: -1 }}
+                whileTap={{ scale: 0.97 }}
+                className="group mt-6 inline-flex items-center gap-1.5 rounded-full bg-(--taw-accent) px-5 py-2 text-[13px] font-semibold text-white shadow-sm transition-[background-color,box-shadow] hover:bg-(--taw-accent-hover) hover:shadow-md"
               >
                 Get Started
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform duration-200 group-hover:translate-x-0.5">
                   <rect width="2" height="16" transform="matrix(4.37114e-08 1 1 -4.37114e-08 4 11)" fill="currentColor" />
                   <rect width="2" height="2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 16 13)" fill="currentColor" />
                   <rect width="2" height="2" transform="matrix(4.37114e-08 1 1 -4.37114e-08 14 15)" fill="currentColor" />
@@ -595,7 +665,7 @@ export function HeroPlayground() {
                   <rect x="14" y="15" width="8" height="2" transform="rotate(-90 14 15)" fill="currentColor" />
                   <rect x="12" y="17" width="12" height="2" transform="rotate(-90 12 17)" fill="currentColor" />
                 </svg>
-              </a>
+              </motion.a>
             </motion.div>
           </AnimatePresence>
         </div>
@@ -610,9 +680,9 @@ export function HeroPlayground() {
                 return (
                   <motion.div
                     key={message.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25, ease }}
+                    initial={{ opacity: 0, y: 12, scale: 0.97, filter: "blur(3px)" }}
+                    animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                    transition={spring.snappy}
                     className="flex justify-end"
                   >
                     <div className="max-w-[75%] rounded-2xl rounded-br-md bg-(--taw-accent) px-4 py-2.5 text-[13px] leading-relaxed text-white">
@@ -628,9 +698,9 @@ export function HeroPlayground() {
               return (
                 <motion.div
                   key={message.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease }}
+                  initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
+                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  transition={spring.content}
                   className="flex flex-col gap-3"
                 >
                   {message.parts.map((part, i) => {
@@ -695,9 +765,9 @@ export function HeroPlayground() {
                             className="flex flex-col gap-2"
                           >
                             <motion.div
-                              initial={{ opacity: 0, y: 6 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.35, delay: 0.1, ease }}
+                              initial={{ opacity: 0, y: 8, scale: 0.98, filter: "blur(6px)" }}
+                              animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                              transition={{ ...spring.content, delay: 0.08 }}
                             >
                               <Component
                                 part={{
@@ -743,10 +813,10 @@ export function HeroPlayground() {
             {showThinking && (
               <motion.div
                 key="thinking"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2, ease }}
+                initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(4px)" }}
+                transition={spring.micro}
                 className="flex items-center gap-2"
               >
                 <Shimmer
@@ -767,7 +837,9 @@ export function HeroPlayground() {
       {/* Composer */}
       <motion.div
         layout
-        transition={{ layout: { duration: 0.45, ease } }}
+        initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ ...spring.content, delay: 0.9 }}
         className="w-full max-w-[768px] shrink-0 px-5 pb-6 sm:px-8"
       >
         {/* Quick-start chips — landing only, single row with edge fade */}
@@ -779,13 +851,15 @@ export function HeroPlayground() {
               {promptChips.map((chip, i) => (
                 <motion.button
                   key={chip.label}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.3 + i * 0.07, ease }}
+                  initial={{ opacity: 0, filter: "blur(6px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  transition={{ ...spring.content, delay: 1 + i * 0.04 }}
+                  whileHover={{ scale: 1.05, y: -1 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => handleChipClick(chip.prompt)}
                   disabled={isLoading}
                   className={cn(
-                    "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] transition-all",
+                    "inline-flex shrink-0 items-center gap-1.5 rounded-full border px-4 py-2 text-[12px] transition-[border-color,color]",
                     "border-(--taw-border)/60 bg-(--taw-surface) text-(--taw-text-secondary) hover:border-(--taw-accent)/20 hover:text-(--taw-text-primary)",
                     isLoading && "pointer-events-none opacity-50",
                   )}
